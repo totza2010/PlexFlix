@@ -57,10 +57,10 @@ const WatchProviders = ({
   return (
     <Fragment>
       <MetaWrapper
-        title='Watch Providers - Cinephiled'
+        title='Watch Providers - PlexFlix'
         description='Explore a comprehensive list of OTT/streaming providers, both locally and globally, to elevate your entertainment experience. Discover a diverse range of options available in your country and around the world, ensuring you never miss out on the latest and greatest in streaming content.'
-        url='https://cinephiled.vercel.app/watch-providers'
-        image='https://raw.githubusercontent.com/98mohitkumar/Cinephiled/main/public/Images/watch-providers.webp'
+        url={`${process.env.BUILD_URL}/watch-providers`}
+        image='https://raw.githubusercontent.com/totza2010/PlexFlix/main/public/Images/watch-providers.webp'
       />
 
       {error ? (

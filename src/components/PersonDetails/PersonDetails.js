@@ -149,21 +149,22 @@ const PersonDetails = ({ details }) => {
                   <Span className='block font-normal text-lg'>{combinedCredits.length}</Span>
                 </div>
               </Details>
+
+              {details.biography && (
+                <div className='mt-6 md:mt-5'>
+                  {details.biography && (
+                    <Fragment>
+                      <Span className='block text-[calc(1.35rem_+_.9vw)] lg:text-[2.2rem] font-semibold'>
+                        Biography
+                      </Span>
+                      <Bio>{details.biography}</Bio>
+                    </Fragment>
+                  )}
+                </div>
+              )}
+              
             </HeroInfoWrapper>
           </DetailsHeroWrap>
-
-          {details.biography && (
-            <div className='mt-6 md:mt-14'>
-              {details.biography && (
-                <Fragment>
-                  <Span className='block text-[calc(1.35rem_+_.9vw)] lg:text-[2.2rem] font-semibold'>
-                    Biography
-                  </Span>
-                  <Bio>{details.biography}</Bio>
-                </Fragment>
-              )}
-            </div>
-          )}
 
           {images?.profiles?.length > 1 ? (
             <Fragment>

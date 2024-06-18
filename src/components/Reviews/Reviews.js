@@ -13,7 +13,10 @@ const Reviews = ({ reviews }) => {
         reviews.map((item) => (
           <ReviewsWrap key={item.id}>
             <ReviewAuthorWrap>
-              <ReviewAuthorImg id={item.id} />
+              <ReviewAuthorImg $props={{
+                type: item?.author_details?.avatar_path ? "tmdb" : "hash",
+                avatar: item?.author_details?.avatar_path ?? item.id
+              }} />
               <div>
                 <Span className='font-bold'>{item.author}</Span>
                 <Span className='text-sm opacity-80 block font-normal'>

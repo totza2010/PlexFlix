@@ -9,10 +9,10 @@ const Person = ({ error, personDetails }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${personDetails.name} - Cinephiled`}
+        title={error ? "Not Found - PlexFlix" : `${personDetails.name} - PlexFlix`}
         image={`https://image.tmdb.org/t/p/w780${personDetails?.profile_path}`}
         description={personDetails?.biography}
-        url={`https://cinephiled.vercel.app/person/${personDetails?.id}-${getCleanTitle(
+        url={`${process.env.BUILD_URL}/person/${personDetails?.id}-${getCleanTitle(
           personDetails?.name
         )}`}
       />

@@ -47,7 +47,7 @@ export const ProfileAvatar = styled.div`
   background: ${({ $avatar }) =>
       $avatar.type === "tmdb"
         ? `url(https://www.themoviedb.org/t/p/w100_and_h100_face${$avatar.avatar})`
-        : `url(https://api.dicebear.com/6.x/bottts/svg?seed=${$avatar.avatar})`}
+        : `url(https://www.gravatar.com/avatar/${$avatar.avatar})`}
     center center / contain;
   filter: drop-shadow(
     0px 0px 5px 2px hsla(0, 0%, 0%, 0.14),

@@ -12,7 +12,7 @@ import {
 const Footer = () => {
   return (
     <FooterWrapper className='flex justify-between items-center'>
-      <FooterBranding>Cinephiled</FooterBranding>
+      <FooterBranding>PlexFlix</FooterBranding>
       <SocialIconsContainer>
         <SocialIcons
           href='https://www.themoviedb.org'
@@ -23,7 +23,7 @@ const Footer = () => {
         </SocialIcons>
 
         <SocialIcons
-          href='https://github.com/98mohitkumar'
+          href='https://github.com/totza2010'
           target='_blank'
           rel='noreferrer'
           aria-label='github link'>
@@ -31,7 +31,7 @@ const Footer = () => {
         </SocialIcons>
 
         <SocialIcons
-          href='https://www.linkedin.com/in/98mohitkumar'
+          href='https://www.linkedin.com/in/totza2010'
           target='_blank'
           rel='noreferrer'
           aria-label='linkedin link'>

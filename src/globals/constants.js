@@ -48,6 +48,9 @@ export const apiEndpoints = {
     tvSearch: ({ query, pageQuery = 1 }) =>
       `${baseUrlV3}/search/tv?language=en-US&query=${query}&page=${pageQuery}&include_adult=false`,
 
+    personSearch: ({ query, pageQuery = 1 }) =>
+      `${baseUrlV3}/search/person?include_adult=true&query=${query}&page=${pageQuery}`,
+
     keywordSearch: ({ query, pageQuery = 1 }) =>
       `${baseUrlV3}/search/keyword?query=${query}&page=${pageQuery}`
   },
@@ -115,6 +118,9 @@ export const apiEndpoints = {
     networkDetails: (id) => `${baseUrlV3}/network/${id}?append_to_response=images`,
     networkMedia: ({ id, pageQuery = 1 }) =>
       `${baseUrlV3}/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_networks=${id}`
+  },
+  collection: {
+    collectionDetails: (id) => `${baseUrlV3}/collection/${id}`
   },
   lists: {
     getLists: ({ accountId, pageQuery = 1 }) =>

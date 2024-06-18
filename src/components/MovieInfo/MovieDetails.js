@@ -27,6 +27,7 @@ import {
   HeroImg,
   HeroImgWrapper
 } from "styles/GlobalComponents";
+import MovieCollection from "./MovieCollection";
 import {
   Divider,
   Rounded,
@@ -37,6 +38,7 @@ import {
   RtoR,
   Span,
   CreditsWrapper,
+  CollectionWrapper,
   Credits,
   Tagline,
   ReleaseDateWrapper,
@@ -63,6 +65,7 @@ const MovieDetails = ({
     rating,
     moviePoster,
     crewData,
+    collection,
     socialIds,
     homepage
   },
@@ -380,6 +383,11 @@ const MovieDetails = ({
                   </Credits>
                 ))}
               </CreditsWrapper>
+            ) : null}
+            {collection ? (
+              <CollectionWrapper>
+                <MovieCollection collection={collection} />
+              </CollectionWrapper>
             ) : null}
           </HeroInfoWrapper>
         </DetailsHeroWrap>

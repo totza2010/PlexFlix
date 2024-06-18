@@ -21,9 +21,9 @@ const ProviderTV = ({ error, media, region, providerName, providerId }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={`TV Shows - ${providerName} (${region?.iso_3166_1}) - Cinephiled`}
+        title={`TV Shows - ${providerName} (${region?.iso_3166_1}) - PlexFlix`}
         description={`Explore a comprehensive list of TV Shows available on ${providerName} in ${region?.iso_3166_1}`}
-        url={`https://cinephiled.vercel.app/watch-providers/${providerId}-${providerName}/tv`}
+        url={`${process.env.BUILD_URL}/watch-providers/${providerId}-${providerName}/tv`}
       />
 
       <LayoutContainer className='relative z-20'>

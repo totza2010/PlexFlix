@@ -9,9 +9,9 @@ const Network = ({ networkDetails, networkMedia, error }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${networkDetails?.name} - cinephiled`}
+        title={error ? "Not Found - PlexFlix" : `${networkDetails?.name} - plexflix`}
         description={`TV shows produced by ${networkDetails?.name}.`}
-        url={`https://cinephiled.vercel.app/network/${networkDetails?.id}-${getCleanTitle(
+        url={`${process.env.BUILD_URL}/network/${networkDetails?.id}-${getCleanTitle(
           networkDetails?.name
         )}`}
         image={`https://image.tmdb.org/t/p/original${networkDetails?.logo_path}`}

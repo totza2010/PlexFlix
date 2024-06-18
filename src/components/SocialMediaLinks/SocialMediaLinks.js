@@ -2,7 +2,7 @@ import Modal, { useModal } from "components/Modal/Modal";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import Toast, { useToast } from "components/Toast/Toast";
 import { BiLink } from "react-icons/bi";
-import { FiTwitter, FiInstagram } from "react-icons/fi";
+import { FaXTwitter, FaInstagram, FaFacebookF } from 'react-icons/fa6';
 import { IoCopy } from "react-icons/io5";
 import { MdShare } from "react-icons/md";
 import { copyToClipboard } from "src/utils/helper";
@@ -49,18 +49,29 @@ const SocialMediaLinks = ({ links, homepage, mediaDetails, ...props }) => {
           className='link'
           rel='noreferrer'
           aria-label='instagram'>
-          <FiInstagram size='1.65rem' />
+          <FaInstagram size='1.65rem' />
         </a>
       )}
 
       {links?.twitter_id && (
         <a
-          href={`https://twitter.com/${links?.twitter_id}`}
+          href={`https://x.com/${links?.twitter_id}`}
           target='_blank'
           className='link'
           rel='noreferrer'
-          aria-label='twitter'>
-          <FiTwitter size='1.65rem' />
+          aria-label='x'>
+          <FaXTwitter size='1.65rem' />
+        </a>
+      )}
+
+      {links?.facebook_id && (
+        <a
+          href={`https://facebook.com/${links?.facebook_id}`}
+          target='_blank'
+          className='link'
+          rel='noreferrer'
+          aria-label='facebook'>
+          <FaFacebookF size='1.65rem' />
         </a>
       )}
 

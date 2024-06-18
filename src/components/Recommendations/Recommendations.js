@@ -1,12 +1,17 @@
+import {
+  CardImg,
+  CardInfo,
+  Cards,
+  CardsContainerGrid,
+  ReleaseDate
+} from "components/MediaTemplate/TemplateStyles";
+import RatingTag from "components/RatingTag/RatingTag";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
-import { getCleanTitle } from "src/utils/helper";
+import { getCleanTitle, getReleaseDate } from "src/utils/helper";
 import {
-  RecommendationsGrid,
-  RecommendedImg,
-  RecommendedWrapper,
   InfoTitle
 } from "./RecommendationsStyles";
 
@@ -14,9 +19,9 @@ const Recommendations = ({ data, type }) => {
   data.splice(20);
 
   return (
-    <RecommendationsGrid>
+    <CardsContainerGrid>
       {data.map((item) => (
-        <RecommendedWrapper key={item.id}>
+        <Cards key={item.id}>
           <motion.div
             whileHover={{
               scale: 1.05,
@@ -27,26 +32,33 @@ const Recommendations = ({ data, type }) => {
               href={`/${type}/${item.id}-${getCleanTitle(item?.title || item?.name)}`}
               passHref
               scroll={false}>
-              <RecommendedImg className='relative text-center'>
-                <Image
-                  src={
-                    item.backdrop_path
-                      ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}`
-                      : "/Images/DefaultBackdrop.png"
-                  }
-                  alt={`${type}-poster`}
-                  fill
-                  style={{ objectFit: "cover" }}
-                  placeholder='blur'
-                  blurDataURL={blurPlaceholder}
-                />
-              </RecommendedImg>
+              <div className='relative'>
+                <CardImg>
+                  <Image
+                    src={
+                      item.poster_path
+                        ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
+                        : "/Images/DefaultBackdrop.png"
+                    }
+                    alt={`${type}-poster`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    className='poster'
+                    placeholder='blur'
+                    blurDataURL={blurPlaceholder}
+                  />
+                </CardImg>
+                <RatingTag rating={item.vote_average} />
+              </div>
             </Link>
           </motion.div>
-          <InfoTitle className='mt-3 mb-0 text-center'>{item?.title || item?.name}</InfoTitle>
-        </RecommendedWrapper>
+          <CardInfo>
+            <InfoTitle>{item?.title || item?.name}</InfoTitle>
+            <ReleaseDate>{getReleaseDate(item?.release_date || item?.first_air_date)}</ReleaseDate>
+          </CardInfo>
+        </Cards>
       ))}
-    </RecommendationsGrid>
+    </CardsContainerGrid>
   );
 };
 

@@ -8,10 +8,11 @@ import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
 import KeywordSearch from "./KeywordSearch";
 import MoviesSearch from "./MoviesSearch";
+import PersonSearch from "./PersonSearch";
 import { tabStyling, tabTitleStyling } from "./SearchTabStyles";
 import TVSearch from "./TVSearch";
 
-const SearchTab = ({ movies, tv, search, keywords }) => {
+const SearchTab = ({ movies, tv, search, person, keywords }) => {
   const router = useRouter();
 
   const { activeTab, setTab } = useTabs({
@@ -27,6 +28,7 @@ const SearchTab = ({ movies, tv, search, keywords }) => {
   const tabList = [
     { key: "movies", name: `Movies (${movies.count})` },
     { key: "tv", name: `TV (${tv.count})` },
+    { key: "person", name: `Person (${person.count})` },
     { key: "keywords", name: `Keywords (${keywords.count})` }
   ];
 
@@ -80,6 +82,23 @@ const SearchTab = ({ movies, tv, search, keywords }) => {
                 Example: <b>&#39;Sherlock y:2010&#39;</b>.
               </p>
               <TVSearch searchQuery={search} tvRes={tv} />
+            </motion.div>
+          )}
+
+          {activeTab === "person" && (
+            <motion.div
+              key='person'
+              variants={framerTabVariants}
+              initial='hidden'
+              animate='visible'
+              exit='hidden'
+              transition={{ duration: 0.5 }}>
+              {person?.count > 0 && (
+                <Span className='block text-[calc(1.325rem_+_.9vw)] lg:text-[2rem] font-medium text-center'>
+                  Persons matching : {search}
+                </Span>
+              )}
+              <PersonSearch searchQuery={search} persons={person} />
             </motion.div>
           )}
 

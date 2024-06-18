@@ -53,7 +53,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <Fragment>
       <Head>
-        <title>Cinephiled</title>
+        <title>PlexFlix</title>
       </Head>
 
       <Theme>

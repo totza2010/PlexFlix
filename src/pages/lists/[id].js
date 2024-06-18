@@ -45,10 +45,10 @@ const List = ({ list, error }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={`${list.name} - Cinephiled`}
+        title={`${list.name} - PlexFlix`}
         description={list?.description || ""}
         image={`https://image.tmdb.org/t/p/w1280${list?.backdrop_path}`}
-        url={`https://cinephiled.vercel.app/lists/${list?.id}-${getCleanTitle(list?.name)}`}
+        url={`${process.env.BUILD_URL}/lists/${list?.id}-${getCleanTitle(list?.name)}`}
       />
 
       {error ? (

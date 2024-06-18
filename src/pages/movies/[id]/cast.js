@@ -35,10 +35,10 @@ const Cast = ({ movieData: { id, title, year, backdrop, poster }, cast, error })
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${title} (${year}) - Cast - cinephiled`}
+        title={error ? "Not Found - PlexFlix" : `${title} (${year}) - Cast - plexflix`}
         description={error ? "Not Found" : `${title} cast`}
         image={`https://image.tmdb.org/t/p/w780${backdrop}`}
-        url={`https://cinephiled.vercel.app/movies/${id}/cast`}
+        url={`${process.env.BUILD_URL}/movies/${id}/cast`}
       />
 
       {error ? (

@@ -21,9 +21,9 @@ const Keyword = ({ error, results, name, id }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${name} - Movies`}
+        title={error ? "Not Found - PlexFlix" : `${name} - Movies`}
         description={error ? "Not Found" : `Movies matching the keyword : ${name}`}
-        url={`https://cinephiled.vercel.app/keywords/${id}`}
+        url={`${process.env.BUILD_URL}/keywords/${id}`}
       />
 
       {error ? (

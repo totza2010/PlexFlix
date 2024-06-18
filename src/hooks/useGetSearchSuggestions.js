@@ -14,8 +14,12 @@ const useGetSearchSuggestions = (query) => {
       setLoading(true);
 
       fetchSuggestions(query, abortController)
-        .then(({ movieRes, tvRes }) => {
-          setSuggestions(movieRes.concat(tvRes).sort((a, b) => b.vote_count - a.vote_count));
+        .then(({ movieRes, tvRes, personRes }) => {
+          setSuggestions(
+            movieRes
+            .concat(tvRes).sort((a, b) => b.vote_count - a.vote_count)
+            .concat(personRes).sort((a, b) => b.popularity - a.popularity)
+          );
           setLoading(false);
         })
         .catch(() => {

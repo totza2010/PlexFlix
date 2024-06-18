@@ -28,9 +28,9 @@ const TvShows = ({ renderList, genreName, error, genreId }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${genreName} TV Shows - Cinephiled`}
+        title={error ? "Not Found - PlexFlix" : `${genreName} TV Shows - PlexFlix`}
         description={error ? "Not Found" : `${genreName} TV Shows`}
-        url={`https://cinephiled.vercel.app/genre/${genreId}-${getCleanTitle(genreName)}/tv`}
+        url={`${process.env.BUILD_URL}/genre/${genreId}-${getCleanTitle(genreName)}/tv`}
       />
 
       {error ? (

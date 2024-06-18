@@ -47,7 +47,7 @@ const Lists = ({ error, lists }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={`${create ? "Create List" : "My Lists"} - Cinephiled`}
+        title={`${create ? "Create List" : "My Lists"} - PlexFlix`}
         description='Create and manage your lists.'
       />
 

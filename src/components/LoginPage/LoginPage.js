@@ -42,9 +42,9 @@ const LoginPage = () => {
   return (
     <Fragment>
       <MetaWrapper
-        title='Login - Cinephiled'
-        description='Cinephiled login page'
-        url='https://cinephiled.vercel.app/login'
+        title='Login - PlexFlix'
+        description='PlexFlix login page'
+        url={`${process.env.BUILD_URL}/login`}
       />
       <LoginContainer className='mb-auto login-container'>
         <div className='bg-wrapper'>
@@ -62,7 +62,7 @@ const LoginPage = () => {
         {/* login card */}
         <LoginCard>
           <Integration>
-            <Image src={logo} width={85} height={50} alt='cinephiled-logo' priority />
+            <Image src={logo} width={85} height={50} alt='plexflix-logo' priority />
 
             <p className='text-[calc(1.375rem_+_1.5vw)] xl:text-[2.5rem] m-0'>+</p>
 
@@ -70,7 +70,7 @@ const LoginPage = () => {
               src='https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_1-5bdc75aaebeb75dc7ae79426ddd9be3b2be1e342510f8202baf6bffa71d7f5c4.svg'
               width={100}
               height={40}
-              alt='cinephiled-logo'
+              alt='plexflix-logo'
               priority
             />
           </Integration>

@@ -227,25 +227,12 @@ export const Overview = styled.p`
   }
 `;
 
-export const CollectionWrapper = styled.div`
-  margin-top: 25px;
-
-  @media only ${(props) => props.theme.breakpoints.ip} {
-    font-size: 18px;
-  }
-
-  @media only ${(props) => props.theme.breakpoints.xs} {
-    gap: 32px;
-    grid-template-columns: repeat(2, 1fr);
-  }
-`;
-
 export const CreditsWrapper = styled.div`
   display: grid;
   place-items: start;
   grid-template-columns: repeat(auto-fit, minmax(150px, max-content));
   gap: 48px;
-  margin-top: 20px;
+  margin-top: 32px;
 
   @media only ${(props) => props.theme.breakpoints.ip} {
     font-size: 18px;

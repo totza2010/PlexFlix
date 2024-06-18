@@ -13,9 +13,9 @@ const Explore = ({ movieGenres, tvGenres, error, nowPlaying }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : "Explore - Cinephiled"}
+        title={error ? "Not Found - PlexFlix" : "Explore - PlexFlix"}
         description="Embark on a cinematic journey through diverse genres of movies and TV shows. Uncover the latest releases and discover what's currently captivating audiences in theaters near you."
-        url='https://cinephiled.vercel.app/explore'
+        url={`${process.env.BUILD_URL}/explore`}
       />
 
       {error ? (

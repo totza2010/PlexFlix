@@ -110,7 +110,7 @@ const Hero = ({ banner = null }) => {
                     {searchSuggestions.map((item, index) => (
                       <SearchSuggestion
                         key={item.id}
-                        type={item.type === "tv" ? "tv" : "movie"}
+                        type={item.type}
                         data={item}
                         className={`search-suggestion ${
                           index === 0 ? "first-suggestion-item" : ""

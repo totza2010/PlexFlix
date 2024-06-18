@@ -160,18 +160,22 @@ export const fetchSuggestions = async (userInput, controller) => {
       fetch(apiEndpoints.search.tvSearch({ query: searchQuery }), {
         ...fetchOptions(),
         signal: controller.signal
+      }),
+      fetch(apiEndpoints.search.personSearch({ query: searchQuery }), {
+        ...fetchOptions(),
+        signal: controller.signal
       })
     ]);
 
     const error = searchQueryWithoutYear.some((res) => !res.ok);
     if (error) throw new Error("error fetching data");
 
-    const [movieResponse, tvResponse] = searchQueryWithoutYear;
-    const [movieRes, tvRes] = await Promise.all([movieResponse.json(), tvResponse.json()]);
-
+    const [movieResponse, tvResponse, personResponse] = searchQueryWithoutYear;
+    const [movieRes, tvRes, personRes] = await Promise.all([movieResponse.json(), tvResponse.json(), personResponse.json()]);
     return {
-      movieRes: movieRes.results || [],
-      tvRes: tvRes.results.map((item) => ({ ...item, type: "tv" })) || []
+      movieRes: movieRes.results.map((item) => ({ ...item, type: "movie" })) || [],
+      tvRes: tvRes.results.map((item) => ({ ...item, type: "tv" })) || [],
+      personRes: personRes.results.map((item) => ({ ...item, type: "person" })) || []
     };
   }
 };

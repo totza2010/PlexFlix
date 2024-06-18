@@ -41,11 +41,11 @@ const TvShow = ({
     <Fragment>
       <MetaWrapper
         title={
-          error ? "Not Found - Cinephiled" : `${title} (${releaseYear} - ${endYear}) - Cinephiled`
+          error ? "Not Found - PlexFlix" : `${title} (${releaseYear} - ${endYear}) - PlexFlix`
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${backdropPath}`}
-        url={`https://cinephiled.vercel.app/tv/${id}-${getCleanTitle(title)}`}
+        url={`${process.env.BUILD_URL}/tv/${id}-${getCleanTitle(title)}`}
       />
 
       {error ? (

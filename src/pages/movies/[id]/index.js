@@ -22,6 +22,7 @@ const Movie = ({
   moviePoster,
   backdropPath,
   crewData,
+  collection,
   trailerLink,
   socialIds,
   homepage,
@@ -69,10 +70,10 @@ const Movie = ({
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${title} (${releaseYear}) - Cinephiled`}
+        title={error ? "Not Found - PlexFlix" : `${title} (${releaseYear}) - PlexFlix`}
         image={`https://image.tmdb.org/t/p/w780${backdropPath}`}
         description={overview}
-        url={`https://cinephiled.vercel.app/movies/${id}-${getCleanTitle(title)}`}
+        url={`${process.env.BUILD_URL}/movies/${id}-${getCleanTitle(title)}`}
       />
 
       {error ? (
@@ -101,6 +102,7 @@ const Movie = ({
               rating,
               moviePoster,
               crewData,
+              collection,
               socialIds,
               homepage
             }}
@@ -153,6 +155,19 @@ Movie.getInitialProps = async (ctx) => {
       languagesResponse.json()
     ]);
 
+    let collectionDetails = null;
+    if (movieDetails?.belongs_to_collection) {
+      const [collectionResponse] = await Promise.all([
+        fetch(apiEndpoints.collection.collectionDetails(movieDetails?.belongs_to_collection?.id), fetchOptions())
+      ]);
+  
+      if (!collectionResponse.ok) throw new Error("error fetching collection details");
+  
+      [collectionDetails] = await Promise.all([
+        collectionResponse.json()
+      ]);
+    }
+
     const country = movieDetails?.production_companies[0]?.origin_country || "US";
     const releaseYear = getReleaseYear(movieDetails?.release_date);
     const releaseDate = getReleaseDate(movieDetails?.release_date);
@@ -168,7 +183,6 @@ Movie.getInitialProps = async (ctx) => {
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Writer").slice(0, 3),
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Characters").slice(0, 2)
     ];
-
     return {
       id: movieDetails?.id,
       title: movieDetails?.title,
@@ -182,6 +196,7 @@ Movie.getInitialProps = async (ctx) => {
       moviePoster: movieDetails?.poster_path,
       backdropPath: movieDetails?.backdrop_path,
       crewData,
+      collection: collectionDetails ?? "",
       trailerLink: trailers?.key ?? "",
       socialIds: movieDetails?.external_ids,
       homepage: movieDetails?.homepage,

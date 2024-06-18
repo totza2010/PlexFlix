@@ -68,7 +68,7 @@ const Profile = () => {
 
   return (
     <Fragment>
-      <MetaWrapper title={`${(userInfo?.name ?? userInfo?.username) || ""} - Cinephiled`} />
+      <MetaWrapper title={`${(userInfo?.name ?? userInfo?.username) || ""} - PlexFlix`} />
 
       {userInfo?.accountId ? (
         <div className='h-full w-full grow'>

@@ -5,19 +5,19 @@ import { Fragment } from "react";
 import { fetchOptions } from "src/utils/helper";
 import { BadQuery, Error404 } from "styles/GlobalComponents";
 
-const Search = ({ movieRes, tvRes, error, searchQuery, keywordsRes }) => {
+const Search = ({ movieRes, tvRes, error, searchQuery, personsRes, keywordsRes }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - Cinephiled" : `${searchQuery} - Search`}
+        title={error ? "Not Found - PlexFlix" : `${searchQuery} - Search`}
         description={`Search results matching : ${searchQuery}`}
-        url={`https://cinephiled.vercel.app/search/${searchQuery}`}
+        url={`${process.env.BUILD_URL}/search/${searchQuery}`}
       />
 
       {error ? (
         <Error404>404</Error404>
-      ) : movieRes?.results?.length > 0 || tvRes?.results?.length > 0 ? (
-        <SearchTab search={searchQuery} movies={movieRes} tv={tvRes} keywords={keywordsRes} />
+      ) : movieRes?.results?.length > 0 || tvRes?.results?.length > 0 || personsRes?.results?.length > 0 ? (
+        <SearchTab search={searchQuery} movies={movieRes} tv={tvRes} person={personsRes} keywords={keywordsRes} />
       ) : (
         <div className='fixed inset-0 flex items-center justify-center'>
           <BadQuery>{"Bad Query :("}</BadQuery>
@@ -38,6 +38,12 @@ Search.getInitialProps = async (ctx) => {
     }
 
     //common in both
+    const personsResponse = await fetch(
+      apiEndpoints.search.personSearch({ query: searchQuery }),
+      fetchOptions()
+    );
+
+    //common in both
     const keywordsResponse = await fetch(
       apiEndpoints.search.keywordSearch({ query: searchQuery }),
       fetchOptions()
@@ -56,9 +62,10 @@ Search.getInitialProps = async (ctx) => {
       if (error) throw new Error("error fetching data");
 
       const [movieResponse, tvResponse] = searchQueryWithYear;
-      const [movieRes, tvRes, keywordsRes] = await Promise.all([
+      const [movieRes, tvRes, personsRes, keywordsRes] = await Promise.all([
         movieResponse.json(),
         tvResponse.json(),
+        personsResponse.json(),
         keywordsResponse.json()
       ]);
 
@@ -70,6 +77,10 @@ Search.getInitialProps = async (ctx) => {
         tvRes: { results: tvRes.results, count: tvRes.total_results },
         error,
         searchQuery: searchQuery,
+        personsRes: {
+          results: personsRes.results,
+          count: personsRes.total_results
+        },
         keywordsRes: {
           results: keywordsRes.results,
           count: keywordsRes.total_results
@@ -85,9 +96,10 @@ Search.getInitialProps = async (ctx) => {
       if (error) throw new Error("error fetching data");
 
       const [movieResponse, tvResponse] = searchQueryWithoutYear;
-      const [movieRes, tvRes, keywordsRes] = await Promise.all([
+      const [movieRes, tvRes, personsRes, keywordsRes] = await Promise.all([
         movieResponse.json(),
         tvResponse.json(),
+        personsResponse.json(),
         keywordsResponse.json()
       ]);
 
@@ -99,6 +111,10 @@ Search.getInitialProps = async (ctx) => {
         tvRes: { results: tvRes.results, count: tvRes.total_results },
         error,
         searchQuery: searchQuery,
+        personsRes: {
+          results: personsRes.results,
+          count: personsRes.total_results
+        },
         keywordsRes: {
           results: keywordsRes.results,
           count: keywordsRes.total_results

@@ -33,7 +33,7 @@ const Pill = ({ children, sortBy }) => {
   );
 };
 
-export const SortBy = () => {
+export const SortBy = ({ person = false }) => {
   const router = useRouter();
 
   return (
@@ -45,7 +45,7 @@ export const SortBy = () => {
           Default
         </SortPill>
         <Pill sortBy={"name"}>Name</Pill>
-        <Pill sortBy={"releaseDate"}>Release date</Pill>
+        {!person?<Pill sortBy={"releaseDate"}>Release date</Pill>:""}
       </div>
     </div>
   );

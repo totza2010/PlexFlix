@@ -176,7 +176,7 @@ export const HeroBgContainer = styled.div`
   overflow: hidden;
 
   @media only ${(props) => props.theme.breakpoints.ip} {
-    bottom: 320px;
+    bottom: 420px;
   }
 
   @media only ${(props) => props.theme.breakpoints.xs} {
@@ -225,6 +225,28 @@ export const HeroImg = styled.div`
 
   @media only ${(props) => props.theme.breakpoints.ip} {
     width: 12rem;
+  }
+`;
+
+export const DetailsCollectionHeroWrap = styled.div`
+  display: grid;
+  grid-template-columns: 17rem 1fr;
+  min-height: 29rem;
+  gap: 0rem 3rem;
+
+  &.no-grid {
+    display: block;
+    min-height: auto;
+    margin-top: 2rem;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.lg} {
+    grid-template-columns: 280px 1fr;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.ip} {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 `;
 
@@ -308,7 +330,7 @@ export const SocialMediaLinksWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0.25rem;
-  gap: 3rem;
+  gap: 2rem;
   transition: color 0.2s ease-in-out;
 
   @media only ${(props) => props.theme.breakpoints.ip} {

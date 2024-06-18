@@ -70,12 +70,12 @@ const Seasons = ({
       <MetaWrapper
         title={
           error
-            ? "Not Found - Cinephiled"
-            : `${name}: ${seasonName} (${getReleaseYear(releaseDate)}) - cinephiled`
+            ? "Not Found - PlexFlix"
+            : `${name}: ${seasonName} (${getReleaseYear(releaseDate)}) - PlexFlix`
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${seasonPoster}`}
-        url={`https://cinephiled.vercel.app/tv/${id}/season/${seasonNumber}`}
+        url={`${process.env.BUILD_URL}/tv/${id}/season/${seasonNumber}`}
       />
 
       {error ? (

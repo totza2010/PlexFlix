@@ -9,9 +9,9 @@ const About = () => {
   return (
     <Fragment>
       <MetaWrapper
-        title=' About - Cinephiled'
-        description='Cinephiled - A progressive web app (PWA) to preview any movie or tv show with reviews, ratings, description and posters. Acting as a TMDB client, Cinephiled gives you access to login into your TMDB account and add movies or tv shows to your watchlist, set as favorites, rate and get personalized recommendations.'
-        url='https://cinephiled.vercel.app'
+        title=' About - PlexFlix'
+        description='PlexFlix - A progressive web app (PWA) to preview any movie or tv show with reviews, ratings, description and posters. Acting as a TMDB client, PlexFlix gives you access to login into your TMDB account and add movies or tv shows to your watchlist, set as favorites, rate and get personalized recommendations.'
+        url={`${process.env.BUILD_URL}`}
       />
 
       <AboutContainer className='text-center flex items-center justify-center about-container'>
@@ -20,7 +20,7 @@ const About = () => {
             <Image
               src={aboutBackground}
               fill
-              alt='about-cinephiled-background'
+              alt='about-plexflix-background'
               style={{ objectFit: "cover" }}
               priority
             />
@@ -32,14 +32,14 @@ const About = () => {
             About the Project
           </h1>
           <p className='text-xl leading-7'>
-            <b>Cinephiled </b>- A progressive web app (PWA) to preview any movie or tv show with
+            <b>PlexFlix </b>- A progressive web app (PWA) to preview any movie or tv show with
             reviews, ratings, description and posters. Acting as a TMDB client,
-            <b> Cinephiled</b> gives you access to login into your TMDB account and add movies or tv
+            <b> PlexFlix</b> gives you access to login into your TMDB account and add movies or tv
             shows to your watchlist, set as favorites, rate, create custom lists and get
             personalized recommendations.
             <br />
             <br />
-            <b>Cinephiled</b> is made using Next.js, styled components and Next Auth.
+            <b>PlexFlix</b> is made using Next.js, styled components and Next Auth.
             <br />
             <br />
             Any feedback or suggestions are welcomed, feel free to contact me using the links at the
