@@ -21,7 +21,7 @@ const MetaWrapper = ({ title, description, image, url, children }) => {
         content={image ?? "https://i.imgur.com/bnT3bYL.jpeg"}
         key='twitter_image'
       />
-
+      <meta property="og:site_name" content="PlexFlix TMDB Client"></meta>
       {children}
     </Head>
   );
