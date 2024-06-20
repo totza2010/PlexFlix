@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router"
 import { getCleanTitle, removeDuplicates } from "src/utils/helper";
-import { SortBy } from "./helper";
+import { SortBy } from "components/SortBy/SortBy";
 import {
   SearchResultsContainer,
   QueryContainer,

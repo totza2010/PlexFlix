@@ -1,39 +1,38 @@
-import PlaceholderText from "components/PlaceholderText";
+import RatingTag from "components/RatingTag/RatingTag";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import useInfiniteQuery from "hooks/useInfiniteQuery";
 import Image from "next/image";
 import Link from "next/link";
+import { getCleanTitle, getReleaseDate, removeDuplicates } from "src/utils/helper";
 import { useRouter } from "next/router";
-import { removeDuplicates, getReleaseDate, getCleanTitle } from "src/utils/helper";
 import { SortBy } from "components/SortBy/SortBy";
 import {
-  SearchResultsContainer,
-  QueryContainer,
-  QueryImg,
-  QueryTitle,
-  QueryInfoWrapper,
-  QueryReleaseDate,
-  QueryDescription
-} from "./SearchTabStyles";
+  CardsContainerGrid,
+  Cards,
+  CardImg,
+  CardInfo,
+  InfoTitle,
+  ReleaseDate
+} from "components/MediaTemplate/TemplateStyles";
 
-const TVSearch = ({ searchQuery, tvRes }) => {
+const TVTemplate = ({ TV, keywordId }) => {
   const { list } = useInfiniteQuery({
     initialPage: 2,
-    type: "tvSearch",
-    searchQuery
+    type: "keywordTvDetails",
+    keywordId
   });
 
   const { query } = useRouter();
   const { sortBy, order } = query;
-  const { cleanedItems } = removeDuplicates(tvRes.results.concat(list));
+  const { cleanedItems } = removeDuplicates(TV.concat(list));
 
   const getRenderList = (list) => {
     if (sortBy === "name") {
       if (order === "asc") {
-        return [...list].sort((a, b) => (a.name > b.name ? 1 : -1));
+        return [...list].sort((a, b) => (a.title > b.title ? 1 : -1));
       } else {
-        return [...list].sort((a, b) => (a.name > b.name ? 1 : -1)).reverse();
+        return [...list].sort((a, b) => (a.title > b.title ? 1 : -1)).reverse();
       }
     } else if (sortBy === "releaseDate") {
       if (order === "asc") {
@@ -60,48 +59,52 @@ const TVSearch = ({ searchQuery, tvRes }) => {
     return list;
   };
 
+  const renderList = sortBy ? getRenderList(cleanedItems) : cleanedItems;
+
   return (
-    <SearchResultsContainer>
+    <section>
+      <SortBy />
+    <CardsContainerGrid>
       {cleanedItems?.length > 0 ? (
-        <section>
-          <SortBy />
-          {(sortBy ? getRenderList(cleanedItems) : cleanedItems)?.map(
-            ({ id, name, poster_path, first_air_date, overview }) => (
-              <motion.div whileTap={{ scale: 0.98 }} key={id}>
+          renderList.map(({ id, name, poster_path, vote_average, first_air_date }) => (
+            <Cards key={id}>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.1 }
+                }}
+                whileTap={{ scale: 0.95 }}>
                 <Link href={`/tv/${id}-${getCleanTitle(name)}`} passHref scroll={false}>
-                  <QueryContainer>
-                    <QueryImg className='relative text-center'>
+                  <div className='relative'>
+                    <CardImg>
                       <Image
                         src={
                           poster_path
-                            ? `https://image.tmdb.org/t/p/w185${poster_path}`
+                            ? `https://image.tmdb.org/t/p/w500${poster_path}`
                             : "/Images/DefaultImage.png"
                         }
-                        alt='TV-poster'
+                        alt='movie-poster'
                         fill
                         style={{ objectFit: "cover" }}
+                        className='poster'
                         placeholder='blur'
                         blurDataURL={blurPlaceholder}
                       />
-                    </QueryImg>
-                    <QueryInfoWrapper>
-                      <div>
-                        <QueryTitle>{name}</QueryTitle>
-                        <QueryReleaseDate>{getReleaseDate(first_air_date)}</QueryReleaseDate>
-                      </div>
-                      <QueryDescription>{overview}</QueryDescription>
-                    </QueryInfoWrapper>
-                  </QueryContainer>
+                    </CardImg>
+                    <RatingTag rating={vote_average} />
+                  </div>
                 </Link>
               </motion.div>
-            )
-          )}
-        </section>
-      ) : (
-        <PlaceholderText height='large'>No TV show results for this query.</PlaceholderText>
-      )}
-    </SearchResultsContainer>
+              <CardInfo>
+                <InfoTitle>{name}</InfoTitle>
+                <ReleaseDate>{getReleaseDate(first_air_date)}</ReleaseDate>
+              </CardInfo>
+            </Cards>
+          ))
+        ) : null}
+    </CardsContainerGrid>
+    </section>
   );
 };
 
-export default TVSearch;
+export default TVTemplate;

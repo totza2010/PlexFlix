@@ -1,32 +1,31 @@
-import PlaceholderText from "components/PlaceholderText";
+import RatingTag from "components/RatingTag/RatingTag";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import useInfiniteQuery from "hooks/useInfiniteQuery";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { getCleanTitle, getReleaseDate, removeDuplicates } from "src/utils/helper";
+import { useRouter } from "next/router";
 import { SortBy } from "components/SortBy/SortBy";
 import {
-  SearchResultsContainer,
-  QueryContainer,
-  QueryImg,
-  QueryTitle,
-  QueryInfoWrapper,
-  QueryReleaseDate,
-  QueryDescription
-} from "./SearchTabStyles";
+  CardsContainerGrid,
+  Cards,
+  CardImg,
+  CardInfo,
+  InfoTitle,
+  ReleaseDate
+} from "components/MediaTemplate/TemplateStyles";
 
-const MoviesSearch = ({ searchQuery, movieRes }) => {
+const MoviesTemplate = ({ movies, keywordId }) => {
   const { list } = useInfiniteQuery({
     initialPage: 2,
-    type: "movieSearch",
-    searchQuery
+    type: "keywordMovieDetails",
+    keywordId
   });
 
   const { query } = useRouter();
   const { sortBy, order } = query;
-  const { cleanedItems } = removeDuplicates(movieRes.results.concat(list));
+  const { cleanedItems } = removeDuplicates(movies.concat(list));
 
   const getRenderList = (list) => {
     if (sortBy === "name") {
@@ -60,48 +59,52 @@ const MoviesSearch = ({ searchQuery, movieRes }) => {
     return list;
   };
 
+  const renderList = sortBy ? getRenderList(cleanedItems) : cleanedItems;
+
   return (
-    <SearchResultsContainer>
-      {cleanedItems?.length > 0 ? (
-        <section>
-          <SortBy />
-          {(sortBy ? getRenderList(cleanedItems) : cleanedItems)?.map(
-            ({ id, title, poster_path, overview, release_date }) => (
-              <motion.div whileTap={{ scale: 0.98 }} key={id}>
+    <section>
+      <SortBy />
+      <CardsContainerGrid>
+        {cleanedItems.length > 0 ? (
+          renderList.map(({ id, title, poster_path, vote_average, release_date }) => (
+            <Cards key={id}>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  transition: { duration: 0.1 }
+                }}
+                whileTap={{ scale: 0.95 }}>
                 <Link href={`/movies/${id}-${getCleanTitle(title)}`} passHref scroll={false}>
-                  <QueryContainer>
-                    <QueryImg className='relative text-center'>
+                  <div className='relative'>
+                    <CardImg>
                       <Image
                         src={
                           poster_path
-                            ? `https://image.tmdb.org/t/p/w185${poster_path}`
+                            ? `https://image.tmdb.org/t/p/w500${poster_path}`
                             : "/Images/DefaultImage.png"
                         }
                         alt='movie-poster'
                         fill
                         style={{ objectFit: "cover" }}
+                        className='poster'
                         placeholder='blur'
                         blurDataURL={blurPlaceholder}
                       />
-                    </QueryImg>
-                    <QueryInfoWrapper>
-                      <div>
-                        <QueryTitle>{title}</QueryTitle>
-                        <QueryReleaseDate>{getReleaseDate(release_date)}</QueryReleaseDate>
-                      </div>
-                      <QueryDescription>{overview}</QueryDescription>
-                    </QueryInfoWrapper>
-                  </QueryContainer>
+                    </CardImg>
+                    <RatingTag rating={vote_average} />
+                  </div>
                 </Link>
               </motion.div>
-            )
-          )}
-        </section>
-      ) : (
-        <PlaceholderText height='large'>No Movie results for this query.</PlaceholderText>
-      )}
-    </SearchResultsContainer>
+              <CardInfo>
+                <InfoTitle>{title}</InfoTitle>
+                <ReleaseDate>{getReleaseDate(release_date)}</ReleaseDate>
+              </CardInfo>
+            </Cards>
+          ))
+        ) : null}
+      </CardsContainerGrid>
+    </section>
   );
 };
 
-export default MoviesSearch;
+export default MoviesTemplate;

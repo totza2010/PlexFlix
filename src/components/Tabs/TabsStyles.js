@@ -5,7 +5,7 @@ export const Tab = styled.div`
   min-height: 4.5rem;
   display: grid;
   grid-template-columns: ${({ $count }) => `repeat(${$count}, 1fr)`};
-  margin: 4rem auto;
+  margin: 0.5rem auto;
   border: 4px solid rgb(221, 221, 221);
   background: rgb(221, 221, 221);
   border-radius: 14px;
@@ -15,7 +15,6 @@ export const Tab = styled.div`
 
   @media only ${(props) => props.theme.breakpoints.ip} {
     min-height: 4rem;
-    margin: 2rem auto;
   }
 
   @media only ${(props) => props.theme.breakpoints.sm} {

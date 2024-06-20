@@ -97,7 +97,14 @@ export const apiEndpoints = {
     tvGenreList: `${baseUrlV3}/genre/tv/list?language=en-US`
   },
   keywords: {
-    keywordDetails: (id) => `${baseUrlV3}/keyword/${id}/movies?language=en-US&include_adult=false`
+    keywordMovieDetails: ({ keywordId, pageQuery = 1 }) => 
+      `${baseUrlV3}/discover/movie?include_adult=true&include_video=true&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_keywords=${keywordId}`,
+
+    keywordTvDetails: ({ keywordId, pageQuery = 1 }) => 
+      `${baseUrlV3}/discover/tv?include_adult=true&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_keywords=${keywordId}`,
+
+    keywordDetails: (keywordId) => 
+      `${baseUrlV3}/keyword/${keywordId}`
   },
   person: {
     personDetails: (id) =>

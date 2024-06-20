@@ -555,8 +555,4 @@ export const LayoutContainer = styled.section`
 export const ModulesWrapper = styled.div`
   width: 100%;
   padding: 0px 4.2vw 32px;
-
-  @media only ${(props) => props.theme.breakpoints.xs} {
-    padding: 0rem 1.25rem 1.25rem;
-  }
 `;

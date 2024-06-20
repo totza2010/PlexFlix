@@ -13,7 +13,8 @@ const useInfiniteQuery = ({
   providerId = null,
   region = null,
   listOrder = null,
-  useUserToken = false
+  useUserToken = false,
+  keywordId = null
 }) => {
   const [pageToFetch, setPageToFetch] = useState(initialPage);
   const [extendedList, setExtendedList] = useState([]);
@@ -39,8 +40,20 @@ const useInfiniteQuery = ({
         query: searchQuery,
         pageQuery: pageToFetch
       }),
+      personSearch: apiEndpoints.search.personSearch({
+        query: searchQuery,
+        pageQuery: pageToFetch
+      }),
       keywordSearch: apiEndpoints.search.keywordSearch({
         query: searchQuery,
+        pageQuery: pageToFetch
+      }),
+      keywordMovieDetails: apiEndpoints.keywords.keywordMovieDetails({
+        keywordId,
+        pageQuery: pageToFetch
+      }),
+      keywordTvDetails: apiEndpoints.keywords.keywordTvDetails({
+        keywordId,
         pageQuery: pageToFetch
       }),
       networkMedia: apiEndpoints.network.networkMedia({ id: networkId, pageQuery: pageToFetch }),

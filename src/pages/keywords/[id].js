@@ -1,99 +1,91 @@
 import MetaWrapper from "components/MetaWrapper";
 import PlaceholderText from "components/PlaceholderText";
-import {
-  QueryContainer,
-  QueryImg,
-  QueryInfoWrapper,
-  QueryTitle,
-  QueryReleaseDate,
-  QueryDescription,
-  SearchResultsContainer
-} from "components/SearchTab/SearchTabStyles";
-import { motion } from "framer-motion";
-import { apiEndpoints, blurPlaceholder } from "globals/constants";
-import Image from "next/image";
-import Link from "next/link";
+import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
-import { fetchOptions, getCleanTitle, getReleaseDate } from "src/utils/helper";
+import KeywordsTab from "components/keywordsTab/keywordsTab";
+import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
+import { Span } from "components/MovieInfo/MovieDetailsStyles";
 
-const Keyword = ({ error, results, name, id }) => {
+const Keywords = ({ error, resultMovies, resultTvs, keyword }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - PlexFlix" : `${name} - Movies`}
-        description={error ? "Not Found" : `Movies matching the keyword : ${name}`}
-        url={`${process.env.BUILD_URL}/keywords/${id}`}
+        title={error ? "Not Found - PlexFlix" : `${keyword.name} - Movies or TVs`}
+        description={error ? "Not Found" : `Movies or TVs matching the keyword: ${keyword.name}`}
+        url={`${process.env.BUILD_URL}/keywords/${keyword?.id}-${getCleanTitle(keyword?.name)}`}
       />
 
       {error ? (
         <Error404>404</Error404>
       ) : (
         <ModulesWrapper className='mt-6'>
-          <SearchResultsContainer>
-            {results?.length > 0 ? (
+            {resultMovies?.results?.length > 0 || resultTvs?.results?.length > 0 ? (
               <Fragment>
-                <p className='text-xl md:text-2xl font-medium'>Results Matching : {name}</p>
-                {results.map(({ id, title, poster_path, overview, release_date }) => (
-                  <motion.div whileTap={{ scale: 0.98 }} key={id}>
-                    <Link href={`/movies/${id}-${getCleanTitle(title)}`} passHref scroll={false}>
-                      <QueryContainer>
-                        <QueryImg className='relative text-center'>
-                          <Image
-                            src={
-                              poster_path
-                                ? `https://image.tmdb.org/t/p/w185${poster_path}`
-                                : "/Images/DefaultImage.png"
-                            }
-                            alt='movie-poster'
-                            fill
-                            style={{ objectFit: "cover" }}
-                            placeholder='blur'
-                            blurDataURL={blurPlaceholder}
-                          />
-                        </QueryImg>
-                        <QueryInfoWrapper>
-                          <div>
-                            <QueryTitle>{title}</QueryTitle>
-                            <QueryReleaseDate>{getReleaseDate(release_date)}</QueryReleaseDate>
-                          </div>
-                          <QueryDescription>{overview}</QueryDescription>
-                        </QueryInfoWrapper>
-                      </QueryContainer>
-                    </Link>
-                  </motion.div>
-                ))}
+                <Span className='block text-[calc(1.325rem_+_.9vw)] lg:text-[2rem] font-medium text-center'>
+                  Keywords: {keyword.name}
+                </Span>
+                <KeywordsTab
+                  moviesData={resultMovies}
+                  TVData={resultTvs}
+                  keyword={keyword}
+                />
               </Fragment>
             ) : (
               <PlaceholderText height='large'>No Movie results for this keyword.</PlaceholderText>
             )}
-          </SearchResultsContainer>
         </ModulesWrapper>
       )}
     </Fragment>
   );
 };
 
-Keyword.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
-    const keyword = ctx.query.id;
-    const keywordRes = await fetch(apiEndpoints.keywords.keywordDetails(keyword), fetchOptions());
-    const error = keywordRes.ok ? false : true;
+    const { id } = ctx.query;
+    const keywordId = id.split("-")[0];
 
-    if (error) {
-      throw new Error("error fetch data");
-    } else {
-      const keywordData = await keywordRes.json();
+    const keywordRes = await fetch(apiEndpoints.keywords.keywordDetails(keywordId), fetchOptions());
 
+    if (!keywordRes.ok) throw new Error("Failed to fetch data");
+
+    const keyword = await keywordRes.json();
+
+    if (id !== `${keyword.id}-${getCleanTitle(keyword.name)}`) {
       return {
-        error,
-        results: keywordData.results,
-        name: keyword.split("-").slice(1).join(" "),
-        id: keyword
+        redirect: {
+          destination: `/keywords/${keyword.id}-${getCleanTitle(keyword.name)}`,
+          permanent: false,
+        },
       };
     }
-  } catch {
-    return { error: true };
+
+    const [MovieRes, TvRes] = await Promise.all([
+      fetch(apiEndpoints.keywords.keywordMovieDetails({ keywordId }), fetchOptions()),
+      fetch(apiEndpoints.keywords.keywordTvDetails({ keywordId }), fetchOptions())
+    ]);
+
+    if (!MovieRes.ok || !TvRes.ok) throw new Error("Failed to fetch data");
+
+    const [resultMovies, resultTvs] = await Promise.all([
+      MovieRes.json(),
+      TvRes.json()
+    ]);
+
+    return {
+      props: {
+        error: false,
+        resultMovies,
+        resultTvs,
+        keyword
+      }
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: { error: true }
+    };
   }
 };
-export default Keyword;
+
+export default Keywords;

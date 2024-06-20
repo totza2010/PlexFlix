@@ -57,13 +57,13 @@ const About = () => {
               <FooterAttribute />
             </a>
             <div>
-              <p className='text-xl mb-0'>Noun Project</p>|
+              <p className='text-xl mb-0'>Cinephiled Project</p>|
               <a
                 className='text-blue-500 mx-3'
-                href='https://thenounproject.com'
+                href='https://github.com/98mohitkumar/Cinephiled'
                 target='_blank'
                 rel='noreferrer'>
-                Noun Project
+                Cinephiled Project
               </a>
               |
             </div>
