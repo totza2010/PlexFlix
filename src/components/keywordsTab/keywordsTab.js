@@ -1,10 +1,10 @@
-import MoviesTemplate from "./MoviesTemplate";
-import TVTemplate from "./TVTemplate";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import useTabs from "hooks/useTabs";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
+import MoviesTemplate from "./MoviesTemplate";
+import TVTemplate from "./TVTemplate";
 
 const KeywordsTab = ({ moviesData, TVData, keyword }) => {
 

@@ -75,7 +75,7 @@ const useInfiniteQuery = ({
           })}&sort_by=original_order.desc`
         : apiEndpoints.lists.getListDetails({ id: listId, pageQuery: pageToFetch })
     }),
-    [accountId, genreId, listId, listOrder, networkId, pageToFetch, providerId, region, searchQuery]
+    [accountId, genreId, listId, listOrder, networkId, pageToFetch, providerId, region, searchQuery, keywordId]
   );
 
   useEffect(() => {

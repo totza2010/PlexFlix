@@ -1,4 +1,5 @@
 import PlaceholderText from "components/PlaceholderText";
+import { SortBy } from "components/SortBy/SortBy";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import useInfiniteQuery from "hooks/useInfiniteQuery";
@@ -6,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { removeDuplicates, getReleaseDate, getCleanTitle } from "src/utils/helper";
-import { SortBy } from "components/SortBy/SortBy";
 import {
   SearchResultsContainer,
   QueryContainer,

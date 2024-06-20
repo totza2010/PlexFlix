@@ -1,11 +1,11 @@
+import KeywordsTab from "components/keywordsTab/keywordsTab";
 import MetaWrapper from "components/MetaWrapper";
+import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import PlaceholderText from "components/PlaceholderText";
 import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
-import KeywordsTab from "components/keywordsTab/keywordsTab";
 import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
-import { Span } from "components/MovieInfo/MovieDetailsStyles";
 
 const Keywords = ({ error, resultMovies, resultTvs, keyword }) => {
   return (

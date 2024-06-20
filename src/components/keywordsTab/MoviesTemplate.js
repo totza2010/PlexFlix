@@ -1,12 +1,3 @@
-import RatingTag from "components/RatingTag/RatingTag";
-import { motion } from "framer-motion";
-import { blurPlaceholder } from "globals/constants";
-import useInfiniteQuery from "hooks/useInfiniteQuery";
-import Image from "next/image";
-import Link from "next/link";
-import { getCleanTitle, getReleaseDate, removeDuplicates } from "src/utils/helper";
-import { useRouter } from "next/router";
-import { SortBy } from "components/SortBy/SortBy";
 import {
   CardsContainerGrid,
   Cards,
@@ -15,6 +6,15 @@ import {
   InfoTitle,
   ReleaseDate
 } from "components/MediaTemplate/TemplateStyles";
+import RatingTag from "components/RatingTag/RatingTag";
+import { SortBy } from "components/SortBy/SortBy";
+import { motion } from "framer-motion";
+import { blurPlaceholder } from "globals/constants";
+import useInfiniteQuery from "hooks/useInfiniteQuery";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { getCleanTitle, getReleaseDate, removeDuplicates } from "src/utils/helper";
 
 const MoviesTemplate = ({ movies, keywordId }) => {
   const { list } = useInfiniteQuery({
