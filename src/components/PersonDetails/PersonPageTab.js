@@ -31,11 +31,6 @@ const groupCredits = (credits) => {
   return groupedCredits;
 };
 
-const tabList = [
-  { key: "movies", name: `Movies` },
-  { key: "tv", name: `TV Shows` }
-];
-
 const PersonPageTab = ({ movieCredits, tvCredits }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "personPageTab", defaultState: "movies" });
   const router = useRouter();
@@ -47,13 +42,28 @@ const PersonPageTab = ({ movieCredits, tvCredits }) => {
       : new Set(tvCredits.map((item) => item.department))
   );
 
-  const creditsToRender = groupCredits(
-    (activeTab === "movies" ? movieCredits : tvCredits).filter((item) =>
+  const tvCreditsSelected = groupCredits(
+    tvCredits.filter((item) =>
       currentSelectedDepartment
         ? item.department.toLowerCase() === currentSelectedDepartment
         : item.department
     )
   );
+
+  const movieCreditsSelected = groupCredits(
+    movieCredits.filter((item) =>
+      currentSelectedDepartment
+        ? item.department.toLowerCase() === currentSelectedDepartment
+        : item.department
+    )
+  );
+
+  const tabList = [
+    { key: "movies", name: `Movies (${movieCreditsSelected.length || 0})` },
+    { key: "tv", name: `TV Shows (${tvCreditsSelected.length || 0})` }
+  ];
+
+  const creditsToRender = activeTab === "movies" ? movieCreditsSelected : tvCreditsSelected;
 
   const tabStateHandler = (key) => {
     setTab(key);
