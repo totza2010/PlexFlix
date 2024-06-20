@@ -37,7 +37,7 @@ export const SortBy = ({ person = false }) => {
     const router = useRouter();
 
     return (
-        <div className='flex items-center mt-4 gap-4 whitespace-nowrap'>
+        <div className='flex items-center mb-4 mt-4 gap-4 whitespace-nowrap [overflow:overlay]'>
             <span className='text-[clamp(16px,3vw,18px)]'>Sort by:</span>
             <div className='flex gap-3'>
                 <SortPill
