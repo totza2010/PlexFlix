@@ -14,7 +14,8 @@ import {
   Rounded,
   RtoR,
   Span,
-  Tagline
+  Tagline,
+  SeeMore
 } from "components/MovieInfo/MovieDetailsStyles";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
@@ -27,12 +28,13 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { BiListPlus, BiListCheck } from "react-icons/bi";
-import { BsStarHalf } from "react-icons/bs";
+import { BsChevronRight, BsStarHalf } from "react-icons/bs";
 import { FaYoutube, FaHeart, FaRegHeart } from "react-icons/fa";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { framerTabVariants, getCleanTitle, getRating } from "src/utils/helper";
 import { useMediaContext } from "Store/MediaContext";
 import { useUserContext } from "Store/UserContext";
+import KeywordList from "components/MovieInfo/KeywordList";
 import {
   Button,
   DetailsHeroWrap,
@@ -48,6 +50,7 @@ const TVDetails = ({
   tvData: {
     id,
     title,
+    adult,
     airDate,
     overview,
     backdropPath,
@@ -60,7 +63,9 @@ const TVDetails = ({
     homepage,
     crewData,
     releaseYear
-  }, seasons
+  },
+  seasons,
+  keywords
 }) => {
   const { userInfo } = useUserContext();
   const {
@@ -326,7 +331,11 @@ const TVDetails = ({
 
             {tagline ? (
               <i>
-                <Tagline className='my-4 block'>{tagline}</Tagline>
+                <Tagline className="my-4 block gap-4">
+                  {adult && <Rounded>Adult</Rounded>}
+                  <KeywordList keywords={keywords?.results} />
+                  {tagline && tagline}
+                </Tagline>
               </i>
             ) : null}
             {overview ? <Overview className='font-normal'>{overview}</Overview> : null}
@@ -351,6 +360,24 @@ const TVDetails = ({
                     </Link>
                   </Credits>
                 ))}
+                <Link href={`/tv/${getCleanTitle(id, title)}/crew`}>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.05,
+                      transition: { duration: 0.1 },
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mb-auto"
+                    aria-label="full cast"
+                  >
+                    <SeeMore>
+                      <BsChevronRight size="22" />
+                    </SeeMore>
+                    <Span className="mt-1 font-bold movieCastHead block">
+                      Full Crew
+                    </Span>
+                  </motion.div>
+                </Link>
               </CreditsWrapper>
             )}
           </HeroInfoWrapper>
