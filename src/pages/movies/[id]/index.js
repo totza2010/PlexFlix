@@ -154,7 +154,7 @@ export const getServerSideProps = async (ctx) => {
     const [movieResponse, languagesResponse, keywordsRes, imagesRes] = await Promise.all([
       fetch(apiEndpoints.movie.movieDetails(movieId), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
-      fetch(apiEndpoints.keywords.tags({ mediaId: movieId, type: "movie" }), fetchOptions()),
+      fetch(apiEndpoints.keywords.tags({ id: movieId, type: "movie" }), fetchOptions()),
       fetch(apiEndpoints.movie.images(movieId), fetchOptions())
     ]);
 
