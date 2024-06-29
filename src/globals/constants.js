@@ -96,11 +96,13 @@ export const apiEndpoints = {
     getTvCredits: ({ id }) =>
       `${baseUrlV3}/tv/${id}?language=en-US&append_to_response=aggregate_credits`,
 
-    tvGenreList: `${baseUrlV3}/genre/tv/list?language=en-US`
+    tvGenreList: `${baseUrlV3}/genre/tv/list?language=en-US`,
+
+    images: (id) => `${baseUrlV3}/tv/${id}/images`
   },
   keywords: {
-    tags: ({ mediaId, type }) => 
-      `${baseUrlV3}/${type}/${mediaId}/keywords`,
+    tags: ({ id, type }) => 
+      `${baseUrlV3}/${type}/${id}/keywords`,
 
     keywordMovie: ({ keywordId, pageQuery = 1 }) => 
       `${baseUrlV3}/discover/movie?include_adult=true&include_video=true&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_keywords=${keywordId}`,
