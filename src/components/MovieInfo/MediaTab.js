@@ -1,4 +1,5 @@
 import Posters from "components/Posters/Posters";
+import Backdrops from "components/Backdrops/Backdrops";
 import Select from "components/Select/Select";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -28,9 +29,9 @@ const MediaTab = ({ images }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "mediaTabState", defaultState: "posters" });
   const { activeSelect, setSelect } = useSelects({ selectLocation: "mediaSelectState", defaultState: "en" });
 
-  const filterByLocale = (items) => items.filter(item => 
+  const filterByLocale = (items) => items.filter(item =>
     activeSelect && activeSelect !== "all"
-      ? item.iso_639_1.iso_639_1.toLowerCase() === activeSelect 
+      ? item.iso_639_1.iso_639_1.toLowerCase() === activeSelect
       : item.iso_639_1.iso_639_1
   );
 
@@ -39,19 +40,19 @@ const MediaTab = ({ images }) => {
   const logosSelected = filterByLocale(images.logos);
 
   const localList = new Set(
-    (activeTab === "posters" ? images.posters : 
-     activeTab === "backdrops" ? images.backdrops : 
-     activeTab === "logos" ? images.logos : [])
+    (activeTab === "posters" ? images.posters :
+      activeTab === "backdrops" ? images.backdrops :
+        activeTab === "logos" ? images.logos : [])
       .map(item => item.iso_639_1)
   );
-  
+
   const Options = [
     { key: "all", value: "All" },
     ...Array.from(localList).map(item => ({
       key: item?.iso_639_1.toLowerCase(),
       value: `${item?.english_name} (${item?.iso_639_1.toUpperCase()})`
     }))
-  ].filter((option, index, self) => 
+  ].filter((option, index, self) =>
     index === self.findIndex(t => t.key === option.key)
   ).sort((a, b) => a.value.localeCompare(b.value));
 
@@ -86,18 +87,6 @@ const MediaTab = ({ images }) => {
 
       <AnimatePresence mode='wait' initial={false}>
 
-        {activeTab === "backdrops" && (
-          <motion.div
-            key='backdrops'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-              <Posters posters={backdropsSelected} />
-          </motion.div>
-        )}
-
         {activeTab === "posters" && (
           <motion.div
             key='posters'
@@ -106,7 +95,19 @@ const MediaTab = ({ images }) => {
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
-              <Posters posters={postersSelected} />
+            <Posters posters={postersSelected} />
+          </motion.div>
+        )}
+
+        {activeTab === "backdrops" && (
+          <motion.div
+            key='backdrops'
+            variants={framerTabVariants}
+            initial='hidden'
+            animate='visible'
+            exit='hidden'
+            transition={{ duration: 0.5 }}>
+            <Backdrops backdrops={backdropsSelected} />
           </motion.div>
         )}
 
@@ -118,7 +119,7 @@ const MediaTab = ({ images }) => {
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
-              <Posters posters={logosSelected} />
+            <Posters posters={logosSelected} />
           </motion.div>
         )}
       </AnimatePresence>
