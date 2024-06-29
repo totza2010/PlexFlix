@@ -1,16 +1,14 @@
+import CompaniesListModal from "components/companies/CompaniesList";
 import {
   FactsFieldSet,
   FactsLegend,
   FactsWrapper,
   Span
 } from "components/MovieInfo/MovieDetailsStyles";
-import Link from "next/link";
-import { getCleanTitle } from "src/utils/helper";
 import { FactsFlexWrapper } from "styles/GlobalComponents";
 
-const TVFacts = ({ facts }) => {
-  const { status, language, network, type } = facts;
-
+const TVFacts = ({ facts, networks, companies }) => {
+  const { status, language, type } = facts;
   return (
     <FactsFieldSet>
       <FactsLegend className='font-bold text-2xl'>Facts</FactsLegend>
@@ -25,21 +23,20 @@ const TVFacts = ({ facts }) => {
           <Span>{language}</Span>
         </FactsFlexWrapper>
 
-        <FactsFlexWrapper>
-          <Span>Network</Span>
-          {network?.id ? (
-            <Link href={`/network/${network?.id}-${getCleanTitle(network?.name)}`}>
-              <Span className='network font-semibold'>{network?.name}</Span>
-            </Link>
-          ) : (
-            <Span>{network?.name}</Span>
-          )}
-        </FactsFlexWrapper>
+<FactsFlexWrapper>
+  <Span>Networks</Span>
+  <CompaniesListModal companies={networks} type={"network"} />
+</FactsFlexWrapper>
 
         <FactsFlexWrapper>
           <Span>Type</Span>
           <Span>{type}</Span>
         </FactsFlexWrapper>
+
+<FactsFlexWrapper>
+  <Span>Companies</Span>
+  <CompaniesListModal companies={companies} type={"production"} />
+</FactsFlexWrapper>
       </FactsWrapper>
     </FactsFieldSet>
   );

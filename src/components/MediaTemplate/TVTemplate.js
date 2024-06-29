@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
-import { getCleanTitle, getReleaseDate } from "src/utils/helper";
+import { getCleanTitle, getReleaseDate, getReleaseYear } from "src/utils/helper";
 import {
   CardsContainerGrid,
   Cards,
@@ -17,7 +17,7 @@ const TVTemplate = ({ TV, creditsPage = false }) => {
   return (
     <CardsContainerGrid>
       {TV?.length > 0
-        ? TV.map(({ id, name, poster_path, vote_average, first_air_date, job }) => (
+        ? TV.map(({ id, name, original_name, poster_path, vote_average, first_air_date, job }) => (
             <Cards key={id}>
               <motion.div
                 whileHover={{
@@ -25,7 +25,7 @@ const TVTemplate = ({ TV, creditsPage = false }) => {
                   transition: { duration: 0.1 }
                 }}
                 whileTap={{ scale: 0.95 }}>
-                <Link href={`/tv/${id}-${getCleanTitle(name)}`} passHref scroll={false}>
+                <Link href={`/tv/${getCleanTitle(id, original_name)}`} passHref scroll={false}>
                   <div className='relative'>
                     <CardImg>
                       <Image
@@ -47,8 +47,8 @@ const TVTemplate = ({ TV, creditsPage = false }) => {
                 </Link>
               </motion.div>
               <CardInfo>
-                {creditsPage ? null : <InfoTitle>{name}</InfoTitle>}
-                <ReleaseDate>{getReleaseDate(first_air_date)}</ReleaseDate>
+                {creditsPage ? <InfoTitle>{`${name} (${getReleaseYear(first_air_date)})`}</InfoTitle> : <InfoTitle>{name}</InfoTitle>}
+                {creditsPage ? null : <ReleaseDate>{getReleaseDate(first_air_date)}</ReleaseDate>}
                 {creditsPage && job?.length > 0 ? (
                   <p className='text-white text-base mt-1 font-medium'>{job.join(", ")}</p>
                 ) : null}

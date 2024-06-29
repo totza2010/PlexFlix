@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
-import { getCleanTitle, getReleaseDate } from "src/utils/helper";
+import { getCleanTitle, getReleaseDate, getReleaseYear } from "src/utils/helper";
 import {
   CardsContainerGrid,
   Cards,
@@ -17,7 +17,7 @@ const MoviesTemplate = ({ movies, creditsPage = false }) => {
   return (
     <CardsContainerGrid>
       {movies.length > 0
-        ? movies.map(({ id, title, poster_path, vote_average, release_date, job }) => (
+        ? movies.map(({ id, title, original_title, poster_path, vote_average, release_date, job }) => (
             <Cards key={id}>
               <motion.div
                 whileHover={{
@@ -25,7 +25,7 @@ const MoviesTemplate = ({ movies, creditsPage = false }) => {
                   transition: { duration: 0.1 }
                 }}
                 whileTap={{ scale: 0.95 }}>
-                <Link href={`/movies/${id}-${getCleanTitle(title)}`} passHref scroll={false}>
+                <Link href={`/movies/${getCleanTitle(id, original_title)}`} passHref scroll={false}>
                   <div className='relative'>
                     <CardImg>
                       <Image
@@ -47,8 +47,8 @@ const MoviesTemplate = ({ movies, creditsPage = false }) => {
                 </Link>
               </motion.div>
               <CardInfo>
-                {creditsPage ? null : <InfoTitle>{title}</InfoTitle>}
-                <ReleaseDate>{getReleaseDate(release_date)}</ReleaseDate>
+                {creditsPage ? <InfoTitle>{`${title} (${getReleaseYear(release_date)})`}</InfoTitle> : <InfoTitle>{title}</InfoTitle>}
+                {creditsPage ? null : <ReleaseDate>{getReleaseDate(release_date)}</ReleaseDate>}
                 {creditsPage && job?.length > 0 ? (
                   <p className='text-neutral-400 text-base font-medium'>{job.join(", ")}</p>
                 ) : null}

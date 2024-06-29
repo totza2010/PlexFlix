@@ -48,7 +48,7 @@ const List = ({ list, error }) => {
         title={`${list.name} - PlexFlix`}
         description={list?.description || ""}
         image={`https://image.tmdb.org/t/p/w1280${list?.backdrop_path}`}
-        url={`${process.env.BUILD_URL}/lists/${list?.id}-${getCleanTitle(list?.name)}`}
+        url={`${process.env.BUILD_URL}/lists/${getCleanTitle(list?.id, list?.name)}`}
       />
 
       {error ? (
@@ -137,7 +137,7 @@ const List = ({ list, error }) => {
                         />
                       )}
 
-                      {list.public && <ListShareButton listName={list?.name} />}
+                      {list.public && <ListShareButton list={list} />}
                     </div>
                   </div>
 
@@ -154,28 +154,51 @@ const List = ({ list, error }) => {
   );
 };
 
-List.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
     const { id } = ctx.query;
+    const listId = id.split("-")[0];
     const data = await getSession(ctx);
 
-    const res = await fetch(
-      apiEndpoints.lists.getListDetails({ id }),
+    const listRes = await fetch(
+      apiEndpoints.lists.getListDetails({ id: listId }),
       fetchOptions({ token: data?.user?.accessToken || read_access_token })
     );
 
-    if (!res.ok) throw new Error("Failed to fetch list details");
+    if (!listRes.ok) {
+      const errorDetails = await listRes.text();
+      throw new Error(`Failed to fetch list details: ${listRes.status} - ${errorDetails}`);
+    }
 
-    const list = await res.json();
+    const [list] = await Promise.all([
+      listRes.json()
+    ]);
+    if (!list) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(list?.id, list?.name);
+
+    if (id !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/lists/${expectedUrl}`,
+          permanent: false,
+        },
+      };
+    }
 
     return {
-      error: false,
-      list
+      props: { 
+        error: false,
+        list
+      }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
-      error: true,
-      list: {}
+      props: { 
+        error: true ,
+        list: {}
+      }
     };
   }
 };

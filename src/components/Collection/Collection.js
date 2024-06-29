@@ -1,5 +1,5 @@
 import DominantColor from "components/DominantColor/DominantColor";
-import MoviesGrid from "components/MediaTemplate/MoviesTemplate";
+import MoviesTemplate from "components/MediaTemplate/MoviesTemplate";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
@@ -109,7 +109,7 @@ const Collection = ({ details, genres }) => {
         </HeroInfoWrapper>
         </DetailsCollectionHeroWrap>
       <ModulesWrapper>
-        <MoviesGrid movies={details.parts} />
+        <MoviesTemplate movies={details.parts} />
       </ModulesWrapper>
       </HeroDetailsContainer>
     </Fragment>

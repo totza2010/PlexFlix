@@ -6,14 +6,15 @@ import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404 } from "styles/GlobalComponents";
 
 const Collection = ({ collectionDetails, genreDetails, error }) => {
+
+  const expectedUrl = getCleanTitle(collectionDetails?.id, collectionDetails?.name);
+
   return (
     <Fragment>
       <MetaWrapper
         title={error ? "Not Found - PlexFlix" : `${collectionDetails?.name} - plexflix`}
         description={`TV shows produced by ${collectionDetails?.name}.`}
-        url={`${process.env.BUILD_URL}/collection/${collectionDetails?.id}-${getCleanTitle(
-          collectionDetails?.name
-        )}`}
+        url={`${process.env.BUILD_URL}/collection/${expectedUrl}`}
         image={`https://image.tmdb.org/t/p/original${collectionDetails?.logo_path}`}
       />
 
@@ -26,38 +27,55 @@ const Collection = ({ collectionDetails, genreDetails, error }) => {
   );
 };
 
-Collection.getInitialProps = async (context) => {
+export const getServerSideProps = async (ctx) => {
   try {
-    const { id } = context.query;
+    const { id } = ctx.query;
     const collectionId = id.split("-")[0];
 
-    const [res, genreRes] = await Promise.all([
+    const [collectionRes, genreRes] = await Promise.all([
       fetch(apiEndpoints.collection.collectionDetails(collectionId), fetchOptions()),
       fetch(apiEndpoints.movie.movieGenreList, fetchOptions())
     ]);
 
-    if (!res.ok) throw new Error("cannot fetch details");
+    if (!collectionRes.ok || !genreRes.ok) throw new Error("cannot fetch details");
 
-    const [data, genreData] = await Promise.all([res.json(), genreRes.json()]);
+    const [collection, genre] = await Promise.all([
+      collectionRes.json(), 
+      genreRes.json()
+    ]);
+
+    if (!collection) throw new Error("Collection not found");
+    const expectedUrl = getCleanTitle(collection?.id, collection?.name);
+
+    if (id !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/collection/${expectedUrl}`,
+          permanent: false,
+        },
+      };
+    }
   
-    // Create a map of genre_id to genre_name
-    const genreMap = genreData.genres.reduce((map, genre) => {
+    const genreMap = genre.genres.reduce((map, genre) => {
       map[genre.id] = genre;
       return map;
     }, {});
 
-    // Get unique genre_ids
-    const uniqueGenreIds = [...new Set(data?.parts.flatMap(part => part?.genre_ids || []))];
+    const uniqueGenreIds = [...new Set(collection?.parts.flatMap(part => part?.genre_ids || []))];
 
-    // Map genre_ids to genre objects
     const mappedGenres = uniqueGenreIds.map(id => genreMap[id]);
     return {
-      collectionDetails: data,
-      genreDetails: mappedGenres,
-      error: false
+      props: {
+        collectionDetails: collection,
+        genreDetails: mappedGenres,
+        error: false
+      }
     };
-  } catch {
-    return { error: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: { error: true }
+    };
   }
 };
 

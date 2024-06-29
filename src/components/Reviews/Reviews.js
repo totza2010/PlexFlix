@@ -3,8 +3,9 @@ import PlaceholderText from "components/PlaceholderText";
 import { Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import { getReleaseDate } from "src/utils/helper";
+import { getReleaseDate, getRating } from "src/utils/helper";
 import { Review, ReviewAuthorImg, ReviewAuthorWrap, ReviewsWrap } from "./ReviewsStyles";
+import { Pill } from "styles/GlobalComponents";
 
 const Reviews = ({ reviews }) => {
   return (
@@ -19,7 +20,10 @@ const Reviews = ({ reviews }) => {
               }} />
               <div>
                 <Span className='font-bold'>{item.author}</Span>
-                <Span className='text-sm opacity-80 block font-normal'>
+                <Span className='text-sm opacity-80 flex font-normal gap-2 items-center'>
+                  <Pill>
+                    <p>{getRating(item?.author_details?.rating)}</p>
+                  </Pill>
                   {getReleaseDate(item.updated_at)}
                 </Span>
               </div>

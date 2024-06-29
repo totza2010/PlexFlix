@@ -14,7 +14,10 @@ const useInfiniteQuery = ({
   region = null,
   listOrder = null,
   useUserToken = false,
-  keywordId = null
+  keywordId = null,
+  movieId = null,
+  tvId = null,
+  companyId = null
 }) => {
   const [pageToFetch, setPageToFetch] = useState(initialPage);
   const [extendedList, setExtendedList] = useState([]);
@@ -48,12 +51,20 @@ const useInfiniteQuery = ({
         query: searchQuery,
         pageQuery: pageToFetch
       }),
-      keywordMovieDetails: apiEndpoints.keywords.keywordMovieDetails({
+      keywordMovie: apiEndpoints.keywords.keywordMovie({
         keywordId,
         pageQuery: pageToFetch
       }),
-      keywordTvDetails: apiEndpoints.keywords.keywordTvDetails({
+      keywordTv: apiEndpoints.keywords.keywordTv({
         keywordId,
+        pageQuery: pageToFetch
+      }),
+      companyMovie: apiEndpoints.company.companyMoviesMedia({
+        id: companyId,
+        pageQuery: pageToFetch
+      }),
+      companyTv: apiEndpoints.company.companyTvMedia({
+        id: companyId,
         pageQuery: pageToFetch
       }),
       networkMedia: apiEndpoints.network.networkMedia({ id: networkId, pageQuery: pageToFetch }),
@@ -73,9 +84,11 @@ const useInfiniteQuery = ({
             id: listId,
             pageQuery: pageToFetch
           })}&sort_by=original_order.desc`
-        : apiEndpoints.lists.getListDetails({ id: listId, pageQuery: pageToFetch })
+        : apiEndpoints.lists.getListDetails({ id: listId, pageQuery: pageToFetch }),
+      movieLists: apiEndpoints.lists.getMovieLists({ movieId, pageQuery: pageToFetch }),
+      tvLists: apiEndpoints.lists.getTVLists({ tvId, pageQuery: pageToFetch })
     }),
-    [accountId, genreId, listId, listOrder, networkId, pageToFetch, providerId, region, searchQuery, keywordId]
+    [accountId, genreId, listId, listOrder, networkId, pageToFetch, providerId, region, searchQuery, keywordId, movieId, tvId, companyId]
   );
 
   useEffect(() => {

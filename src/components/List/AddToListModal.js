@@ -219,6 +219,16 @@ const AddToListModal = ({ mediaId, mediaType }) => {
         <span className='font-semibold'>Add to list</span>
       </Button>
 
+      {/* <Link href={`${routeRef.current}/crew`}>
+<Button
+  className='w-full gap-3'
+  as={motion.button}
+  whileTap={{ scale: 0.95 }}
+  onClick={openModalHandler}>
+  <MdOutlineFormatListBulleted size={22} />
+</Button>
+</Link> */}
+
       <Toast isToastVisible={isToastVisible}>
         <Span className='toast-message'>{toastMessage}</Span>
       </Toast>

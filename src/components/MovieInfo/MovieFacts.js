@@ -1,9 +1,10 @@
+import CompaniesListModal from "components/companies/CompaniesList";
 import countryToCurrency from "country-to-currency";
 import getSymbolFromCurrency from "currency-symbol-map";
 import { FactsFlexWrapper } from "styles/GlobalComponents";
 import { FactsFieldSet, FactsLegend, FactsWrapper, Span } from "./MovieDetailsStyles";
 
-const MovieFacts = ({ facts, country }) => {
+const MovieFacts = ({ facts, country, companies }) => {
   const currencyCode = countryToCurrency[country];
   const currency = getSymbolFromCurrency(currencyCode);
 
@@ -37,6 +38,11 @@ const MovieFacts = ({ facts, country }) => {
           ) : (
             <Span>-</Span>
           )}
+        </FactsFlexWrapper>
+
+        <FactsFlexWrapper>
+          <Span>Companies</Span>
+          <CompaniesListModal companies={companies} type={"production"} />
         </FactsFlexWrapper>
       </FactsWrapper>
     </FactsFieldSet>

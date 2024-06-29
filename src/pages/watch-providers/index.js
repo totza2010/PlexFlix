@@ -117,7 +117,7 @@ const WatchProviders = ({
                 {currentRenderList.map((provider) => (
                   <Link
                     key={provider.provider_id}
-                    href={`/watch-providers/${provider.provider_id}-${getCleanTitle(
+                    href={`/watch-providers/${getCleanTitle(provider.provider_id, 
                       provider.provider_name
                     )}/${activeTab}?watchregion=${selectedRegion || defaultRegion}`}>
                     <div className='block h-full w-full'>

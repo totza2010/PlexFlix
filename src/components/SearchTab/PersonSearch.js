@@ -48,7 +48,7 @@ const PersonSearch = ({ searchQuery, persons }) => {
           {(sortBy ? getRenderList(cleanedItems) : cleanedItems)?.map(
             ({ id, name, profile_path, known_for_department, known_for }) => (
               <motion.div whileTap={{ scale: 0.98 }} key={id}>
-                <Link href={`/person/${id}-${getCleanTitle(name)}`} passHref scroll={false}>
+                <Link href={`/person/${getCleanTitle(id, name)}`} passHref scroll={false}>
                   <QueryContainer>
                     <QueryImg className='relative text-center'>
                       <Image

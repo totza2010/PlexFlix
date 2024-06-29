@@ -1,7 +1,7 @@
 import { addToWatchlist, setFavorite } from "api/user";
 import DominantColor from "components/DominantColor/DominantColor";
 import AddToListModal from "components/List/AddToListModal";
-import { useModal } from "components/Modal/Modal";
+import Modal, { useModal } from "components/Modal/Modal";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
@@ -13,9 +13,16 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { BiListPlus, BiListCheck } from "react-icons/bi";
-import { BsStarHalf } from "react-icons/bs";
+import { BsChevronRight, BsStarHalf } from "react-icons/bs";
 import { FaYoutube, FaHeart, FaRegHeart } from "react-icons/fa";
-import { framerTabVariants, getCleanTitle, getRating, getRuntime } from "src/utils/helper";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
+import KeywordList from "components/MovieInfo/KeywordList";
+import {
+  framerTabVariants,
+  getCleanTitle,
+  getRating,
+  getRuntime,
+} from "src/utils/helper";
 import { useMediaContext } from "Store/MediaContext";
 import { useUserContext } from "Store/UserContext";
 import {
@@ -25,7 +32,7 @@ import {
   HeroBgContainer,
   HeroDetailsContainer,
   HeroImg,
-  HeroImgWrapper
+  HeroImgWrapper,
 } from "styles/GlobalComponents";
 import MovieCollection from "./MovieCollection";
 import {
@@ -47,13 +54,15 @@ import {
   EasterText,
   LightsInOut,
   Gradient,
-  MovieEaster
+  MovieEaster,
+  SeeMore,
 } from "./MovieDetailsStyles";
 
 const MovieDetails = ({
   movieDetails: {
     id,
     title,
+    adult,
     overview,
     releaseYear,
     releaseDate,
@@ -67,9 +76,10 @@ const MovieDetails = ({
     crewData,
     collection,
     socialIds,
-    homepage
+    homepage,
   },
-  easter
+  easter,
+  keywords
 }) => {
   const { userInfo } = useUserContext();
   const { renderEaster, hasSeen, showEaster, easterHandler } = easter;
@@ -78,31 +88,36 @@ const MovieDetails = ({
     moviesWatchlist,
     validateMoviesWatchlist,
     validateFavoriteMovies,
-    ratedMovies
+    ratedMovies,
   } = useMediaContext();
   const { isToastVisible, showToast, toastMessage } = useToast();
-  const savedRating = ratedMovies?.find((item) => item?.id === id)?.rating ?? false;
+  const savedRating =
+    ratedMovies?.find((item) => item?.id === id)?.rating ?? false;
   const { isModalVisible, openModal, closeModal } = useModal();
 
   // splice genres
   genres.length > 3 && genres.splice(3);
 
-  const isAddedToWatchlist = moviesWatchlist?.map((item) => item.id)?.includes(id);
-  const isAddedToFavorites = favoriteMovies?.map((item) => item.id)?.includes(id);
+  const isAddedToWatchlist = moviesWatchlist
+    ?.map((item) => item.id)
+    ?.includes(id);
+  const isAddedToFavorites = favoriteMovies
+    ?.map((item) => item.id)
+    ?.includes(id);
 
   const favoriteHandler = async () => {
     if (userInfo?.accountId) {
       const response = await setFavorite({
         mediaType: "movie",
         mediaId: id,
-        favoriteState: !isAddedToFavorites
+        favoriteState: !isAddedToFavorites,
       });
 
       if (response?.success) {
         if (isAddedToFavorites) {
           validateFavoriteMovies({
             state: "removed",
-            id
+            id,
           });
         } else {
           const updatedMedia = [...favoriteMovies];
@@ -111,18 +126,20 @@ const MovieDetails = ({
             id,
             poster_path: moviePoster,
             title,
-            release_date: releaseDate
+            release_date: releaseDate,
           });
 
           validateFavoriteMovies({
             state: "added",
             id,
-            media: updatedMedia
+            media: updatedMedia,
           });
         }
 
         showToast({
-          message: isAddedToFavorites ? "Removed from favorites" : "Added to favorites"
+          message: isAddedToFavorites
+            ? "Removed from favorites"
+            : "Added to favorites",
         });
       } else {
         showToast({ message: "Something went wrong, try again later" });
@@ -137,14 +154,14 @@ const MovieDetails = ({
       const response = await addToWatchlist({
         mediaType: "movie",
         mediaId: id,
-        watchlistState: !isAddedToWatchlist
+        watchlistState: !isAddedToWatchlist,
       });
 
       if (response?.success) {
         if (isAddedToWatchlist) {
           validateMoviesWatchlist({
             state: "removed",
-            id
+            id,
           });
         } else {
           const updatedMedia = [...moviesWatchlist];
@@ -153,17 +170,19 @@ const MovieDetails = ({
             id,
             poster_path: moviePoster,
             title,
-            release_date: releaseDate
+            release_date: releaseDate,
           });
 
           validateMoviesWatchlist({
             state: "added",
             id,
-            media: updatedMedia
+            media: updatedMedia,
           });
         }
         showToast({
-          message: isAddedToWatchlist ? "Removed from watchlist" : "Added to watchlist"
+          message: isAddedToWatchlist
+            ? "Removed from watchlist"
+            : "Added to watchlist",
         });
       } else {
         showToast({ message: "Something went wrong, try again later" });
@@ -183,16 +202,16 @@ const MovieDetails = ({
 
   return (
     <Fragment>
-      <HeroDetailsContainer className='relative mb-auto'>
-        <HeroBgContainer className='absolute'>
-          <HeroBg className='absolute text-center'>
+      <HeroDetailsContainer className="relative mb-auto">
+        <HeroBgContainer className="absolute">
+          <HeroBg className="absolute text-center">
             <Image
               src={
                 backdropPath
                   ? `https://image.tmdb.org/t/p/w1280${backdropPath}`
                   : "/Images/Hex.webp"
               }
-              alt='movie-backdrop'
+              alt="movie-backdrop"
               fill
               style={{ objectFit: "cover" }}
               priority
@@ -205,112 +224,139 @@ const MovieDetails = ({
 
         <DetailsHeroWrap>
           <HeroImgWrapper>
-            <HeroImg className='relative text-center'>
+            <HeroImg className="relative text-center">
               <Image
                 src={
                   moviePoster
                     ? `https://image.tmdb.org/t/p/w500${moviePoster}`
                     : "/Images/DefaultImage.png"
                 }
-                alt='movie-poster'
+                alt="movie-poster"
                 fill
                 style={{ objectFit: "cover" }}
                 priority
-                placeholder='blur'
+                className="cursor-pointer"
+                placeholder="blur"
                 blurDataURL={blurPlaceholder}
               />
             </HeroImg>
 
-            <div className='w-full'>
+            <div className="w-full">
               {trailerLink && (
                 <a
                   href={`https://www.youtube.com/watch?v=${trailerLink}`}
-                  target='_blank'
-                  rel='noreferrer'
-                  aria-label='watch trailer'
-                  className='mb-3 block'>
-                  <Button className='w-full gap-3' as={motion.button} whileTap={{ scale: 0.95 }}>
-                    <FaYoutube size='1.5rem' />
-                    <Span className='font-semibold'>Watch Trailer</Span>
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="watch trailer"
+                  className="mb-3 block"
+                >
+                  <Button
+                    className="w-full gap-3"
+                    as={motion.button}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FaYoutube size="1.5rem" />
+                    <Span className="font-semibold">Watch Trailer</Span>
                   </Button>
                 </a>
               )}
 
-              <div className='mb-3'>
-                <AddToListModal mediaType='movie' mediaId={id} />
+              <div className="mb-3 flex justify-start gap-3">
+                <AddToListModal mediaType="movie" mediaId={id} />
               </div>
 
-              <div className='flex justify-start gap-3'>
+              <div className="flex justify-start gap-3">
                 <Button
-                  className='w-full mediaCTA'
+                  className="w-full mediaCTA"
                   loading={+isToastVisible}
-                  aria-label='watchlist button'
+                  aria-label="watchlist button"
                   as={motion.button}
                   whileTap={{ scale: 0.95 }}
-                  onClick={watchlistHandler}>
-                  <AnimatePresence mode='wait' initial={false}>
+                  onClick={watchlistHandler}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={`watchlist - ${isAddedToWatchlist.toString()}`}
                       variants={framerTabVariants}
-                      initial='hidden'
-                      animate='visible'
-                      exit='hidden'
-                      transition={{ duration: 0.5 }}>
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      transition={{ duration: 0.5 }}
+                    >
                       {isAddedToWatchlist ? (
-                        <BiListCheck size='22px' />
+                        <BiListCheck size="22px" />
                       ) : (
-                        <BiListPlus size='22px' />
+                        <BiListPlus size="22px" />
                       )}
                     </motion.div>
                   </AnimatePresence>
                 </Button>
 
                 <Button
-                  className='w-full mediaCTA'
-                  aria-label='favorite button'
+                  className="w-full mediaCTA"
+                  aria-label="favorite button"
                   onClick={favoriteHandler}
                   as={motion.button}
                   loading={+isToastVisible}
-                  whileTap={{ scale: 0.95 }}>
-                  <AnimatePresence mode='wait' initial={false}>
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={`favorite - ${isAddedToFavorites.toString()}`}
                       variants={framerTabVariants}
-                      initial='hidden'
-                      animate='visible'
-                      exit='hidden'
-                      transition={{ duration: 0.5 }}>
-                      {isAddedToFavorites ? <FaHeart size='20px' /> : <FaRegHeart size='20px' />}
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      transition={{ duration: 0.5 }}
+                    >
+                      {isAddedToFavorites ? (
+                        <FaHeart size="20px" />
+                      ) : (
+                        <FaRegHeart size="20px" />
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 </Button>
 
                 <Button
-                  className='w-full mediaCTA'
-                  aria-label='rating button'
+                  className="w-full mediaCTA"
+                  aria-label="rating button"
                   as={motion.button}
                   loading={+isToastVisible}
                   whileTap={{ scale: 0.95 }}
-                  onClick={ratingModalHandler}>
-                  <AnimatePresence mode='wait' initial={false}>
+                  onClick={ratingModalHandler}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
                     <motion.div
                       key={`rating - ${savedRating.toString()}`}
                       variants={framerTabVariants}
-                      initial='hidden'
-                      animate='visible'
-                      exit='hidden'
-                      transition={{ duration: 0.5 }}>
+                      initial="hidden"
+                      animate="visible"
+                      exit="hidden"
+                      transition={{ duration: 0.5 }}
+                    >
                       {savedRating ? (
-                        <RatingOverlay className='media-page'>
-                          <AiFillStar size='16px' />
-                          <p className='m-0 leading-tight font-semibold'>{savedRating}</p>
+                        <RatingOverlay className="media-page">
+                          <AiFillStar size="16px" />
+                          <p className="m-0 leading-tight font-semibold">
+                            {savedRating}
+                          </p>
                         </RatingOverlay>
                       ) : (
-                        <BsStarHalf size='20px' />
+                        <BsStarHalf size="20px" />
                       )}
                     </motion.div>
                   </AnimatePresence>
                 </Button>
+
+                <Link
+                  href={`/movies/${getCleanTitle(id, title)}/lists`}
+                  className="w-full mediaCTA"
+                >
+                  <Button as={motion.button} whileTap={{ scale: 0.95 }}>
+                    <MdOutlineFormatListBulleted size="20px" />
+                  </Button>
+                </Link>
               </div>
             </div>
 
@@ -320,52 +366,60 @@ const MovieDetails = ({
               homepage={homepage}
               mediaDetails={{
                 title: title,
-                description: overview
+                description: overview,
               }}
             />
           </HeroImgWrapper>
           <Gradient />
 
           {/* right side info */}
-          <HeroInfoWrapper className='max-w-5xl'>
-            <HeroInfoTitle className='mb-2'>
+          <HeroInfoWrapper className="max-w-5xl">
+            <HeroInfoTitle className="mb-2">
               {title} ({releaseYear})
             </HeroInfoTitle>
             {renderEaster ? <Light onClick={easterHandler} /> : null}
-            <RtoR className='my-4'>
+            <RtoR className="my-4">
               <ReleaseDateWrapper>
-                <Span className='font-medium'>{releaseDate}</Span>
+                <Span className="font-medium">{releaseDate}</Span>
               </ReleaseDateWrapper>
               {genres.length > 0 ? (
-                <GenreWrap className='font-bold'>
+                <GenreWrap className="font-bold">
                   <Divider />
                   {genres.map((item, i) => (
                     <Link
                       key={item.id}
-                      href={`/genre/${
-                        item.id.toString() + "-" + item.name.replaceAll(" ", "-")
-                      }/movies`}
+                      href={`/genre/${getCleanTitle(
+                        item.id,
+                        item.name
+                      )}/movies`}
                       passHref
-                      scroll={false}>
-                      <Rounded className={genres.length == i + 1 ? "sep" : ""}>{item.name}</Rounded>
+                      scroll={false}
+                    >
+                      <Rounded className={genres.length == i + 1 ? "sep" : ""}>
+                        {item.name}
+                      </Rounded>
                     </Link>
                   ))}
                   <Divider />
                 </GenreWrap>
               ) : null}
 
-              <Span className='font-medium'>{getRuntime(runtime)}</Span>
+              <Span className="font-medium">{getRuntime(runtime)}</Span>
             </RtoR>
-            {tagline ? (
-              <i>
-                <Tagline className='my-4 block'>{tagline}</Tagline>
-              </i>
+            <i>
+              <Tagline className="my-4 block gap-4">
+                {adult && <Rounded>Adult</Rounded>}
+                <KeywordList keywords={keywords?.keywords} />
+                {tagline && tagline}
+              </Tagline>
+            </i>
+            {overview ? (
+              <Overview className="font-normal">{overview}</Overview>
             ) : null}
-            {overview ? <Overview className='font-normal'>{overview}</Overview> : null}
             {rating ? (
               <RatingWrapper>
                 <Fragment>
-                  <Span className='text-[calc(1.525rem_+_3.3vw)] xl:text-6xl font-bold'>
+                  <Span className="text-[calc(1.525rem_+_3.3vw)] xl:text-6xl font-bold">
                     {getRating(rating)}
                   </Span>
                   <span> / 10</span>
@@ -376,12 +430,32 @@ const MovieDetails = ({
               <CreditsWrapper>
                 {crewData.map((item) => (
                   <Credits key={item.credit_id}>
-                    <Span className='block font-normal'>{item.job}</Span>
-                    <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`}>
-                      <Span className='block font-bold credit'>{item.name}</Span>
+                    <Span className="block font-normal">{item.job}</Span>
+                    <Link href={`/person/${getCleanTitle(item.id, item.name)}`}>
+                      <Span className="block font-bold credit">
+                        {item.name}
+                      </Span>
                     </Link>
                   </Credits>
                 ))}
+                <Link href={`/movies/${getCleanTitle(id, title)}/crew`}>
+                  <motion.div
+                    whileHover={{
+                      scale: 1.05,
+                      transition: { duration: 0.1 },
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    className="mb-auto"
+                    aria-label="full cast"
+                  >
+                    <SeeMore>
+                      <BsChevronRight size="22" />
+                    </SeeMore>
+                    <Span className="mt-1 font-bold movieCastHead block">
+                      Full Crew
+                    </Span>
+                  </motion.div>
+                </Link>
               </CreditsWrapper>
             ) : null}
             {collection ? (
@@ -396,11 +470,11 @@ const MovieDetails = ({
       {renderEaster ? (
         <Fragment>
           {!hasSeen ? (
-            <EasterText className='text-xl md:text-2xl px-5' show={showEaster}>
+            <EasterText className="text-xl md:text-2xl px-5" show={showEaster}>
               Congratulations, you have found the easter egg.
             </EasterText>
           ) : (
-            <EasterText className='text-xl md:text-2xl' show={showEaster}>
+            <EasterText className="text-xl md:text-2xl" show={showEaster}>
               Aren&apos;t you scared?
             </EasterText>
           )}
@@ -410,11 +484,11 @@ const MovieDetails = ({
       ) : null}
 
       <Toast isToastVisible={isToastVisible}>
-        <Span className='toast-message'>{toastMessage}</Span>
+        <Span className="toast-message">{toastMessage}</Span>
       </Toast>
 
       <RatingModal
-        mediaType='movie'
+        mediaType="movie"
         mediaId={id}
         posterPath={moviePoster}
         releaseDate={releaseDate}

@@ -8,9 +8,25 @@ import { MdShare } from "react-icons/md";
 import { copyToClipboard } from "src/utils/helper";
 import { Button } from "styles/GlobalComponents";
 
-const ListShareButton = ({ listName }) => {
+const ListShareButton = ({ list }) => {
   const { isToastVisible, showToast, toastMessage } = useToast();
   const { openModal, isModalVisible, closeModal } = useModal();
+
+  const shareHandler = (e) => {
+    e.preventDefault();
+
+    if (navigator.share) {
+      navigator
+        .share({
+          title: list?.name,
+          text: list?.description,
+          url: window.location.href
+        })
+        .catch(() => openModal());
+    } else {
+      openModal();
+    }
+  };
 
   const copyButtonHandler = () => {
     copyToClipboard({ nodeId: "list-URL" })
@@ -26,17 +42,13 @@ const ListShareButton = ({ listName }) => {
 
   return (
     <Fragment>
-      <Button as={motion.button} whileTap={{ scale: 0.95 }} onClick={openModal}>
+      <Button as={motion.button} whileTap={{ scale: 0.95 }} onClick={shareHandler}>
         <MdShare size={20} />
       </Button>
 
-      <Toast isToastVisible={isToastVisible}>
-        <Span className='toast-message'>{toastMessage}</Span>
-      </Toast>
-
       <Modal closeModal={closeModal} isOpen={isModalVisible} align='items-center' width='max-w-lg'>
         <div>
-          <h4 className='text-xl mb-4 font-semibold'>Share {listName}</h4>
+          <h4 className='text-xl mb-4 font-semibold'>Share {list?.name}</h4>
 
           <div className='mt-6'>
             <div>
@@ -66,6 +78,10 @@ const ListShareButton = ({ listName }) => {
           </Button>
         </div>
       </Modal>
+
+      <Toast isToastVisible={isToastVisible}>
+        <Span className='toast-message'>{toastMessage}</Span>
+      </Toast>
     </Fragment>
   );
 };

@@ -30,7 +30,7 @@ const ChooseListCover = ({ id }) => {
   };
 
   const CTAHandler = () => {
-    router.push(`/lists/${id}-${getCleanTitle(listDetails?.name)}`);
+    router.push(`/lists/${getCleanTitle(id, listDetails?.name)}`);
   };
 
   return (

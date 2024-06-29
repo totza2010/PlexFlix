@@ -144,6 +144,13 @@ const PersonDetails = ({ details }) => {
                   <Span className='block font-normal text-lg'>{details.known_for_department}</Span>
                 </div>
 
+                {details?.adult && (
+                  <div>
+                    <Span className='block font-bold'>Adult Actor</Span>
+                    <Span className='block font-normal text-lg'>True</Span>
+                  </div>
+                )}
+
                 <div>
                   <Span className='block font-bold'>Known Credits</Span>
                   <Span className='block font-normal text-lg'>{combinedCredits.length}</Span>
@@ -162,7 +169,7 @@ const PersonDetails = ({ details }) => {
                   )}
                 </div>
               )}
-              
+
             </HeroInfoWrapper>
           </DetailsHeroWrap>
 
@@ -176,7 +183,8 @@ const PersonDetails = ({ details }) => {
                 className='profile-media-grid pb-8'
                 style={{ "--colCount": images?.profiles?.length }}>
                 {images?.profiles.map((item, i) => (
-                  <PostersImg key={i} className='relative text-center'>
+                  <PostersImg key={i} className='relative text-center'
+                    style={{ "--aspectRatio": item?.aspect_ratio }}>
                     <Image
                       src={`https://image.tmdb.org/t/p/w500${item.file_path}`}
                       alt='poster'

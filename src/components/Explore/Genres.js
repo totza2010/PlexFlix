@@ -15,7 +15,7 @@ const GenreSection = ({ genres, mediaType }) => {
         {genres.map((genre) => (
           <Link
             key={genre.id}
-            href={`/genre/${genre.id}-${getCleanTitle(genre.name)}/${
+            href={`/genre/${getCleanTitle(genre.id, genre.name)}/${
               mediaType === "movie" ? "movies" : "tv"
             }`}
             passHref

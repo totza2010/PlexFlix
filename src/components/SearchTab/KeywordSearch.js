@@ -21,7 +21,7 @@ const KeywordSearch = ({ searchQuery, keywords }) => {
           {cleanedItems.map((item) => (
             <Link
               key={item.id}
-              href={`/keywords/${item.id}-${getCleanTitle(item.name)}`}
+              href={`/keywords/${getCleanTitle(item.id, item.name)}`}
               passHref
               scroll={false}>
               <Keyword className='leading-tight'>{item.name}</Keyword>

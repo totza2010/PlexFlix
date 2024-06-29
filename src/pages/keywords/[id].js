@@ -1,40 +1,26 @@
-import KeywordsTab from "components/keywordsTab/keywordsTab";
 import MetaWrapper from "components/MetaWrapper";
-import { Span } from "components/MovieInfo/MovieDetailsStyles";
-import PlaceholderText from "components/PlaceholderText";
 import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
 import { fetchOptions, getCleanTitle } from "src/utils/helper";
-import { Error404, ModulesWrapper } from "styles/GlobalComponents";
+import { Error404 } from "styles/GlobalComponents";
+import KeywordMedia from "components/Explore/KeywordMedia";
 
-const Keywords = ({ error, resultMovies, resultTvs, keyword }) => {
+const Keywords = ({ Movies, TV, keyword, error }) => {
+
+  const expectedUrl = getCleanTitle(keyword.id, keyword.name);
+
   return (
     <Fragment>
       <MetaWrapper
         title={error ? "Not Found - PlexFlix" : `${keyword.name} - Movies or TVs`}
         description={error ? "Not Found" : `Movies or TVs matching the keyword: ${keyword.name}`}
-        url={`${process.env.BUILD_URL}/keywords/${keyword?.id}-${getCleanTitle(keyword?.name)}`}
+        url={`${process.env.BUILD_URL}/keywords/${expectedUrl}`}
       />
 
       {error ? (
         <Error404>404</Error404>
       ) : (
-        <ModulesWrapper className='mt-6'>
-            {resultMovies?.results?.length > 0 || resultTvs?.results?.length > 0 ? (
-              <Fragment>
-                <Span className='block text-[calc(1.325rem_+_.9vw)] lg:text-[2rem] font-medium text-center'>
-                  Keywords: {keyword.name}
-                </Span>
-                <KeywordsTab
-                  moviesData={resultMovies}
-                  TVData={resultTvs}
-                  keyword={keyword}
-                />
-              </Fragment>
-            ) : (
-              <PlaceholderText height='large'>No Movie results for this keyword.</PlaceholderText>
-            )}
-        </ModulesWrapper>
+        <KeywordMedia Movies={Movies} TV={TV} keyword={keyword} />
       )}
     </Fragment>
   );
@@ -45,39 +31,51 @@ export const getServerSideProps = async (ctx) => {
     const { id } = ctx.query;
     const keywordId = id.split("-")[0];
 
-    const keywordRes = await fetch(apiEndpoints.keywords.keywordDetails(keywordId), fetchOptions());
+    const [keywordRes] = await Promise.all([
+      fetch(apiEndpoints.keywords.keyword(keywordId), fetchOptions())
+    ]);
 
-    if (!keywordRes.ok) throw new Error("Failed to fetch data");
+    if (
+      !keywordRes.ok
+    ) throw new Error("Failed to fetch data");
 
-    const keyword = await keywordRes.json();
+    const [keyword] = await Promise.all([
+      keywordRes.json()
+    ]);
 
-    if (id !== `${keyword.id}-${getCleanTitle(keyword.name)}`) {
+    if (!keyword) throw new Error("Keyword not found");
+    const expectedUrl = getCleanTitle(keyword?.id, keyword?.name);
+
+    if (id !== `${expectedUrl}`) {
       return {
         redirect: {
-          destination: `/keywords/${keyword.id}-${getCleanTitle(keyword.name)}`,
+          destination: `/keywords/${expectedUrl}`,
           permanent: false,
         },
       };
     }
 
     const [MovieRes, TvRes] = await Promise.all([
-      fetch(apiEndpoints.keywords.keywordMovieDetails({ keywordId }), fetchOptions()),
-      fetch(apiEndpoints.keywords.keywordTvDetails({ keywordId }), fetchOptions())
+      fetch(apiEndpoints.keywords.keywordMovie({ keywordId }), fetchOptions()),
+      fetch(apiEndpoints.keywords.keywordTv({ keywordId }), fetchOptions())
     ]);
 
-    if (!MovieRes.ok || !TvRes.ok) throw new Error("Failed to fetch data");
+    if (
+      !MovieRes.ok ||
+      !TvRes.ok
+    ) throw new Error("Failed to fetch data");
 
-    const [resultMovies, resultTvs] = await Promise.all([
+    const [Movies, TV] = await Promise.all([
       MovieRes.json(),
       TvRes.json()
     ]);
 
     return {
       props: {
-        error: false,
-        resultMovies,
-        resultTvs,
-        keyword
+        Movies,
+        TV,
+        keyword: keyword || [],
+        error: false
       }
     };
   } catch (error) {

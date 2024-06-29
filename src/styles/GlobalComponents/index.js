@@ -151,7 +151,7 @@ export const Error404 = styled.h1`
 export const HeroDetailsContainer = styled.div`
   width: 100%;
   overflow: hidden;
-  padding: 64px 4.2vw;
+  padding: 64px 4.2vw 5px;
 
   @media only ${(props) => props.theme.breakpoints.lg} {
     padding: 40px 32px;
@@ -287,6 +287,10 @@ export const FactsFlexWrapper = styled.div`
   }
 
   @media only ${(props) => props.theme.breakpoints.ip} {
+    font-size: 22px;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.sm} {
     font-size: 18px;
   }
 `;
@@ -313,7 +317,7 @@ export const HeroImgWrapper = styled.div`
 
   @media only ${(props) => props.theme.breakpoints.ip} {
     padding: 0rem;
-    grid-template-columns: 192px;
+    grid-template-columns: 240px;
     place-items: flex-end flex-start;
     gap: 1.5rem;
   }

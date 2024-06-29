@@ -49,7 +49,7 @@ const ListItems = ({ listItems, id }) => {
                   }}
                   whileTap={{ scale: 0.95 }}>
                   <Link
-                    href={`/${media_type === "tv" ? "tv" : "movies"}/${id}-${getCleanTitle(
+                    href={`/${media_type === "tv" ? "tv" : "movies"}/${getCleanTitle(id, 
                       title || name
                     )}`}
                     passHref

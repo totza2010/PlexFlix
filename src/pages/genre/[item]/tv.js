@@ -1,36 +1,69 @@
+import TVTemplate from "components/MediaTemplate/TVTemplate";
 import MetaWrapper from "components/MetaWrapper";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import PlaceholderText from "components/PlaceholderText";
-import {
-  RecommendationsGrid,
-  RecommendedImg,
-  RecommendedWrapper,
-  InfoTitle
-} from "components/Recommendations/RecommendationsStyles";
-import { motion } from "framer-motion";
-import { apiEndpoints, blurPlaceholder } from "globals/constants";
+import { SortBy } from "components/SortBy/SortBy";
+import { apiEndpoints } from "globals/constants";
 import useInfiniteQuery from "hooks/useInfiniteQuery";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { fetchOptions, getCleanTitle, removeDuplicates } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents/index";
 
-const TvShows = ({ renderList, genreName, error, genreId }) => {
+const TvShows = ({ TV, genre, error }) => {
+
+  const expectedUrl = getCleanTitle(genre?.id, genre?.name);
+
   const { list } = useInfiniteQuery({
     initialPage: 3,
     type: "tvGenre",
-    genreId
+    genreId: genre?.id
   });
 
-  const { cleanedItems } = removeDuplicates(renderList.concat(list));
+  const { query } = useRouter();
+  const { sortBy, order } = query;
+  const { cleanedItems } = removeDuplicates((TV ?? [])?.concat(list));
+
+  const getRenderList = (list) => {
+    if (sortBy === "name") {
+      if (order === "asc") {
+        return [...list].sort((a, b) => (a.name > b.name ? 1 : -1));
+      } else {
+        return [...list].sort((a, b) => (a.name > b.name ? 1 : -1)).reverse();
+      }
+    } else if (sortBy === "releaseDate") {
+      if (order === "asc") {
+        return [...list].sort((a, b) => {
+          return new Date(a.first_air_date) - new Date(b.first_air_date);
+        });
+      } else {
+        return [...list].sort((a, b) => {
+          return new Date(b.first_air_date) - new Date(a.first_air_date);
+        });
+      }
+    } else if (sortBy === "rating") {
+      if (order === "asc") {
+        return [...list].sort((a, b) => {
+          return a.vote_average - b.vote_average;
+        });
+      } else {
+        return [...list].sort((a, b) => {
+          return b.vote_average - a.vote_average;
+        });
+      }
+    }
+
+    return list;
+  };
+
+  const renderList = sortBy ? getRenderList(cleanedItems) : cleanedItems;
 
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - PlexFlix" : `${genreName} TV Shows - PlexFlix`}
-        description={error ? "Not Found" : `${genreName} TV Shows`}
-        url={`${process.env.BUILD_URL}/genre/${genreId}-${getCleanTitle(genreName)}/tv`}
+        title={error ? "Not Found - PlexFlix" : `${genre?.name} TV Shows - PlexFlix`}
+        description={error ? "Not Found" : `${genre?.name} TV Shows`}
+        url={`${process.env.BUILD_URL}/genre/${expectedUrl}/tv`}
       />
 
       {error ? (
@@ -40,38 +73,10 @@ const TvShows = ({ renderList, genreName, error, genreId }) => {
           {renderList?.length > 0 ? (
             <Fragment>
               <Span className='text-[calc(1.375rem_+_1.5vw)] xl:text-[2.5rem] leading-12 block text-center genre'>
-                {genreName} TV Shows
+                {genre?.name} TV Shows
               </Span>
-              <RecommendationsGrid>
-                {cleanedItems.map(({ id, name, backdrop_path }) => (
-                  <RecommendedWrapper key={id}>
-                    <motion.div
-                      whileHover={{
-                        scale: 1.05,
-                        transition: { duration: 0.1 }
-                      }}
-                      whileTap={{ scale: 0.95 }}>
-                      <Link href={`/tv/${id}-${getCleanTitle(name)}`} passHref scroll={false}>
-                        <RecommendedImg className='relative text-center'>
-                          <Image
-                            src={
-                              backdrop_path
-                                ? `https://image.tmdb.org/t/p/w780${backdrop_path}`
-                                : "/Images/DefaultBackdrop.png"
-                            }
-                            alt='movie-poster'
-                            fill
-                            style={{ objectFit: "cover" }}
-                            placeholder='blur'
-                            blurDataURL={blurPlaceholder}
-                          />
-                        </RecommendedImg>
-                      </Link>
-                    </motion.div>
-                    <InfoTitle className='my-3 text-center'>{name}</InfoTitle>
-                  </RecommendedWrapper>
-                ))}
-              </RecommendationsGrid>
+              <SortBy />
+              <TVTemplate TV={renderList} />
             </Fragment>
           ) : (
             <PlaceholderText height='large'>No TV Shows For Now</PlaceholderText>
@@ -82,35 +87,66 @@ const TvShows = ({ renderList, genreName, error, genreId }) => {
   );
 };
 
-export default TvShows;
-
-TvShows.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
-    const param = ctx.query.item.split("-");
+    const { item } = ctx.query;
+    const genreId = item.split("-")[0];
 
-    const genreId = param[0];
-    const genreName = param.slice(1, param.length).join("-").replace("&", " & ");
+    const [genreRes] = await Promise.all([
+      fetch(apiEndpoints.tv.tvGenreList, fetchOptions())
+    ]);
+
+    if (
+      !genreRes.ok
+    ) throw new Error("Failed to fetch data");
+
+    const [genreList] = await Promise.all([
+      genreRes.json()
+    ]);
+    const genre = genreList?.genres.find(genre => genre.id === parseInt(genreId));
+
+    if (!genre) throw new Error("Genre not found");
+    const expectedUrl = getCleanTitle(genre?.id, genre?.name);
+
+    if (item !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/genre/${expectedUrl}/tv`,
+          permanent: false,
+        },
+      };
+    }
 
     const [response, nextPage] = await Promise.all([
       fetch(apiEndpoints.tv.tvGenre({ genreId, pageQuery: 1 }), fetchOptions()),
       fetch(apiEndpoints.tv.tvGenre({ genreId, pageQuery: 2 }), fetchOptions())
     ]);
 
-    if (!response.ok) throw new Error("error fetching tv shows");
+    if (
+      !response.ok ||
+      !nextPage.ok
+    ) throw new Error("Failed to fetch data");
 
-    const [tvList, secondTvList] = await Promise.all([response.json(), nextPage.json()]);
+    const [tvList, secondTvList] = await Promise.all([
+      response.json(),
+      nextPage.json()
+    ]);
 
-    const renderList = tvList["results"].concat(secondTvList.results);
+    const TV = tvList["results"].concat(secondTvList.results);
 
     return {
-      renderList,
-      genreName,
-      genreId,
-      error: false
+      props: {
+        TV,
+        genre: genre || [],
+        error: false
+      }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
-      error: true
+      props: { error: true }
     };
   }
 };
+
+export default TvShows;

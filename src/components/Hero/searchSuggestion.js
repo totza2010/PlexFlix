@@ -6,7 +6,7 @@ import { Anchor, SearchSlice } from "./HeroStyles";
 const SearchSuggestion = ({ data, type, ...props }) => (
   <Fragment>
     {type === "movie" && (
-      <Link href={`/movies/${data.id}-${getCleanTitle(data.title)}`} passHref legacyBehavior>
+      <Link href={`/movies/${getCleanTitle(data.id, data.title)}`} passHref legacyBehavior>
         <Anchor {...props}>
           <SearchSlice>
             <h5 className='suggestion-title'>
@@ -21,7 +21,7 @@ const SearchSuggestion = ({ data, type, ...props }) => (
     )}
 
     {type === "tv" && (
-      <Link href={`/tv/${data.id}-${getCleanTitle(data.name)}`} passHref legacyBehavior>
+      <Link href={`/tv/${getCleanTitle(data.id, data.name)}`} passHref legacyBehavior>
         <Anchor {...props}>
           <SearchSlice>
             <h5 className='suggestion-title'>
@@ -36,7 +36,7 @@ const SearchSuggestion = ({ data, type, ...props }) => (
     )}
 
     {type === "person" && (
-      <Link href={`/person/${data.id}-${getCleanTitle(data.name)}`} passHref legacyBehavior>
+      <Link href={`/person/${getCleanTitle(data.id, data.name)}`} passHref legacyBehavior>
         <Anchor {...props}>
           <SearchSlice>
             <h5 className='suggestion-title'>

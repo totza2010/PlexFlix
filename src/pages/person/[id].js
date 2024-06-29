@@ -12,7 +12,7 @@ const Person = ({ error, personDetails }) => {
         title={error ? "Not Found - PlexFlix" : `${personDetails.name} - PlexFlix`}
         image={`https://image.tmdb.org/t/p/w780${personDetails?.profile_path}`}
         description={personDetails?.biography}
-        url={`${process.env.BUILD_URL}/person/${personDetails?.id}-${getCleanTitle(
+        url={`${process.env.BUILD_URL}/person/${getCleanTitle(personDetails?.id, 
           personDetails?.name
         )}`}
       />

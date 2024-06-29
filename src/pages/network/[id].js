@@ -11,7 +11,7 @@ const Network = ({ networkDetails, networkMedia, error }) => {
       <MetaWrapper
         title={error ? "Not Found - PlexFlix" : `${networkDetails?.name} - plexflix`}
         description={`TV shows produced by ${networkDetails?.name}.`}
-        url={`${process.env.BUILD_URL}/network/${networkDetails?.id}-${getCleanTitle(
+        url={`${process.env.BUILD_URL}/network/${getCleanTitle(networkDetails?.id, 
           networkDetails?.name
         )}`}
         image={`https://image.tmdb.org/t/p/original${networkDetails?.logo_path}`}
@@ -42,7 +42,7 @@ Network.getInitialProps = async (context) => {
 
     return {
       networkDetails: data,
-      networkMedia: networkMediaData?.results || [],
+      networkMedia: networkMediaData || [],
       error: false
     };
   } catch {

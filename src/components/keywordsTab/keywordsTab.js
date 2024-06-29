@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import useTabs from "hooks/useTabs";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
-import MoviesTemplate from "./MoviesTemplate";
-import TVTemplate from "./TVTemplate";
+import MoviesKeyword from "./MoviesKeyword";
+import TVKeyword from "./TVKeyword";
 
 const KeywordsTab = ({ moviesData, TVData, keyword }) => {
 
@@ -30,7 +30,7 @@ const KeywordsTab = ({ moviesData, TVData, keyword }) => {
             transition={{ duration: 0.5 }}>
             {/* popular movies */}
             <section>
-              <MoviesTemplate movies={moviesData.results} keywordId={keyword.id} />
+              <MoviesKeyword movies={moviesData.results} keywordId={keyword.id} />
             </section>
             
           </motion.div>
@@ -46,7 +46,7 @@ const KeywordsTab = ({ moviesData, TVData, keyword }) => {
             transition={{ duration: 0.5 }}>
             {/* popular TV */}
             <section>
-              <TVTemplate TV={TVData.results} keywordId={keyword.id} />
+              <TVKeyword TV={TVData.results} keywordId={keyword.id} />
             </section>
             
           </motion.div>

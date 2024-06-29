@@ -24,7 +24,7 @@ const MediaCard = ({ data, link, children, rating, recommendation }) => {
         }}
         whileTap={{ scale: 0.95 }}>
         <Link
-          href={`/${link}/${data?.id}-${getCleanTitle(data?.title || data?.name)}`}
+          href={`/${link}/${getCleanTitle(data?.id, data?.title || data?.name)}`}
           passHref
           scroll={false}>
           <div className='relative'>

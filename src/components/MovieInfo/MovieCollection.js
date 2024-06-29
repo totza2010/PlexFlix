@@ -21,7 +21,7 @@ const MovieCollection = ({ collection }) => {
       <motion.div
               whileTap={{ scale: 0.98 }}
               className={"max-w-5xl m-auto [&:not(:last-child)]:mb-5"}>
-              <Link href={`/collection/${collection.id}-${getCleanTitle(collection?.title || collection?.name)}`} passHref scroll={false}>
+              <Link href={`/collection/${getCleanTitle(collection.id, collection?.title || collection?.name)}`} passHref scroll={false}>
                 <CollectionWrapper>
                   <CollectionImg>
                     <Image

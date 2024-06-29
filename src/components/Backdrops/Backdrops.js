@@ -17,9 +17,7 @@ const Backdrops = ({ backdrops }) => {
                   src={`https://image.tmdb.org/t/p/w1280${item.file_path}`}
                   alt='backdrop'
                   fill
-                  style={{
-                    objectFit: "cover"
-                  }}
+                  style={{ objectFit: "cover" }}
                   className='media'
                   placeholder='blur'
                   blurDataURL={blurPlaceholder}

@@ -10,14 +10,16 @@ import { ModulesWrapper } from "styles/GlobalComponents";
 import { NetwrokDetailsWrapper, PostersGrid } from "./ExploreStyles";
 
 const NetworkMedia = ({ details, media }) => {
-  const posters = media.map(({ poster_path }) =>
-    poster_path ? `https://image.tmdb.org/t/p/w185${poster_path}` : "/Images/DefaultImage.png"
+  const posters = media?.results.map(({ poster_path }) =>
+    poster_path
+      ? `https://image.tmdb.org/t/p/w185${poster_path}`
+      : "/Images/DefaultImage.png"
   );
 
   const { list } = useInfiniteQuery({
     initialPage: 2,
     type: "networkMedia",
-    networkId: details.id
+    networkId: details.id,
   });
 
   if (posters.length % 2 !== 0 && posters.length > 10) {
@@ -40,16 +42,20 @@ const NetworkMedia = ({ details, media }) => {
     <Fragment>
       <NetwrokDetailsWrapper>
         {postersLength > 0 ? (
-          <PostersGrid className={postersLength <= 10 ? "alt-grid" : ""} colCount={colCount || 10}>
+          <PostersGrid
+            className={postersLength <= 10 ? "alt-grid" : ""}
+            style={{ "--colCount": colCount || 10 }}
+          >
             {posters.map((poster, i) => (
-              <PostersImg key={`item -${i}`} className='relative poster-wrapper'>
+              <PostersImg key={`item -${i}`} className="relative poster-wrapper"
+                style={{ "--aspectRatio": 2 / 3 }}>
                 <Image
                   src={poster}
                   alt={`${details?.name}-poster`}
                   fill
                   style={{ objectFit: "cover" }}
-                  placeholder='blur'
-                  loading='eager'
+                  placeholder="blur"
+                  loading="eager"
                   blurDataURL={blurPlaceholder}
                 />
               </PostersImg>
@@ -57,47 +63,54 @@ const NetworkMedia = ({ details, media }) => {
           </PostersGrid>
         ) : null}
 
-        <div className='text-center network-info p-8 mb-4'>
+        <div className="text-center network-info p-8 mb-4">
           <div
-            className='logo-wrapper m-auto'
+            className="logo-wrapper m-auto"
             style={{
-              "--aspectRatio": details?.images?.logos?.[0]?.aspect_ratio
-            }}>
+              "--aspectRatio": details?.images?.logos?.[0]?.aspect_ratio,
+            }}
+          >
             <Image
               src={`https://image.tmdb.org/t/p/w300_filter(negate,000,111)${details?.images?.logos?.[0]?.file_path}`}
               alt={`${details?.name}-poster`}
               fill
               style={{ objectFit: "cover" }}
-              loading='eager'
+              loading="eager"
             />
           </div>
 
-          <div className='details-row'>
-            <span className='font-bold'>{details.name}</span>
+          <div className="details-row">
+            <span className="font-bold">{details.name}</span>
             {details?.headquarters || details?.origin_country ? (
-              <div className='flex items-center'>
-                <FaLocationDot className='me-1' size={18} />
-                <span className='font-bold'>{details.headquarters || details.origin_country}</span>
+              <div className="flex items-center">
+                <FaLocationDot className="me-1" size={18} />
+                <span className="font-bold">
+                  {details.headquarters || details.origin_country}
+                </span>
               </div>
             ) : null}
             {details.homepage ? (
-              <div className='flex items-center'>
-                <FaLink className='me-1' size={18} />
+              <div className="flex items-center">
+                <FaLink className="me-1" size={18} />
                 <a
                   href={details?.homepage}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='font-bold link'>
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold link"
+                >
                   Homepage
                 </a>
               </div>
             ) : null}
+            <div className="flex items-center">
+              <span className="font-bold">{`${media?.total_results} Items`}</span>
+            </div>
           </div>
         </div>
       </NetwrokDetailsWrapper>
 
       <ModulesWrapper>
-        <NetworkMediaGrid TV={media.concat(list)} />
+        <NetworkMediaGrid TV={media?.results.concat(list)} />
       </ModulesWrapper>
     </Fragment>
   );

@@ -7,25 +7,18 @@ import BackdropsSvg from "components/Svg/backdrops";
 import CastSvg from "components/Svg/cast";
 import PostersSvg from "components/Svg/posters";
 import ReviewsSvg from "components/Svg/reviews";
-import SeasonsSvg from "components/Svg/seasons";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import useTabs from "hooks/useTabs";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
-import TVSeasons from "./TVSeasons";
 
 const tabList = [
   {
     key: "cast",
     name: "Cast",
     svg: (active) => <CastSvg color={active ? "white" : "black"} />
-  },
-  {
-    key: "seasons",
-    name: "Seasons",
-    svg: (active) => <SeasonsSvg color={active ? "white" : "black"} />
   },
   {
     key: "reviews",
@@ -44,7 +37,7 @@ const tabList = [
   }
 ];
 
-const TVTab = ({ cast, seasons, reviews, posters, backdrops }) => {
+const TVTab = ({ cast, reviews, posters, backdrops }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "tvTabState", defaultState: "cast" });
 
   return (
@@ -73,20 +66,6 @@ const TVTab = ({ cast, seasons, reviews, posters, backdrops }) => {
             transition={{ duration: 0.5 }}>
             <ModulesWrapper>
               <Cast cast={cast} />
-            </ModulesWrapper>
-          </motion.div>
-        )}
-
-        {activeTab === "seasons" && (
-          <motion.div
-            key='seasons'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
-              <TVSeasons seasons={seasons} />
             </ModulesWrapper>
           </motion.div>
         )}

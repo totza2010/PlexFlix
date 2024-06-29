@@ -1,4 +1,3 @@
-import Backdrops from "components/Backdrops/Backdrops";
 import Cast from "components/Cast/Cast";
 import Posters from "components/Posters/Posters";
 import Reviews from "components/Reviews/Reviews";
@@ -13,6 +12,7 @@ import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
 import { TabIcon, TabSelectionTitle, tabStyling } from "./MovieTabStyles";
+import MediaTab from "./MediaTab";
 
 const tabList = [
   {
@@ -26,18 +26,13 @@ const tabList = [
     svg: (active) => <ReviewsSvg color={active ? "white" : "black"} />
   },
   {
-    key: "backdrops",
-    name: "Backdrops",
+    key: "images",
+    name: "Images",
     svg: (active) => <BackdropsSvg color={active ? "white" : "black"} />
-  },
-  {
-    key: "posters",
-    name: "Posters",
-    svg: (active) => <PostersSvg color={active ? "white" : "black"} />
   }
 ];
 
-const MovieTab = ({ cast, reviews, posters, backdrops }) => {
+const MovieTab = ({ cast, reviews, images }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "movieTabState", defaultState: "cast" });
 
   return (
@@ -80,30 +75,16 @@ const MovieTab = ({ cast, reviews, posters, backdrops }) => {
           </motion.div>
         )}
 
-        {activeTab === "backdrops" && (
+        {activeTab === "images" && (
           <motion.div
-            key='backdrops'
+            key='images'
             variants={framerTabVariants}
             initial='hidden'
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
             <ModulesWrapper>
-              <Backdrops backdrops={backdrops} />
-            </ModulesWrapper>
-          </motion.div>
-        )}
-
-        {activeTab === "posters" && (
-          <motion.div
-            key='posters'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
-              <Posters posters={posters} />
+              <MediaTab images={images} />
             </ModulesWrapper>
           </motion.div>
         )}

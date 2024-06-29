@@ -32,7 +32,7 @@ export const Cards = styled.div`
 export const CardImg = styled.div`
   position: relative;
   text-align: center;
-  aspect-ratio: 0.666;
+  aspect-ratio: 2 / 3;
   box-shadow: 0px 4px 5px 0px hsla(0, 0%, 0%, 0.14), 0px 1px 10px 0px hsla(0, 0%, 0%, 0.12),
     0px 2px 4px -1px hsla(0, 0%, 0%, 0.2);
   transition: box-shadow 0.25s ease-in;

@@ -11,7 +11,7 @@ import { Fragment, useState, useRef } from "react";
 import { fetchOptions, framerTabVariants, getCleanTitle, getReleaseYear } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
 
-const Cast = ({ movieData: { id, title, year, backdrop, poster }, cast, error }) => {
+const Cast = ({ movieData, cast, error }) => {
   const [filteredCast, setFilteredCast] = useState(cast);
   const timeoutRef = useRef(null);
 
@@ -35,21 +35,21 @@ const Cast = ({ movieData: { id, title, year, backdrop, poster }, cast, error })
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - PlexFlix" : `${title} (${year}) - Cast - plexflix`}
-        description={error ? "Not Found" : `${title} cast`}
-        image={`https://image.tmdb.org/t/p/w780${backdrop}`}
-        url={`${process.env.BUILD_URL}/movies/${id}/cast`}
+        title={error ? "Not Found - PlexFlix" : `${movieData?.title} (${getReleaseYear(movieData?.release_date)}) - Cast - plexflix`}
+        description={error ? "Not Found" : `${movieData?.title} cast`}
+        image={`https://image.tmdb.org/t/p/w780${movieData?.backdrop}`}
+        url={`${process.env.BUILD_URL}/movies/${getCleanTitle(movieData?.id, movieData?.title)}/cast`}
       />
 
       {error ? (
         <Error404>404</Error404>
       ) : (
         <div className='relative mb-auto'>
-          <DominantColor image={poster} flip tint />
+          <DominantColor image={movieData?.poster} flip tint />
           <ModulesWrapper className='relative z-10'>
             <div className='text-center py-6'>
               <HeroInfoTitle className='mb-4'>
-                {title} ({year})
+                {movieData?.title} ({getReleaseYear(movieData?.release_date)})
               </HeroInfoTitle>
 
               <div className='flex justify-between items-center py-2 max-sm:flex-col gap-5'>
@@ -75,7 +75,7 @@ const Cast = ({ movieData: { id, title, year, backdrop, poster }, cast, error })
                   transition={{ duration: 0.325 }}>
                   {filteredCast.map(({ credit_id, id, name, profile_path, character }) => (
                     <CastWrapper key={credit_id}>
-                      <Link href={`/person/${id}-${getCleanTitle(name)}`} passHref>
+                      <Link href={`/person/${getCleanTitle(id, name)}`} passHref>
                         <motion.div
                           whileHover={{
                             scale: 1.05,
@@ -125,37 +125,49 @@ const Cast = ({ movieData: { id, title, year, backdrop, poster }, cast, error })
   );
 };
 
-Cast.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
     const { id } = ctx.query;
-    const res = await fetch(apiEndpoints.movie.getMovieCredits({ id }), fetchOptions());
+    const movieId = id.split("-")[0];
+    const res = await fetch(apiEndpoints.movie.getMovieCredits({id:movieId}), fetchOptions());
 
-    if (res.ok) {
-      const data = await res.json();
+    if (!res.ok) {
+      const errorDetails = await res.text();
+      throw new Error(`Failed to fetch list details: ${res.status} - ${errorDetails}`);
+    }
 
+    const [data] = await Promise.all([
+      res.json()
+    ]);
+
+    if (!data) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(data?.id, data?.title);
+
+    if (id !== `${expectedUrl}`) {
       return {
-        movieData: {
-          title: data?.title,
-          year: getReleaseYear(data?.release_date),
-          id: data?.id,
-          backdrop: data?.backdrop_path,
-          poster: data?.poster_path
+        redirect: {
+          destination: `/movies/${expectedUrl}/cast`,
+          permanent: false,
         },
-        cast: data?.credits?.cast || [],
-        error: false
       };
     }
 
     return {
-      movieData: {},
-      cast: [],
-      error: true
+      props: { 
+        movieData: data,
+        cast: data?.credits?.cast || [],
+        error: false
+      }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
-      movieData: {},
-      cast: [],
-      error: true
+      props: { 
+        movieData: {},
+        cast: [],
+        error: true
+      }
     };
   }
 };

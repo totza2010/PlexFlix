@@ -20,7 +20,7 @@ const Cast = ({ cast }) => {
         <CastGrid>
           {cast.data.map((item) => (
             <CastWrapper key={item.id}>
-              <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`} passHref>
+              <Link href={`/person/${getCleanTitle(item.id, item.name)}`} passHref>
                 <motion.div
                   whileHover={{
                     scale: 1.05,
@@ -57,24 +57,21 @@ const Cast = ({ cast }) => {
               </div>
             </CastWrapper>
           ))}
-
-          {cast.totalCount > 15 ? (
-            <Link href={`${routeRef.current}/cast`}>
-              <motion.div
-                whileHover={{
-                  scale: 1.05,
-                  transition: { duration: 0.1 }
-                }}
-                whileTap={{ scale: 0.95 }}
-                className='mb-auto mt-12'
-                aria-label='full cast'>
-                <SeeMore>
-                  <BsChevronRight size='22' />
-                </SeeMore>
-                <Span className='mt-3 font-bold movieCastHead block'>Full Cast</Span>
-              </motion.div>
-            </Link>
-          ) : null}
+          <Link href={`${routeRef.current}/cast`}>
+            <motion.div
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.1 }
+              }}
+              whileTap={{ scale: 0.95 }}
+              className='mb-auto mt-12'
+              aria-label='full cast'>
+              <SeeMore>
+                <BsChevronRight size='22' />
+              </SeeMore>
+              <Span className='mt-3 font-bold movieCastHead block'>Full Cast</Span>
+            </motion.div>
+          </Link>
         </CastGrid>
       ) : (
         <PlaceholderText>TBA</PlaceholderText>

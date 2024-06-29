@@ -269,12 +269,21 @@ export const FactsWrapper = styled.div`
   padding: 1rem;
   display: grid;
   place-items: start;
-  grid-template-columns: repeat(4, max-content);
+  grid-template-columns: repeat(5, max-content);
   gap: 2rem 5rem;
 
+  @media only ${(props) => props.theme.breakpoints.xl} {
+    grid-template-columns: repeat(4, max-content);
+  }
+
+  @media only ${(props) => props.theme.breakpoints.lg} {
+    grid-template-columns: repeat(3, max-content);
+  }
+
   @media only ${(props) => props.theme.breakpoints.ip} {
-    font-size: 18px;
+    font-size: 22px;
     gap: 2rem 3rem;
+    grid-template-columns: repeat(3, max-content);
   }
 
   @media only ${(props) => props.theme.breakpoints.sm} {
@@ -324,6 +333,8 @@ export const FactsLegend = styled.legend`
 
 export const Tagline = styled.span`
   font-weight: 400;
+  display: flex;
+  align-items: center;
 
   @media only ${(props) => props.theme.breakpoints.lg} {
     font-size: 18px;
@@ -434,4 +445,15 @@ export const EasterText = styled.span`
     z-index: 11;
   }
 }`};
+`;
+
+export const SeeMore = styled.div`
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

@@ -100,7 +100,7 @@ const Lists = ({ error, lists }) => {
                             }}
                             whileTap={{ scale: 0.95 }}>
                             <Link
-                              href={`lists/${id}-${getCleanTitle(name)}`}
+                              href={`lists/${getCleanTitle(id, name)}`}
                               passHref
                               scroll={false}>
                               <RecommendedImg className='relative text-center'>
@@ -139,7 +139,7 @@ const Lists = ({ error, lists }) => {
   );
 };
 
-Lists.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   const data = await getSession(ctx);
 
   if (!data) {
@@ -167,13 +167,18 @@ Lists.getInitialProps = async (ctx) => {
     const lists = await listsRes.json();
 
     return {
-      error: false,
-      lists: lists?.results || []
+      props: {
+        error: false,
+        lists: lists?.results || []
+      }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
-      error: true,
-      lists: []
+      props: {
+        error: true,
+        lists: []
+      }
     };
   }
 };

@@ -2,11 +2,11 @@ import {
   CardImg,
   CardInfo,
   Cards,
-  CardsContainerGrid,
   InfoTitle,
   ReleaseDate
 } from "components/MediaTemplate/TemplateStyles";
 import PlaceholderText from "components/PlaceholderText";
+import { PostersWrapper } from "components/Posters/PostersStyles";
 import RatingTag from "components/RatingTag/RatingTag";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
@@ -20,8 +20,13 @@ const TVSeasons = ({ seasons }) => {
 
   return (
     <Fragment>
+      <span className='text-[calc(1.325rem_+_.9vw)] lg:text-[2rem] leading-8 mt-6 mb-6 font-semibold block'>
+        Season ({seasons?.length})
+      </span>
       {seasons?.length > 0 ? (
-        <CardsContainerGrid>
+        <PostersWrapper
+        className='profile-media-grid'
+        style={{ "--colCount": seasons?.length }}>
           {seasons.map(
             ({ id, season_number, poster_path, name, episode_count, air_date, vote_average }) => (
               <Cards key={id}>
@@ -66,7 +71,7 @@ const TVSeasons = ({ seasons }) => {
               </Cards>
             )
           )}
-        </CardsContainerGrid>
+        </PostersWrapper>
       ) : (
         <PlaceholderText>TBA</PlaceholderText>
       )}

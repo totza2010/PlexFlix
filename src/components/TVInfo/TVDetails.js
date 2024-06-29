@@ -41,6 +41,7 @@ import {
   HeroImg,
   HeroImgWrapper
 } from "styles/GlobalComponents";
+import TVSeasons from "./TVSeasons";
 
 const TVDetails = ({
   tvData: {
@@ -58,7 +59,7 @@ const TVDetails = ({
     homepage,
     crewData,
     releaseYear
-  }
+  }, seasons
 }) => {
   const { userInfo } = useUserContext();
   const {
@@ -306,7 +307,7 @@ const TVDetails = ({
                   {genres.map((item, i) => (
                     <Link
                       key={item.id}
-                      href={`/genre/${item.id.toString() + "-" + item.name.split(" ").join("")}/tv`}
+                      href={`/genre/${getCleanTitle(item.id, item.name)}/tv`}
                       passHref
                       scroll={false}>
                       <Rounded className={genres.length == i + 1 && "sep"}>{item.name}</Rounded>
@@ -338,7 +339,7 @@ const TVDetails = ({
                 {crewData.map((item) => (
                   <Credits key={item.credit_id}>
                     <Span className='block font-normal'>{item.job ?? "Creator"}</Span>
-                    <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`}>
+                    <Link href={`/person/${getCleanTitle(item.id, item.name)}`}>
                       <Span className='block font-bold credit'>{item.name}</Span>
                     </Link>
                   </Credits>
@@ -347,6 +348,7 @@ const TVDetails = ({
             )}
           </HeroInfoWrapper>
         </DetailsHeroWrap>
+        <TVSeasons seasons={seasons} />
       </HeroDetailsContainer>
 
       <Toast isToastVisible={isToastVisible}>

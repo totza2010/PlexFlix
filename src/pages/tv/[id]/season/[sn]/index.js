@@ -206,7 +206,7 @@ const Seasons = ({
                 <CastGrid className='justify-start'>
                   {cast?.map((item) => (
                     <CastWrapper key={item.id}>
-                      <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`} passHref>
+                      <Link href={`/person/${getCleanTitle(item.id, item.name)}`} passHref>
                         <motion.div
                           whileHover={{
                             scale: 1.05,

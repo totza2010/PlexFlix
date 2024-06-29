@@ -113,11 +113,12 @@ export const framerTabVariants = {
   visible: { opacity: 1 }
 };
 
-export const getCleanTitle = (title) => {
-  if (!title) return "";
+export const getCleanTitle = (id, title) => {
+  if (!id || !title) return "";
 
-  const stringWithHyphens = title.replace(/[^\w\d\u0080-\uFFFF]+/g, "-");
-  return stringWithHyphens.replace(/[-\s]+$/, "");
+  const stringWithHyphens = title.replace(/[^\w\d]+/g, "-");
+  const cleanedTitle = stringWithHyphens.replace(/^-+|-+$/g, "").toLowerCase();
+  return cleanedTitle ? `${id}-${cleanedTitle}` : id;
 };
 
 export const fetchSuggestions = async (userInput, controller) => {

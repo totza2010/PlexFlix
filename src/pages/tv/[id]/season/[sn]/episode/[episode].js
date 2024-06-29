@@ -63,14 +63,14 @@ const Episode = ({
       <MetaWrapper
         title={
           error
-            ? "Not Found - Cinephiled"
+            ? "Not Found - PlexFlix"
             : `${name} (${getReleaseYear(
                 airDate
-              )}) S${seasonNumber}E${episodeNumber} - Details - cinephiled`
+              )}) S${seasonNumber}E${episodeNumber} - Details - PlexFlix`
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${backdrop}`}
-        url={`https://cinephiled.vercel.app/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}`}
+        url={`${process.env.BUILD_URL}/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}`}
       />
 
       {error ? (
@@ -144,7 +144,7 @@ const Episode = ({
                 <CastGrid className='justify-start'>
                   {cast.map((item) => (
                     <CastWrapper key={item.name}>
-                      <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`} passHref>
+                      <Link href={`/person/${getCleanTitle(item.id, item.name)}`} passHref>
                         <motion.div
                           whileHover={{
                             scale: 1.05,

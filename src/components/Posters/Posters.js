@@ -11,12 +11,14 @@ const Posters = ({ posters }) => {
       {posters?.length > 0 ? (
         <PostersWrapper>
           {posters.map((item, i) => (
-            <PostersImg key={i} className='relative text-center'>
+            <PostersImg key={i} className='relative text-center'
+              style={{ "--aspectRatio": item?.aspect_ratio }}>
               <Image
                 src={`https://image.tmdb.org/t/p/w500${item.file_path}`}
                 alt='poster'
                 fill
                 style={{ objectFit: "cover" }}
+                className='media'
                 placeholder='blur'
                 blurDataURL={blurPlaceholder}
               />

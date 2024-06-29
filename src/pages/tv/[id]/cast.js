@@ -81,7 +81,7 @@ const Cast = ({ tvData: { id, title, year, backdrop, poster }, cast, error }) =>
                   transition={{ duration: 0.325 }}>
                   {filteredCast.map((item) => (
                     <CastWrapper key={item.credit_id}>
-                      <Link href={`/person/${item.id}-${getCleanTitle(item.name)}`} passHref>
+                      <Link href={`/person/${getCleanTitle(item.id, item.name)}`} passHref>
                         <motion.div
                           whileHover={{
                             scale: 1.05,

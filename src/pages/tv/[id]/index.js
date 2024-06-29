@@ -25,7 +25,8 @@ const TvShow = ({
   reviews,
   backdrops,
   posters,
-  network,
+  networks,
+  companies,
   socialIds,
   error,
   language,
@@ -45,7 +46,7 @@ const TvShow = ({
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${backdropPath}`}
-        url={`${process.env.BUILD_URL}/tv/${id}-${getCleanTitle(title)}`}
+        url={`${process.env.BUILD_URL}/tv/${getCleanTitle(id, title)}`}
       />
 
       {error ? (
@@ -69,11 +70,11 @@ const TvShow = ({
               trailerLink,
               homepage,
               releaseYear
-            }}
+            }} seasons={seasons}
           />
 
           {/* tv facts */}
-          <TVFacts facts={{ status, network, type, language }} />
+          <TVFacts facts={{ status, type, language }} networks={networks} companies={companies} />
 
           {/* tv tabs */}
           <TVTab
@@ -122,7 +123,8 @@ TvShow.getInitialProps = async (ctx) => {
     const language = languages.find((item) => item.iso_639_1 === tvData.original_language);
 
     const status = tvData?.status || "TBA";
-    const network = tvData.networks?.[0] || "TBA";
+    const networks = tvData?.networks || "TBA";
+    const companies = tvData?.production_companies || "TBA";
     const crewData = [
       ...tvData?.created_by?.slice(0, 2),
       ...tvData?.aggregate_credits?.crew
@@ -151,7 +153,8 @@ TvShow.getInitialProps = async (ctx) => {
       homepage: tvData?.homepage,
       status,
       language: language?.english_name || language?.name || "TBA",
-      network,
+      networks,
+      companies,
       type: tvData?.type,
       endYear,
       cast: {
