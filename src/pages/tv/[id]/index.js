@@ -85,10 +85,8 @@ const TvShow = ({
           {/* tv tabs */}
           <TVTab
             cast={cast}
-            seasons={seasons}
             reviews={reviews}
-            backdrops={backdrops}
-            posters={posters}
+            images={convertedData}
           />
 
           {/* recommendations */}

@@ -1,5 +1,6 @@
 import Backdrops from "components/Backdrops/Backdrops";
 import Cast from "components/Cast/Cast";
+import MediaTab from "components/MovieInfo/MediaTab";
 import { TabSelectionTitle, tabStyling, TabIcon } from "components/MovieInfo/MovieTabStyles";
 import Posters from "components/Posters/Posters";
 import Reviews from "components/Reviews/Reviews";
@@ -26,18 +27,13 @@ const tabList = [
     svg: (active) => <ReviewsSvg color={active ? "white" : "black"} />
   },
   {
-    key: "backdrops",
-    name: "Backdrops",
+    key: "images",
+    name: "Images",
     svg: (active) => <BackdropsSvg color={active ? "white" : "black"} />
-  },
-  {
-    key: "posters",
-    name: "Posters",
-    svg: (active) => <PostersSvg color={active ? "white" : "black"} />
   }
 ];
 
-const TVTab = ({ cast, reviews, posters, backdrops }) => {
+const TVTab = ({ cast, reviews, images }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "tvTabState", defaultState: "cast" });
 
   return (
@@ -84,30 +80,16 @@ const TVTab = ({ cast, reviews, posters, backdrops }) => {
           </motion.div>
         )}
 
-        {activeTab === "backdrops" && (
+        {activeTab === "images" && (
           <motion.div
-            key='backdrops'
+            key='images'
             variants={framerTabVariants}
             initial='hidden'
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
             <ModulesWrapper>
-              <Backdrops backdrops={backdrops} />
-            </ModulesWrapper>
-          </motion.div>
-        )}
-
-        {activeTab === "posters" && (
-          <motion.div
-            key='posters'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
-              <Posters posters={posters} />
+              <MediaTab images={images} />
             </ModulesWrapper>
           </motion.div>
         )}
