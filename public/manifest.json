@@ -1,6 +1,7 @@
 {
   "name": "PlexFlix",
   "short_name": "PlexFlix",
+  "description": "PlexFlix my movies and TV shows.",
   "theme_color": "#121212",
   "background_color": "#121212",
   "display": "standalone",
@@ -8,44 +9,44 @@
   "start_url": "/",
   "screenshots": [
     {
-      "src": "posters.webp",
-      "sizes": "1920x1080",
-      "type": "image/webp",
+      "src": "/screenshots/poster.png",
+      "sizes": "640x320",
+      "type": "image/png",
       "form_factor": "wide",
-      "label": "Application"
+      "label": "Desktop View"
     },
     {
-      "src": "posters.webp",
-      "sizes": "1920x1080",
-      "type": "image/webp",
+      "src": "/screenshots/mobile-poster.png",
+      "sizes": "360x640",
+      "type": "image/png",
       "form_factor": "narrow",
-      "label": "Mobile Application"
+      "label": "Mobile View"
     }
   ],
   "icons": [
     {
-      "src": "maskable.png",
+      "src": "/icons/maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "logo192.png",
+      "src": "/icons/logo192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logo256.png",
+      "src": "/icons/logo256.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "logo384.png",
+      "src": "/icons/logo384.png",
       "sizes": "384x384",
       "type": "image/png"
     },
     {
-      "src": "logo512.png",
+      "src": "/icons/logo512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
