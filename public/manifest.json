@@ -6,7 +6,16 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
+  "screenshots": [    
+    {
 
+      "src": "images/posters.webp",
+        "sizes": "640x320",
+        "type": "image/gif",
+        "form_factor": "wide",
+        "label": "Application"
+      }
+  ],
   "icons": [
     {
       "src": "maskable.png",
