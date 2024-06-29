@@ -3,7 +3,7 @@ import Select from "components/Select/Select";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import useTabs from "hooks/useTabs";
-import { useRouter } from "next/router";
+import useSelects from "hooks/useSelects";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
@@ -26,12 +26,11 @@ const tabList2 = [
 
 const MediaTab = ({ images }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "mediaTabState", defaultState: "posters" });
-  const router = useRouter();
-  const { local: currentSelectedLocal } = router.query;
+  const { activeSelect, setSelect } = useSelects({ selectLocation: "mediaSelectState", defaultState: "en" });
 
   const filterByLocale = (items) => items.filter(item => 
-    currentSelectedLocal 
-      ? item.iso_639_1.iso_639_1.toLowerCase() === currentSelectedLocal 
+    activeSelect && activeSelect !== "all"
+      ? item.iso_639_1.iso_639_1.toLowerCase() === activeSelect 
       : item.iso_639_1.iso_639_1
   );
 
@@ -57,19 +56,7 @@ const MediaTab = ({ images }) => {
   ).sort((a, b) => a.value.localeCompare(b.value));
 
   const handleSelect = (key) => {
-    const keyToCompare = currentSelectedLocal || "en";
-
-    if (key === keyToCompare) return;
-
-    setTimeout(() => {
-      if (key === "all") {
-        router.replace(router.asPath.split("?")[0], undefined, { shallow: true });
-      } else {
-        router.replace(router.asPath.split("?")[0] + `?local=${key}`, undefined, {
-          shallow: true
-        });
-      }
-    }, 100);
+    setSelect(key);
   };
 
   return (
@@ -88,8 +75,8 @@ const MediaTab = ({ images }) => {
           <div className='min-w-[250px] max-sm:min-w-full max-md:grow'>
             <Select
               options={Options}
-              activeKey={currentSelectedLocal || "all"}
-              triggerText={Options.find(item => item.key === currentSelectedLocal)?.value || "All"}
+              activeKey={activeSelect || "all"}
+              triggerText={Options.find(item => item.key === activeSelect)?.value || "All"}
               baseSizeOptions
               handleChange={handleSelect}
             />

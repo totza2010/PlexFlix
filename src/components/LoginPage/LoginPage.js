@@ -4,7 +4,7 @@ import posters from "images/posters.webp";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import logo from "public/logo512.png";
+import logo from "public/icons/logo512.png";
 import { Fragment, useEffect } from "react";
 import { AboutBackground, Button } from "styles/GlobalComponents";
 import { Integration, LoginCard, LoginContainer, LoginText } from "./LoginPageStyles";
