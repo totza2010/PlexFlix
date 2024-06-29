@@ -349,10 +349,7 @@ const MovieDetails = ({
                   </AnimatePresence>
                 </Button>
 
-                <Link
-                  href={`/movies/${getCleanTitle(id, title)}/lists`}
-                  className="w-full mediaCTA"
-                >
+                <Link href={`/movies/${getCleanTitle(id, title)}/lists`} className="w-full mediaCTA">
                   <Button as={motion.button} whileTap={{ scale: 0.95 }}>
                     <MdOutlineFormatListBulleted size="20px" />
                   </Button>

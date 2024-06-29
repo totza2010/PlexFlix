@@ -29,6 +29,7 @@ import { AiFillStar } from "react-icons/ai";
 import { BiListPlus, BiListCheck } from "react-icons/bi";
 import { BsStarHalf } from "react-icons/bs";
 import { FaYoutube, FaHeart, FaRegHeart } from "react-icons/fa";
+import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { framerTabVariants, getCleanTitle, getRating } from "src/utils/helper";
 import { useMediaContext } from "Store/MediaContext";
 import { useUserContext } from "Store/UserContext";
@@ -282,6 +283,12 @@ const TVDetails = ({
                     </motion.div>
                   </AnimatePresence>
                 </Button>
+
+                <Link href={`/tv/${getCleanTitle(id, title)}/lists`} className="w-full mediaCTA">
+                  <Button as={motion.button} whileTap={{ scale: 0.95 }}>
+                    <MdOutlineFormatListBulleted size="20px" />
+                  </Button>
+                </Link>
               </div>
             </div>
             <SocialMediaLinks
