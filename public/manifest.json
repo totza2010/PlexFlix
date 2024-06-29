@@ -11,7 +11,7 @@
 
       "src": "posters.webp",
         "sizes": "640x320",
-        "type": "image/gif",
+        "type": "image/webp",
         "form_factor": "wide",
         "label": "Application"
       }
