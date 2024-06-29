@@ -1,10 +1,10 @@
+import KeywordsTab from "components/keywordsTab/keywordsTab";
 import { PostersImg } from "components/Posters/PostersStyles";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { ModulesWrapper } from "styles/GlobalComponents";
 import { NetwrokDetailsWrapper, PostersGrid } from "./ExploreStyles";
-import KeywordsTab from "components/keywordsTab/keywordsTab";
 
 const KeywordMedia = ({ Movies, TV, keyword }) => {
   const [shuffledPosters, setShuffledPosters] = useState([]);

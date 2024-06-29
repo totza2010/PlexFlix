@@ -2,8 +2,8 @@ import Modal, { useModal } from "components/Modal/Modal";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import Link from "next/link";
 import { Fragment } from "react";
-import { getCleanTitle } from "src/utils/helper";
 import { FaTags } from "react-icons/fa";
+import { getCleanTitle } from "src/utils/helper";
 
 const KeywordList = ({ keywords }) => {
   const { closeModal, isModalVisible, openModal } = useModal();

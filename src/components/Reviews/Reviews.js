@@ -4,8 +4,8 @@ import { Fragment } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { getReleaseDate, getRating } from "src/utils/helper";
-import { Review, ReviewAuthorImg, ReviewAuthorWrap, ReviewsWrap } from "./ReviewsStyles";
 import { Pill } from "styles/GlobalComponents";
+import { Review, ReviewAuthorImg, ReviewAuthorWrap, ReviewsWrap } from "./ReviewsStyles";
 
 const Reviews = ({ reviews }) => {
   return (

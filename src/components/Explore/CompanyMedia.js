@@ -1,3 +1,4 @@
+import CompaniesTab from "components/CompanyTab/CompaniesTab";
 import { PostersImg } from "components/Posters/PostersStyles";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
@@ -6,7 +7,6 @@ import { FaLink } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { ModulesWrapper } from "styles/GlobalComponents";
 import { NetwrokDetailsWrapper, PostersGrid } from "./ExploreStyles";
-import CompaniesTab from "components/CompanyTab/CompaniesTab";
 
 const CompanyMedia = ({ Movies, TV, company }) => {
   const [shuffledPosters, setShuffledPosters] = useState([]);

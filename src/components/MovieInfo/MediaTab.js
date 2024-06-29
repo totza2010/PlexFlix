@@ -1,14 +1,13 @@
-import Backdrops from "components/Backdrops/Backdrops";
 import Posters from "components/Posters/Posters";
+import Select from "components/Select/Select";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import useTabs from "hooks/useTabs";
+import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
 import { TabSelectionTitle, tabStylingSM, SelectionContainer } from "./MovieTabStyles";
-import Select from "components/Select/Select";
-import { useRouter } from "next/router";
 
 const tabList2 = [
   {

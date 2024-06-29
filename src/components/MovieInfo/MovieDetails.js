@@ -1,7 +1,8 @@
 import { addToWatchlist, setFavorite } from "api/user";
 import DominantColor from "components/DominantColor/DominantColor";
 import AddToListModal from "components/List/AddToListModal";
-import Modal, { useModal } from "components/Modal/Modal";
+import { useModal } from "components/Modal/Modal";
+import KeywordList from "components/MovieInfo/KeywordList";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
@@ -16,7 +17,6 @@ import { BiListPlus, BiListCheck } from "react-icons/bi";
 import { BsChevronRight, BsStarHalf } from "react-icons/bs";
 import { FaYoutube, FaHeart, FaRegHeart } from "react-icons/fa";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
-import KeywordList from "components/MovieInfo/KeywordList";
 import {
   framerTabVariants,
   getCleanTitle,

@@ -1,9 +1,9 @@
+import KeywordMedia from "components/Explore/KeywordMedia";
 import MetaWrapper from "components/MetaWrapper";
 import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
 import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404 } from "styles/GlobalComponents";
-import KeywordMedia from "components/Explore/KeywordMedia";
 
 const Keywords = ({ Movies, TV, keyword, error }) => {
 

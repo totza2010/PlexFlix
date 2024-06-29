@@ -2,9 +2,9 @@ import {
   CardImg,
   CardInfo,
   Cards,
-  CardsContainerGrid,
   ReleaseDate
 } from "components/MediaTemplate/TemplateStyles";
+import { PostersWrapper } from "components/Posters/PostersStyles";
 import RatingTag from "components/RatingTag/RatingTag";
 import { motion } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
@@ -17,7 +17,6 @@ import {
   RecommendedWrapper,
   InfoTitle
 } from "./RecommendationsStyles";
-import { PostersWrapper } from "components/Posters/PostersStyles";
 
 const Recommendations = ({ data, type }) => {
   if (type !== "lists")

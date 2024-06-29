@@ -1,37 +1,11 @@
+import CompanyMedia from "components/Explore/CompanyMedia";
 import MetaWrapper from "components/MetaWrapper";
 import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
 import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404 } from "styles/GlobalComponents";
-import CompanyMedia from "components/Explore/CompanyMedia";
 
 const Keywords = ({ Movies, TV, company, error }) => {
-  const tvPosters = Movies?.results?.map(({ poster_path }) =>
-    poster_path
-      ? `https://image.tmdb.org/t/p/w185${poster_path}`
-      : "/Images/DefaultImage.png"
-  );
-  const moviePosters = Movies?.results?.map(({ poster_path }) =>
-    poster_path
-      ? `https://image.tmdb.org/t/p/w185${poster_path}`
-      : "/Images/DefaultImage.png"
-  );
-
-  if (moviePosters.length % 2 !== 0 && moviePosters.length > 10) {
-    moviePosters.pop();
-  }
-
-  let colCount;
-  const postersLength = moviePosters?.length;
-
-  if (postersLength > 10) {
-    colCount =
-      Math.ceil(postersLength / 2) % 2 === 0
-        ? Math.ceil(postersLength / 2)
-        : Math.ceil(postersLength / 2) + 1;
-  } else {
-    colCount = postersLength;
-  }
 
   const expectedUrl = getCleanTitle(company.id, company.name);
 
