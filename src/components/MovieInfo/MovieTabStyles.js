@@ -17,7 +17,6 @@ export const SelectionContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   justify-content: center;
-  padding: 0px 4.2vw 0px;
 
   @media only ${(props) => props.theme.breakpoints.xs} {
     grid-template-columns: repeat(1, 1fr);

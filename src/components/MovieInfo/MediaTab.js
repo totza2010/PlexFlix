@@ -94,9 +94,7 @@ const MediaTab = ({ images }) => {
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
               <Posters posters={backdropsSelected} />
-            </ModulesWrapper>
           </motion.div>
         )}
 
@@ -108,9 +106,7 @@ const MediaTab = ({ images }) => {
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
               <Posters posters={postersSelected} />
-            </ModulesWrapper>
           </motion.div>
         )}
 
@@ -122,9 +118,7 @@ const MediaTab = ({ images }) => {
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
-            <ModulesWrapper>
               <Posters posters={logosSelected} />
-            </ModulesWrapper>
           </motion.div>
         )}
       </AnimatePresence>
