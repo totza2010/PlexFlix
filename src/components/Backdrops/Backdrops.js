@@ -11,8 +11,8 @@ const Backdrops = ({ backdrops }) => {
       {backdrops?.length > 0 ? (
         <BackdropsWrapper>
           {backdrops.map((item, i) => (
-            <BackdropsImgContainer key={i}>
-              <BackdropsImg className='relative text-center'>
+              <BackdropsImg key={i} className='relative text-center'
+              style={{ "--aspectRatio": item?.aspect_ratio }}>
                 <Image
                   src={`https://image.tmdb.org/t/p/w1280${item.file_path}`}
                   alt='backdrop'
@@ -25,7 +25,6 @@ const Backdrops = ({ backdrops }) => {
 
                 <DownloadMediaButton item={item.file_path} />
               </BackdropsImg>
-            </BackdropsImgContainer>
           ))}
         </BackdropsWrapper>
       ) : (
