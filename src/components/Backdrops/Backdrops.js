@@ -3,7 +3,7 @@ import PlaceholderText from "components/PlaceholderText";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import { Fragment } from "react";
-import { BackdropsImg, BackdropsImgContainer, BackdropsWrapper } from "./BackdropsStyles";
+import { BackdropsImg, BackdropsWrapper } from "./BackdropsStyles";
 
 const Backdrops = ({ backdrops }) => {
   return (

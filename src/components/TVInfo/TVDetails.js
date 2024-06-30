@@ -2,6 +2,7 @@ import { setFavorite, addToWatchlist } from "api/user";
 import DominantColor from "components/DominantColor/DominantColor";
 import AddToListModal from "components/List/AddToListModal";
 import { useModal } from "components/Modal/Modal";
+import KeywordList from "components/MovieInfo/KeywordList";
 import {
   Credits,
   CreditsWrapper,
@@ -34,7 +35,6 @@ import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { framerTabVariants, getCleanTitle, getRating } from "src/utils/helper";
 import { useMediaContext } from "Store/MediaContext";
 import { useUserContext } from "Store/UserContext";
-import KeywordList from "components/MovieInfo/KeywordList";
 import {
   Button,
   DetailsHeroWrap,

@@ -1,12 +1,9 @@
-import Backdrops from "components/Backdrops/Backdrops";
 import Cast from "components/Cast/Cast";
 import MediaTab from "components/MovieInfo/MediaTab";
 import { TabSelectionTitle, tabStyling, TabIcon } from "components/MovieInfo/MovieTabStyles";
-import Posters from "components/Posters/Posters";
 import Reviews from "components/Reviews/Reviews";
 import BackdropsSvg from "components/Svg/backdrops";
 import CastSvg from "components/Svg/cast";
-import PostersSvg from "components/Svg/posters";
 import ReviewsSvg from "components/Svg/reviews";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";

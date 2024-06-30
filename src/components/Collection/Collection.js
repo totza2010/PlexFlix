@@ -4,6 +4,7 @@ import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
+import { getCleanTitle } from "src/utils/helper";
 import {
   ModulesWrapper,
   DetailsCollectionHeroWrap,
@@ -82,9 +83,7 @@ const Collection = ({ details, genres }) => {
                   {genres?.map((item, i) => (
                     <Link
                       key={item.id}
-                      href={`/genre/${
-                        item.id.toString() + "-" + item.name.replaceAll(" ", "-")
-                      }/movies`}
+                      href={`/genre/${getCleanTitle(item?.id, item?.name)}/movies`}
                       passHref
                       scroll={false}>
                       <Rounded className={genres?.length == i + 1 ? "sep" : ""}>{item.name}</Rounded>
