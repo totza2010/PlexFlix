@@ -29,13 +29,13 @@ export const apiEndpoints = {
     setRating: ({ mediaType, mediaId }) =>
       `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
 
-    setRatingEpisode: ({ mediaType, mediaId, SeasonNumber, EpisodeNumber }) =>
+    setRatingEpisode: ({ mediaId, SeasonNumber, EpisodeNumber }) =>
       `${baseUrlV3}/tv/${mediaId}/season/${SeasonNumber}/episode/${EpisodeNumber}/rating`,
 
     deleteRating: ({ mediaType, mediaId }) =>
       `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
 
-    deleteRatingEpisode: ({ mediaType, mediaId, SeasonNumber, EpisodeNumber }) =>
+    deleteRatingEpisode: ({ mediaId, SeasonNumber, EpisodeNumber }) =>
       `${baseUrlV3}/tv/${mediaId}/season/${SeasonNumber}/episode/${EpisodeNumber}/rating`,
 
     getRecommendations: ({ mediaType, accountId, pageQuery = 1 }) =>
@@ -165,7 +165,8 @@ export const apiEndpoints = {
     getTVLists: ({ tvId, pageQuery = 1 }) =>
       `${baseUrlV3}/tv/${tvId}/lists?language=en-US&page=${pageQuery}`
   },
-  language: `${baseUrlV3}/configuration/languages`
+  language: `${baseUrlV3}/configuration/languages`,
+  cfWorker: "https://imdbtechnical.98mohitkumar.workers.dev"
 };
 
 export const blurPlaceholder =

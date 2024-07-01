@@ -21,6 +21,7 @@ import {
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
+import TechnicalDetails from "components/TechnicalDetails/TechnicalDetails";
 import Toast, { useToast } from "components/Toast/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
@@ -62,7 +63,8 @@ const TVDetails = ({
     trailerLink,
     homepage,
     crewData,
-    releaseYear
+    releaseYear,
+    technicalDetails
   },
   seasons,
   keywords
@@ -212,6 +214,8 @@ const TVDetails = ({
                   </Button>
                 </a>
               )}
+
+              <TechnicalDetails data={technicalDetails} />
 
               <div className='mb-3'>
                 <AddToListModal mediaType='tv' mediaId={id} />

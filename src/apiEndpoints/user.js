@@ -197,7 +197,6 @@ export const setRating = async ({ mediaType, mediaId, SeasonNumber = null, Episo
 
   const url = mediaType === "tv/episodes"
     ? apiEndpoints.user.setRatingEpisode({
-        mediaType,
         mediaId,
         SeasonNumber,
         EpisodeNumber
@@ -299,7 +298,6 @@ export const deleteRating = async ({ mediaType, mediaId, SeasonNumber = null, Ep
 
   const url = mediaType === "tv/episodes"
     ? apiEndpoints.user.deleteRatingEpisode({
-        mediaType,
         mediaId,
         SeasonNumber,
         EpisodeNumber

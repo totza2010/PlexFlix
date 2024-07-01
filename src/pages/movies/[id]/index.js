@@ -39,6 +39,7 @@ const Movie = ({
   recommendations,
   keywords,
   convertedData,
+  technicalDetails,
   error
 }) => {
   const [showEaster, setShowEaster] = useState(false);
@@ -107,7 +108,8 @@ const Movie = ({
               crewData,
               collection,
               socialIds,
-              homepage
+              homepage,
+              technicalDetails
             }}
             keywords={keywords}
           />
@@ -236,6 +238,21 @@ export const getServerSideProps = async (ctx) => {
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Writer").slice(0, 3),
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Characters").slice(0, 2)
     ];
+
+    const imdbId = movieDetails?.external_ids?.imdb_id;
+
+    const technicalDetails = await fetch(apiEndpoints.cfWorker, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: imdbId
+      })
+    });
+
+    const technicalDetailsData = await technicalDetails.json();
+
     return {
       props: {
         id: movieDetails?.id,
@@ -270,6 +287,7 @@ export const getServerSideProps = async (ctx) => {
         recommendations: movieDetails?.recommendations?.results,
         keywords,
         convertedData,
+        technicalDetails: technicalDetailsData || null,
         error: false
       }
     };

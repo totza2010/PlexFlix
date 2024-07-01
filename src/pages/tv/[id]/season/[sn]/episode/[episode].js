@@ -3,22 +3,21 @@ import Breadcrumbs from "components/Breadcrumbs/Breadcrumbs";
 import { CastGrid, CastImg, CastWrapper } from "components/Cast/CastStyles";
 import DominantColor from "components/DominantColor/DominantColor";
 import MetaWrapper from "components/MetaWrapper";
+import { useModal } from "components/Modal/Modal";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
+import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
+import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
+import Toast, { useToast } from "components/Toast/Toast";
 import { SeasonsRelease } from "components/TVInfo/TVStyles";
+
 import { motion } from "framer-motion";
 import { apiEndpoints, blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { useMediaContext } from "Store/MediaContext";
-import { useUserContext } from "Store/UserContext";
-import RatingModal from "components/RatingModal/RatingModal";
-import Toast, { useToast } from "components/Toast/Toast";
-import { useModal } from "components/Modal/Modal";
-import { BsStarHalf } from "react-icons/bs";
-import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import { AiFillStar } from "react-icons/ai";
+import { BsStarHalf } from "react-icons/bs";
 import {
   fetchOptions,
   getCleanTitle,
@@ -27,6 +26,8 @@ import {
   getReleaseYear,
   getRuntime
 } from "src/utils/helper";
+import { useMediaContext } from "Store/MediaContext";
+import { useUserContext } from "Store/UserContext";
 import {
   EpisodeInfoWrapper,
   EpisodeShowCaseWrapper,

@@ -4,7 +4,10 @@ import DominantColor from "components/DominantColor/DominantColor";
 import MetaWrapper from "components/MetaWrapper";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import Posters from "components/Posters/Posters";
+import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
+import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
+import Toast, { useToast } from "components/Toast/Toast";
 import { SeasonsRelease } from "components/TVInfo/TVStyles";
 import { motion } from "framer-motion";
 import { apiEndpoints, blurPlaceholder } from "globals/constants";
@@ -12,14 +15,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useRef, useState } from "react";
-import { BiChevronRight } from "react-icons/bi";
-import { useMediaContext } from "Store/MediaContext";
-import { useUserContext } from "Store/UserContext";
-import RatingModal from "components/RatingModal/RatingModal";
-import Toast, { useToast } from "components/Toast/Toast";
-import { BsStarHalf } from "react-icons/bs";
-import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import { AiFillStar } from "react-icons/ai";
+import { BiChevronRight } from "react-icons/bi";
+import { BsStarHalf } from "react-icons/bs";
 import {
   getRating,
   getReleaseYear,
@@ -29,6 +27,8 @@ import {
   getCleanTitle,
   fetchOptions
 } from "src/utils/helper";
+import { useMediaContext } from "Store/MediaContext";
+import { useUserContext } from "Store/UserContext";
 
 import {
   EpisodeImg,

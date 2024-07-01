@@ -37,7 +37,8 @@ const TvShow = ({
   tagline,
   keywords,
   convertedData,
-  trailerLink
+  trailerLink,
+  technicalDetails,
 }) => {
   return (
     <Fragment>
@@ -71,7 +72,8 @@ const TvShow = ({
               crewData,
               trailerLink,
               homepage,
-              releaseYear
+              releaseYear,
+              technicalDetails
             }}
             seasons={seasons}
             keywords={keywords}
@@ -188,6 +190,20 @@ export const getServerSideProps = async (ctx) => {
       (item) => item?.site === "YouTube" && item?.type === "Trailer"
     );
 
+    const imdbId = tvData?.external_ids?.imdb_id;
+
+    const technicalDetails = await fetch(apiEndpoints.cfWorker, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        id: imdbId
+      })
+    });
+
+    const technicalDetailsData = await technicalDetails.json();
+
     return {
       props: {
         id: tvData?.id,
@@ -222,6 +238,7 @@ export const getServerSideProps = async (ctx) => {
         seasons: tvData?.seasons,
         reviews: tvData?.reviews?.results ?? [],
         recommendations: tvData?.recommendations?.results,
+        technicalDetails: technicalDetailsData || null,
         keywords,
         convertedData,
         error: false

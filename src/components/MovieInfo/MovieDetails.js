@@ -6,6 +6,7 @@ import KeywordList from "components/MovieInfo/KeywordList";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
+import TechnicalDetails from "components/TechnicalDetails/TechnicalDetails";
 import Toast, { useToast } from "components/Toast/Toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
@@ -77,6 +78,7 @@ const MovieDetails = ({
     collection,
     socialIds,
     homepage,
+    technicalDetails
   },
   easter,
   keywords
@@ -260,6 +262,8 @@ const MovieDetails = ({
                   </Button>
                 </a>
               )}
+
+              <TechnicalDetails data={technicalDetails} />
 
               <div className="mb-3 flex justify-start gap-3">
                 <AddToListModal mediaType="movie" mediaId={id} />
