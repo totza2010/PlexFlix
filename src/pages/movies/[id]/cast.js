@@ -129,7 +129,8 @@ export const getServerSideProps = async (ctx) => {
   try {
     const { id } = ctx.query;
     const movieId = id.split("-")[0];
-    const res = await fetch(apiEndpoints.movie.getMovieCredits({id:movieId}), fetchOptions());
+
+    const res = await fetch(apiEndpoints.movie.getMovieCredits({ id: movieId }), fetchOptions());
 
     if (!res.ok) {
       const errorDetails = await res.text();
@@ -154,7 +155,7 @@ export const getServerSideProps = async (ctx) => {
     }
 
     return {
-      props: { 
+      props: {
         movieData: data,
         cast: data?.credits?.cast || [],
         error: false
@@ -163,7 +164,7 @@ export const getServerSideProps = async (ctx) => {
   } catch (error) {
     console.log(error);
     return {
-      props: { 
+      props: {
         movieData: {},
         cast: [],
         error: true

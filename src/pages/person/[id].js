@@ -5,39 +5,67 @@ import { Fragment } from "react";
 import { fetchOptions, getCleanTitle } from "src/utils/helper";
 import { Error404 } from "styles/GlobalComponents";
 
-const Person = ({ error, personDetails }) => {
+const Person = ({ error, person }) => {
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - PlexFlix" : `${personDetails.name} - PlexFlix`}
-        image={`https://image.tmdb.org/t/p/w780${personDetails?.profile_path}`}
-        description={personDetails?.biography}
-        url={`${process.env.BUILD_URL}/person/${getCleanTitle(personDetails?.id, 
-          personDetails?.name
+        title={error ? "Not Found - PlexFlix" : `${person.name} - PlexFlix`}
+        image={`https://image.tmdb.org/t/p/w780${person?.profile_path}`}
+        description={person?.biography}
+        url={`${process.env.BUILD_URL}/person/${getCleanTitle(person?.id, 
+          person?.name
         )}`}
       />
 
-      {error ? <Error404>404</Error404> : <PersonDetails details={personDetails} />}
+      {error ? <Error404>404</Error404> : <PersonDetails details={person} />}
     </Fragment>
   );
 };
 
-Person.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
-    const response = await fetch(apiEndpoints.person.personDetails(ctx.query.id), fetchOptions());
-    const error = response.ok ? false : true;
+    const { id } = ctx.query;
+    const personId = id.split("-")[0];
 
-    if (error) {
-      throw new Error("cannot fetch details");
-    } else {
-      const personDetails = await response.json();
+    const [personRes] = await Promise.all([
+      fetch(apiEndpoints.person.personDetails(personId), fetchOptions())
+    ]);
+
+    if (!personRes.ok) {
+      const errorDetails = await personRes.text();
+      throw new Error(`Failed to fetch personRes details: ${personRes.status} - ${errorDetails}`);
+    }
+
+    const [person] = await Promise.all([
+      personRes.json()
+    ]);
+
+    if (!person) throw new Error("person not found");
+
+    const expectedUrl = getCleanTitle(person?.id, person?.name);
+
+    if (id !== `${expectedUrl}`) {
       return {
-        personDetails,
-        error
+        redirect: {
+          destination: `/person/${expectedUrl}`,
+          permanent: false,
+        },
       };
     }
-  } catch {
-    return { error: true };
+
+    return {
+      props: {
+        person,
+        error: false
+      }
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        error: true
+      }
+    };
   }
 };
 

@@ -17,7 +17,7 @@ import {
 } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
 
-const Cast = ({ tvData: { id, title, year, backdrop, poster }, cast, error }) => {
+const Cast = ({ tvData, cast, error }) => {
   const [filteredCast, setFilteredCast] = useState(cast);
   const timeoutRef = useRef(null);
 
@@ -41,21 +41,21 @@ const Cast = ({ tvData: { id, title, year, backdrop, poster }, cast, error }) =>
   return (
     <Fragment>
       <MetaWrapper
-        title={error ? "Not Found - PlexFlix" : `${title} (${year}) - Cast - PlexFlix`}
-        description={`${title} cast`}
-        image={`https://image.tmdb.org/t/p/w780${backdrop}`}
-        url={`${process.env.BUILD_URL}/tv/${id}/cast`}
+        title={error ? "Not Found - PlexFlix" : `${tvData.name} (${getReleaseYear(tvData?.first_air_date)}) - Cast - PlexFlix`}
+        description={`${tvData.name} cast`}
+        image={`https://image.tmdb.org/t/p/w780${tvData.backdrop}`}
+        url={`${process.env.BUILD_URL}/tv/${getCleanTitle(tvData?.id, tvData?.name)}/cast`}
       />
 
       {error ? (
         <Error404>404</Error404>
       ) : (
         <div className='relative mb-auto'>
-          <DominantColor image={poster} flip tint />
+          <DominantColor image={tvData?.poster} flip tint />
           <ModulesWrapper className='relative z-10'>
             <div className='text-center py-6'>
               <HeroInfoTitle className='mb-4'>
-                {title} ({year})
+                {tvData.name} ({getReleaseYear(tvData?.first_air_date)})
               </HeroInfoTitle>
 
               <div className='flex justify-between items-center py-2 max-sm:flex-col gap-5'>
@@ -136,42 +136,54 @@ const Cast = ({ tvData: { id, title, year, backdrop, poster }, cast, error }) =>
   );
 };
 
-Cast.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
     const { id } = ctx.query;
-    const res = await fetch(apiEndpoints.tv.getTvCredits({ id }), fetchOptions());
+    const tvId = id.split("-")[0];
 
-    if (res.ok) {
-      const data = await res.json();
+    const res = await fetch(apiEndpoints.tv.getTvCredits({ id: tvId }), fetchOptions());
 
-      const releaseYear = getReleaseYear(data?.first_air_date);
+    if (!res.ok) {
+      const errorDetails = await res.text();
+      throw new Error(`Failed to fetch list details: ${res.status} - ${errorDetails}`);
+    }
 
+    const [data] = await Promise.all([
+      res.json()
+    ]);
+
+    if (!data) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(data?.id, data?.name);
+
+    if (id !== `${expectedUrl}`) {
       return {
-        tvData: {
-          title: data?.name ?? "",
-          year: releaseYear,
-          backdrop: data?.backdrop_path,
-          poster: data?.poster_path,
-          id: data?.id
+        redirect: {
+          destination: `/tv/${expectedUrl}/cast`,
+          permanent: false,
         },
-        cast: mergeEpisodeCount(
+      };
+    }
+
+    return {
+      props: {
+        tvData: data,
+        cast:  mergeEpisodeCount(
           data?.aggregate_credits?.cast
             .map(({ roles, ...rest }) => roles.map((role) => ({ ...rest, ...role })))
             .flat()
         ),
         error: false
-      };
-    }
-    return {
-      tvData: {},
-      cast: [],
-      error: true
+      }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return {
-      tvData: {},
-      cast: [],
-      error: true
+      props: {
+        tvData: {},
+        cast: [],
+        error: true
+      }
     };
   }
 };

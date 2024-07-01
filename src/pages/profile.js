@@ -13,13 +13,15 @@ const Profile = ({ isValidSession }) => {
   return <ProfilePage />;
 };
 
-Profile.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   const data = await getSession(ctx);
   const hasTokenExpired = new Date() > new Date(data?.expires);
   const hasValidToken = data?.user?.accessToken && data?.user?.accountId;
 
   return {
-    isValidSession: hasValidToken && !hasTokenExpired
+    props: {
+      isValidSession: hasValidToken && !hasTokenExpired
+    }
   };
 };
 

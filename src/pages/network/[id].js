@@ -26,27 +26,53 @@ const Network = ({ networkDetails, networkMedia, error }) => {
   );
 };
 
-Network.getInitialProps = async (context) => {
+export const getServerSideProps = async (ctx) => {
   try {
-    const { id } = context.query;
+    const { id } = ctx.query;
     const networkId = id.split("-")[0];
 
-    const [res, networkMedia] = await Promise.all([
+    const [networkRes, networkMedia] = await Promise.all([
       fetch(apiEndpoints.network.networkDetails(networkId), fetchOptions()),
       fetch(apiEndpoints.network.networkMedia({ id: networkId }), fetchOptions())
     ]);
 
-    if (!res.ok) throw new Error("cannot fetch details");
+    if (!networkRes.ok) {
+      const errorDetails = await networkRes.text();
+      throw new Error(`Failed to fetch networkRes details: ${networkRes.status} - ${errorDetails}`);
+    }
 
-    const [data, networkMediaData] = await Promise.all([res.json(), networkMedia.json()]);
+    const [network, networkMediaData] = await Promise.all([
+      networkRes.json(), 
+      networkMedia.json()
+    ]);
+
+    if (!network) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(network?.id, network?.name);
+
+    if (id !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/network/${expectedUrl}`,
+          permanent: false,
+        },
+      };
+    }
 
     return {
-      networkDetails: data,
+      props: {
+      networkDetails: network,
       networkMedia: networkMediaData || [],
       error: false
+      }
     };
-  } catch {
-    return { error: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        error: true
+      }
+    };
   }
 };
 

@@ -6,20 +6,32 @@ const Login = () => {
   return <LoginPage />;
 };
 
-Login.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   const data = await getSession(ctx);
 
   if (data) {
     if (typeof window === "undefined") {
       ctx.res.writeHead(302, { location: "/profile" });
       ctx.res.end();
-      return { signedIn: true };
+      return {
+        props: {
+          signedIn: true
+        }
+      };
     } else {
       Router.push("/profile");
-      return { signedIn: true };
+      return {
+        props: {
+          signedIn: true
+        }
+      };
     }
   } else {
-    return { signedIn: false };
+    return {
+      props: {
+        signedIn: false
+      }
+    };
   }
 };
 

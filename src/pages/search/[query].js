@@ -27,7 +27,7 @@ const Search = ({ movieRes, tvRes, error, searchQuery, personsRes, keywordsRes }
   );
 };
 
-Search.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
     let searchQuery = ctx.query.query.replaceAll("+", " ");
     let year = "";
@@ -70,20 +70,22 @@ Search.getInitialProps = async (ctx) => {
       ]);
 
       return {
-        movieRes: {
-          results: movieRes.results,
-          count: movieRes.total_results
-        },
-        tvRes: { results: tvRes.results, count: tvRes.total_results },
-        error,
-        searchQuery: searchQuery,
-        personsRes: {
-          results: personsRes.results,
-          count: personsRes.total_results
-        },
-        keywordsRes: {
-          results: keywordsRes.results,
-          count: keywordsRes.total_results
+        props: {
+          movieRes: {
+            results: movieRes.results,
+            count: movieRes.total_results
+          },
+          tvRes: { results: tvRes.results, count: tvRes.total_results },
+          error,
+          searchQuery: searchQuery,
+          personsRes: {
+            results: personsRes.results,
+            count: personsRes.total_results
+          },
+          keywordsRes: {
+            results: keywordsRes.results,
+            count: keywordsRes.total_results
+          }
         }
       };
     } else {
@@ -104,26 +106,33 @@ Search.getInitialProps = async (ctx) => {
       ]);
 
       return {
-        movieRes: {
-          results: movieRes.results,
-          count: movieRes.total_results
-        },
-        tvRes: { results: tvRes.results, count: tvRes.total_results },
-        error,
-        searchQuery: searchQuery,
-        personsRes: {
-          results: personsRes.results,
-          count: personsRes.total_results
-        },
-        keywordsRes: {
-          results: keywordsRes.results,
-          count: keywordsRes.total_results
-        },
-        test: movieRes
+        props: {
+          movieRes: {
+            results: movieRes.results,
+            count: movieRes.total_results
+          },
+          tvRes: { results: tvRes.results, count: tvRes.total_results },
+          error,
+          searchQuery: searchQuery,
+          personsRes: {
+            results: personsRes.results,
+            count: personsRes.total_results
+          },
+          keywordsRes: {
+            results: keywordsRes.results,
+            count: keywordsRes.total_results
+          },
+          test: movieRes
+        }
       };
     }
-  } catch {
-    return { error: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        error: true
+      }
+    };
   }
 };
 
