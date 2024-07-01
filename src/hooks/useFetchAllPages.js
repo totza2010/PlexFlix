@@ -65,10 +65,14 @@ const useFetchAllPages = ({ endpoint, mediaType }) => {
     pageRef.current = 1;
   };
 
-  const validateMedia = ({ state, id, media }) => {
+  const validateMedia = ({ state, id, media, episode = false }) => {
     if (state === "removed") {
       // remove media
-      setMedia((prev) => prev?.filter((item) => item?.id !== id));
+      if (episode) {
+        setMedia(media);
+      } else {
+        setMedia((prev) => prev?.filter((item) => item?.id !== id));
+      }
     } else {
       // add media
       setMedia(media);

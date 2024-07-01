@@ -68,6 +68,15 @@ const MediaContextProvider = ({ children }) => {
     mediaType: "tv"
   });
 
+  const {
+    media: ratedTvShowsEpisode,
+    validateMedia: validateRatedTvShowsEpisode,
+    loading: ratedTvShowsEpisodeLoading
+  } = useFetchAllPages({
+    endpoint: "ratings",
+    mediaType: "tv/episodes"
+  });
+
   const { media: movieRecommendations, loading: movieRecommendationsLoading } = useFetchAllPages({
     endpoint: "recommendations",
     mediaType: "movie"
@@ -87,6 +96,7 @@ const MediaContextProvider = ({ children }) => {
         tvShowsWatchlist,
         ratedMovies,
         ratedTvShows,
+        ratedTvShowsEpisode,
         movieRecommendations,
         tvRecommendations,
 
@@ -96,6 +106,7 @@ const MediaContextProvider = ({ children }) => {
         favoriteTvShowsLoading,
         ratedMoviesLoading,
         ratedTvShowsLoading,
+        ratedTvShowsEpisodeLoading,
         movieRecommendationsLoading,
         tvRecommendationsLoading,
 
@@ -104,7 +115,8 @@ const MediaContextProvider = ({ children }) => {
         validateMoviesWatchlist,
         validateTvWatchlist,
         validateRatedMovies,
-        validateRatedTvShows
+        validateRatedTvShows,
+        validateRatedTvShowsEpisode
       }}>
       {children}
     </MediaContext.Provider>

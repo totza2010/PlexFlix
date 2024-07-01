@@ -11,8 +11,15 @@ import { apiEndpoints, blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Fragment, useRef } from "react";
+import { Fragment, useRef, useState } from "react";
 import { BiChevronRight } from "react-icons/bi";
+import { useMediaContext } from "Store/MediaContext";
+import { useUserContext } from "Store/UserContext";
+import RatingModal from "components/RatingModal/RatingModal";
+import Toast, { useToast } from "components/Toast/Toast";
+import { BsStarHalf } from "react-icons/bs";
+import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
+import { AiFillStar } from "react-icons/ai";
 import {
   getRating,
   getReleaseYear,
@@ -51,7 +58,30 @@ const Seasons = ({
 }) => {
   const router = useRouter();
   const routeRef = useRef(router.asPath);
+  const { userInfo } = useUserContext();
+  const { ratedTvShowsEpisode } = useMediaContext();
+  const ShowId = parseInt(id.split("-")[0]);
+  const { isToastVisible, showToast, toastMessage } = useToast();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [episodeNumber, setEpisodeNumber] = useState(null);
+  const [episodeName, setEpisodeName] = useState(null);
+  const [backdrop, setBackdrop] = useState(null);
+  const [airDateEp, setReleaseDate] = useState(null);
+    console.log(ratedTvShowsEpisode)
 
+  const ratingModalHandler = (episodeNumber, episodeName, backdrop, airDateEp) => {
+    setEpisodeNumber(episodeNumber);
+    setEpisodeName(episodeName);
+    setBackdrop(backdrop);
+    setReleaseDate(airDateEp);
+
+    if (userInfo?.accountId) {
+      setIsModalVisible(true);
+    } else {
+      showToast({ message: 'Please login first to use this feature' });
+    }
+  };
+  
   const links = [
     {
       href: `/tv/${id}`,
@@ -173,6 +203,29 @@ const Seasons = ({
                             <p>{getRating(item.vote_average)}</p>
                           </Pill>
 
+<Pill>
+  {ratedTvShowsEpisode?.find(rate => rate?.show_id === ShowId && rate?.season_number === seasonNumber && rate?.episode_number === item.episode_number)?.rating || false ? (
+    <RatingOverlay className='media-page cursor-pointer' onClick={() =>
+      ratingModalHandler(
+        item.episode_number,
+        item.name,
+        item.still_path,
+        getReleaseDate(item.air_date)
+      )} >
+      <AiFillStar size='16px' />
+      <p className='m-0 font-semibold leading-tight'>{ratedTvShowsEpisode?.find(rate => rate?.show_id === ShowId && rate?.season_number === seasonNumber && rate?.episode_number === item.episode_number)?.rating || false}</p>
+    </RatingOverlay>
+  ) : (
+    <BsStarHalf size='20px' className="cursor-pointer" onClick={() =>
+      ratingModalHandler(
+        item.episode_number,
+        item.name,
+        item.still_path,
+        getReleaseDate(item.air_date)
+      )} />
+  )}
+</Pill>
+
                           <Span className='font-semibold text-lg'>{getRuntime(item.runtime)}</Span>
 
                           {new Date(getReleaseDate(item.air_date)) < new Date() ? (
@@ -257,47 +310,91 @@ const Seasons = ({
           ) : null}
         </Fragment>
       )}
+
+      <Toast isToastVisible={isToastVisible}>
+        <Span className='movieCastHead'>{toastMessage}</Span>
+      </Toast>
+
+      <RatingModal
+        mediaType='tv/episodes'
+        mediaId={ShowId}
+        SeasonNumber={seasonNumber}
+        EpisodeNumber={episodeNumber}
+        posterPath={backdrop}
+        title={episodeName}
+        releaseDate={airDateEp}
+        isOpen={isModalVisible}
+        closeModal={() => setIsModalVisible(false)}
+        mediaName={`${name} (${airDateEp}) Season ${seasonNumber} Episode ${episodeNumber}`}
+      />
     </Fragment>
   );
 };
 
-Seasons.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
+    const { id, sn } = ctx.query;
+    const tvId = id.split("-")[0];
+
     const [response, tvRes] = await Promise.all([
-      fetch(
-        apiEndpoints.tv.tvSeasonDetails({ id: ctx.query.id, seasonNumber: ctx.query.sn }),
-        fetchOptions()
-      ),
-      fetch(apiEndpoints.tv.tvDetailsNoAppend(ctx.query.id), fetchOptions())
+      fetch(apiEndpoints.tv.tvSeasonDetails({ id: tvId, seasonNumber: sn }),
+        fetchOptions()),
+      fetch(apiEndpoints.tv.tvDetailsNoAppend(tvId), fetchOptions())
     ]);
 
-    if (!response.ok) throw new Error("error fetching details");
+    if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Failed to fetch list details: ${response.status} - ${errorDetails}`);
+    }
 
-    const [res, tvData] = await Promise.all([response.json(), tvRes.json()]);
+    const [res, tvData] = await Promise.all([
+      response.json(),
+      tvRes.json()
+    ]);
+
+    if (!tvData) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);
+
+    if (id !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/tv/${expectedUrl}/season/${sn}`,
+          permanent: false,
+        },
+      };
+    }
 
     return {
-      error: false,
-      releaseDate: res?.air_date,
-      overview: res?.overview,
-      cast: mergeEpisodeCount(
-        res?.aggregate_credits?.cast
-          ?.map(({ roles, ...rest }) => roles.map((role) => ({ ...rest, ...role })))
-          .flat()
-      ),
-      posters: res?.images?.posters,
-      seasonPoster: res?.poster_path,
-      seasonName: res?.name,
-      seasonNumber: res?.season_number,
-      rating: res?.vote_average,
-      episodes: res?.episodes,
-      tvData: {
-        id: ctx.query.id,
-        name: tvData?.name,
-        airDate: tvData?.first_air_date
+      props: {
+        error: false,
+        releaseDate: res?.air_date,
+        overview: res?.overview,
+        cast: mergeEpisodeCount(
+          res?.aggregate_credits?.cast
+            ?.map(({ roles, ...rest }) => roles.map((role) => ({ ...rest, ...role })))
+            .flat()
+        ),
+        posters: res?.images?.posters,
+        seasonPoster: res?.poster_path,
+        seasonName: res?.name,
+        seasonNumber: res?.season_number,
+        rating: res?.vote_average,
+        episodes: res?.episodes,
+        tvData: {
+          id: ctx.query.id,
+          name: tvData?.name,
+          airDate: tvData?.first_air_date
+        }
       }
     };
-  } catch {
-    return { error: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        error: true
+      }
+    };
   }
 };
 

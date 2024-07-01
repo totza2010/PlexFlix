@@ -23,12 +23,20 @@ export const apiEndpoints = {
     getWatchlist: ({ mediaType, accountId, pageQuery = 1 }) =>
       `${baseUrlV3}/account/${accountId}/watchlist/${mediaType}?language=en-US&sort_by=created_at.desc&page=${pageQuery}`,
 
-    setRating: ({ mediaType, mediaId }) => `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
-
     getRated: ({ mediaType, accountId, pageQuery = 1 }) =>
       `${baseUrlV3}/account/${accountId}/rated/${mediaType}?language=en-US&sort_by=created_at.desc&page=${pageQuery}`,
 
-    deleteRating: ({ mediaType, mediaId }) => `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
+    setRating: ({ mediaType, mediaId }) =>
+      `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
+
+    setRatingEpisode: ({ mediaType, mediaId, SeasonNumber, EpisodeNumber }) =>
+      `${baseUrlV3}/tv/${mediaId}/season/${SeasonNumber}/episode/${EpisodeNumber}/rating`,
+
+    deleteRating: ({ mediaType, mediaId }) =>
+      `${baseUrlV3}/${mediaType}/${mediaId}/rating`,
+
+    deleteRatingEpisode: ({ mediaType, mediaId, SeasonNumber, EpisodeNumber }) =>
+      `${baseUrlV3}/tv/${mediaId}/season/${SeasonNumber}/episode/${EpisodeNumber}/rating`,
 
     getRecommendations: ({ mediaType, accountId, pageQuery = 1 }) =>
       `${baseUrlV4}/account/${accountId}/${mediaType}/recommendations?page=${pageQuery}&language=en-US`,

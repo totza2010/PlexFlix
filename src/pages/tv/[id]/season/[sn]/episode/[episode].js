@@ -11,6 +11,14 @@ import { apiEndpoints, blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
+import { useMediaContext } from "Store/MediaContext";
+import { useUserContext } from "Store/UserContext";
+import RatingModal from "components/RatingModal/RatingModal";
+import Toast, { useToast } from "components/Toast/Toast";
+import { useModal } from "components/Modal/Modal";
+import { BsStarHalf } from "react-icons/bs";
+import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
+import { AiFillStar } from "react-icons/ai";
 import {
   fetchOptions,
   getCleanTitle,
@@ -43,6 +51,20 @@ const Episode = ({
   posters,
   tvData: { id, name, airDate }
 }) => {
+  const { userInfo } = useUserContext();
+  const { ratedTvShowsEpisode } = useMediaContext();
+  const { isToastVisible, showToast, toastMessage } = useToast();
+  const ShowId = parseInt(id.split("-")[0]);
+  const savedRating = ratedTvShowsEpisode?.find(item => item?.show_id === ShowId && item?.season_number === seasonNumber && item?.episode_number === episodeNumber)?.rating || false;
+  const { isModalVisible, openModal, closeModal } = useModal();
+
+  const ratingModalHandler = () => {
+    if (userInfo?.accountId) {
+      openModal();
+    } else {
+      showToast({ message: "Please login first to use this feature" });
+    }
+  };
   const links = [
     {
       href: `/tv/${id}`,
@@ -65,8 +87,8 @@ const Episode = ({
           error
             ? "Not Found - PlexFlix"
             : `${name} (${getReleaseYear(
-                airDate
-              )}) S${seasonNumber}E${episodeNumber} - Details - PlexFlix`
+              airDate
+            )}) S${seasonNumber}E${episodeNumber} - Details - PlexFlix`
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${backdrop}`}
@@ -115,6 +137,17 @@ const Episode = ({
 
                     <Pill>
                       <p>{getRating(rating)}</p>
+                    </Pill>
+
+                    <Pill>
+                      {savedRating ? (
+                        <RatingOverlay loading={+isToastVisible} className='media-page cursor-pointer' onClick={ratingModalHandler} >
+                          <AiFillStar size='16px' />
+                          <p className='m-0 font-semibold leading-tight'>{savedRating}</p>
+                        </RatingOverlay>
+                      ) : (
+                        <BsStarHalf size='20px' loading={+isToastVisible} className="cursor-pointer" onClick={ratingModalHandler} />
+                      )}
                     </Pill>
 
                     <Span className='font-semibold text-lg'>{getRuntime(runtime)}</Span>
@@ -193,51 +226,96 @@ const Episode = ({
           ) : null}
         </Fragment>
       )}
+
+      <Toast isToastVisible={isToastVisible}>
+        <Span className='movieCastHead'>{toastMessage}</Span>
+      </Toast>
+
+      <RatingModal
+        mediaType='tv/episodes'
+        mediaId={ShowId}
+        SeasonNumber={seasonNumber}
+        EpisodeNumber={episodeNumber}
+        posterPath={backdrop}
+        title={episodeName}
+        releaseDate={releaseDate}
+        isOpen={isModalVisible}
+        closeModal={closeModal}
+        mediaName={`${name} (${airDate}) Season ${seasonNumber} Episode ${episodeNumber}`}
+      />
     </Fragment>
   );
 };
 
-export default Episode;
-
-Episode.getInitialProps = async (ctx) => {
+export const getServerSideProps = async (ctx) => {
   try {
+    const { id, sn, episode } = ctx.query;
+    const tvId = id.split("-")[0];
+
     const [response, tvRes] = await Promise.all([
       fetch(
         apiEndpoints.tv.episodeDetails({
-          id: ctx.query.id,
-          seasonNumber: ctx.query.sn,
-          episodeNumber: ctx.query.episode
-        }),
-        fetchOptions()
+          id: tvId,
+          seasonNumber: sn,
+          episodeNumber: episode
+        }), fetchOptions()
       ),
-      fetch(apiEndpoints.tv.tvDetailsNoAppend(ctx.query.id), fetchOptions())
+      fetch(apiEndpoints.tv.tvDetailsNoAppend(tvId), fetchOptions())
     ]);
 
-    if (!response.ok) throw new Error("error fetching details");
+    if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Failed to fetch list details: ${response.status} - ${errorDetails}`);
+    }
 
-    const [res, tvData] = await Promise.all([response.json(), tvRes.json()]);
+    const [res, tvData] = await Promise.all([
+      response.json(),
+      tvRes.json()
+    ]);
+
+    if (!tvData) throw new Error("List not found");
+
+    const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);
+
+    if (id !== `${expectedUrl}`) {
+      return {
+        redirect: {
+          destination: `/tv/${expectedUrl}/season/${sn}/episode/${episode}`,
+          permanent: false,
+        },
+      };
+    }
 
     const { cast, guest_stars } = res?.credits;
 
     return {
-      error: false,
-      releaseDate: res?.air_date,
-      overview: res?.overview,
-      cast: cast.concat(guest_stars) || [],
-      seasonNumber: res?.season_number,
-      episodeNumber: res?.episode_number,
-      episodeName: res?.name,
-      rating: res?.vote_average,
-      backdrop: res?.still_path,
-      runtime: res?.runtime,
-      posters: res?.images?.stills,
-      tvData: {
-        id: ctx.query.id,
-        name: tvData?.name,
-        airDate: tvData?.first_air_date
+      props: {
+        error: false,
+        releaseDate: res?.air_date,
+        overview: res?.overview,
+        cast: cast.concat(guest_stars) || [],
+        seasonNumber: res?.season_number,
+        episodeNumber: res?.episode_number,
+        episodeName: res?.name,
+        rating: res?.vote_average,
+        backdrop: res?.still_path,
+        runtime: res?.runtime,
+        posters: res?.images?.stills,
+        tvData: {
+          id: ctx.query.id,
+          name: tvData?.name,
+          airDate: tvData?.first_air_date
+        }
       }
     };
-  } catch {
-    return { error: true };
+  } catch (error) {
+    console.log(error);
+    return {
+      props: {
+        error: true
+      }
+    };
   }
 };
+
+export default Episode;

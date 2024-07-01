@@ -186,33 +186,44 @@ export const addToWatchlist = async ({ mediaType, mediaId, watchlistState }) => 
   }
 };
 
-export const setRating = async ({ mediaType, mediaId, rating }) => {
+export const setRating = async ({ mediaType, mediaId, SeasonNumber = null, EpisodeNumber = null, rating }) => {
   const {
     user: { accountId, accessToken }
   } = await getSession();
 
-  if (accountId) {
-    const rated = await fetch(
-      apiEndpoints.user.setRating({
+  if (!accountId) {
+    return { success: false };
+  }
+
+  const url = mediaType === "tv/episodes"
+    ? apiEndpoints.user.setRatingEpisode({
+        mediaType,
+        mediaId,
+        SeasonNumber,
+        EpisodeNumber
+      })
+    : apiEndpoints.user.setRating({
         mediaType,
         mediaId
-      }),
-      fetchOptions({
-        method: "POST",
-        token: accessToken,
-        body: {
-          value: rating
-        }
-      })
-    );
+      });
 
-    if (rated.ok) {
-      return await rated.json();
-    } else {
-      return {
-        success: false
-      };
-    }
+  const rated = await fetch(
+    url,
+    fetchOptions({
+      method: "POST",
+      token: accessToken,
+      body: {
+        value: rating
+      }
+    })
+  );
+
+  if (rated.ok) {
+    return await rated.json();
+  } else {
+    return {
+      success: false
+    };
   }
 };
 
@@ -277,31 +288,41 @@ export const updateList = async ({ id, listData }) => {
 };
 
 // DELETE requests
-
-export const deleteRating = async ({ mediaType, mediaId }) => {
+export const deleteRating = async ({ mediaType, mediaId, SeasonNumber = null, EpisodeNumber = null }) => {
   const {
     user: { accountId, accessToken }
   } = await getSession();
 
-  if (accountId) {
-    const deleted = await fetch(
-      apiEndpoints.user.deleteRating({
+  if (!accountId) {
+    return { success: false };
+  }
+
+  const url = mediaType === "tv/episodes"
+    ? apiEndpoints.user.deleteRatingEpisode({
+        mediaType,
+        mediaId,
+        SeasonNumber,
+        EpisodeNumber
+      })
+    : apiEndpoints.user.deleteRating({
         mediaType,
         mediaId
-      }),
-      fetchOptions({
-        method: "DELETE",
-        token: accessToken
-      })
-    );
+      });
 
-    if (deleted.ok) {
-      return await deleted.json();
-    } else {
-      return {
-        success: false
-      };
-    }
+  const deleted = await fetch(
+    url,
+    fetchOptions({
+      method: "DELETE",
+      token: accessToken
+    })
+  );
+
+  if (deleted.ok) {
+    return await deleted.json();
+  } else {
+    return {
+      success: false
+    };
   }
 };
 

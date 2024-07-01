@@ -13,6 +13,8 @@ import { RatingStarsContainer } from "./RatingStyles";
 const RatingModal = ({
   mediaType,
   mediaId,
+  SeasonNumber = null,
+  EpisodeNumber = null,
   mediaName,
   closeModal,
   posterPath,
@@ -21,7 +23,7 @@ const RatingModal = ({
   title
 }) => {
   const [rating, updateRating] = useState(0);
-  const { ratedMovies, ratedTvShows, validateRatedMovies, validateRatedTvShows } =
+  const { ratedMovies, ratedTvShows, ratedTvShowsEpisode, validateRatedMovies, validateRatedTvShows, validateRatedTvShowsEpisode } =
     useMediaContext();
   const { showToast, isToastVisible, toastMessage } = useToast();
 
@@ -31,14 +33,17 @@ const RatingModal = ({
     closeModal: closeDeleteConfirmationModal
   } = useModal();
 
-  const savedRating =
-    mediaType === "movie"
-      ? ratedMovies?.find((item) => item?.id === mediaId)?.rating || false
-      : ratedTvShows?.find((item) => item?.id === mediaId)?.rating || false;
+  const savedRating = mediaType === "movie" 
+  ? ratedMovies?.find(item => item?.id === mediaId)?.rating || false 
+  : mediaType === "tv" 
+    ? ratedTvShows?.find(item => item?.id === mediaId)?.rating || false 
+    : mediaType === "tv/episodes" 
+      ? ratedTvShowsEpisode?.find(item => item?.show_id === mediaId && item?.season_number === SeasonNumber && item?.episode_number === EpisodeNumber)?.rating || false 
+      : false;
 
   const ratingSubmissionHandler = async () => {
     if (rating) {
-      const res = await setRating({ mediaType, mediaId, rating });
+      const res = await setRating({ mediaType, mediaId, SeasonNumber, EpisodeNumber, rating });
 
       if (res?.success) {
         if (mediaType === "movie") {
@@ -61,7 +66,7 @@ const RatingModal = ({
             id: mediaId,
             media: updatedRatedMovies
           });
-        } else {
+        } else if (mediaType === "tv") {
           let updatedRatedTvShows = [...ratedTvShows];
           const index = updatedRatedTvShows.findIndex((item) => item?.id === mediaId);
 
@@ -81,6 +86,27 @@ const RatingModal = ({
             id: mediaId,
             media: updatedRatedTvShows
           });
+        } else if (mediaType === "tv/episodes") {
+          let updatedRatedTvShowsEpisode = [...ratedTvShowsEpisode];
+          const index = updatedRatedTvShowsEpisode.findIndex(item => item?.show_id === mediaId && item?.season_number === SeasonNumber && item?.episode_number === EpisodeNumber);
+
+          if (index > -1) {
+            updatedRatedTvShowsEpisode[index].rating = rating;
+          } else {
+            updatedRatedTvShowsEpisode.unshift({
+              show_id: mediaId,
+              season_number: SeasonNumber,
+              episode_number: EpisodeNumber,
+              rating,
+              title
+            });
+          }
+          validateRatedTvShowsEpisode({
+            state: "added",
+            id: mediaId,
+            media: updatedRatedTvShowsEpisode,
+            episode: true
+          });
         }
 
         showToast({ message: "Rating submitted successfully" });
@@ -93,7 +119,7 @@ const RatingModal = ({
   };
 
   const deleteRatingHandler = async () => {
-    const res = await deleteRating({ mediaType, mediaId });
+    const res = await deleteRating({ mediaType, mediaId, SeasonNumber, EpisodeNumber });
 
     if (res?.success) {
       if (mediaType === "movie") {
@@ -101,12 +127,37 @@ const RatingModal = ({
           state: "removed",
           id: mediaId
         });
-      } else {
+      } else if (mediaType === "tv") {
         validateRatedTvShows({
           state: "removed",
           id: mediaId
         });
+      } else if (mediaType === "tv/episodes") {
+        let updatedRatedTvShowsEpisode = [...ratedTvShowsEpisode];
+        const index = updatedRatedTvShowsEpisode.findIndex(item => item?.show_id === mediaId && item?.season_number === SeasonNumber && item?.episode_number === EpisodeNumber);
+
+        if (index > -1) {
+          updatedRatedTvShowsEpisode[index].rating = rating;
+        } else {
+          updatedRatedTvShowsEpisode.unshift({
+            show_id: mediaId,
+            season_number: SeasonNumber,
+            episode_number: EpisodeNumber,
+            rating,
+            title
+          });
+        }
+        validateRatedTvShowsEpisode({
+          state: "removed",
+          id: mediaId,
+          media: updatedRatedTvShowsEpisode,
+          episode: true
+        });
       }
+
+      showToast({ message: "Rating deleted successfully" });
+    } else {
+      showToast({ message: "Something went wrong, please try again later" });
     }
     closeDeleteConfirmationModal();
   };
