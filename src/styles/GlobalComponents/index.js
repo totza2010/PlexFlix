@@ -525,12 +525,6 @@ export const EpisodeShowCaseWrapper = styled.div`
   gap: 3rem;
   align-items: flex-start;
 
-  @media only ${(props) => props.theme.breakpoints.ip} {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-  }
-
   .image-wrapper {
     position: relative;
     min-width: 20rem;
@@ -540,6 +534,15 @@ export const EpisodeShowCaseWrapper = styled.div`
     align-self: flex-start;
     box-shadow: rgba(0, 0, 0, 0.14) 0px 4px 5px 0px, rgba(0, 0, 0, 0.12) 0px 1px 10px 0px,
       rgba(0, 0, 0, 0.2) 0px 2px 4px -1px;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.ip} {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    .image-wrapper {
+      min-width: 15rem;
+    }
   }
 `;
 
