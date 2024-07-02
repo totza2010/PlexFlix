@@ -389,8 +389,8 @@ export const Loader = styled.div`
 `;
 
 export const SeasonExpandedContainer = styled.div`
-  width: clamp(350px, 90vw, 1400px);
-  padding: 3rem 4.2vw;
+  width: 100%;
+  padding: 64px 4.2vw 5px;
   margin-bottom: auto;
 
   @media only ${(props) => props.theme.breakpoints.xs} {
@@ -436,12 +436,9 @@ export const SeasonShowcaseImg = styled.div`
 `;
 
 export const SeasonEpisodesWrapper = styled.div`
+  position: relative;
   width: 100%;
-  padding-top: 4rem;
-
-  @media only ${(props) => props.theme.breakpoints.sm} {
-    padding-top: 3rem;
-  }
+  z-index: 1;
 `;
 
 export const SeasonCommonOverview = styled.p`

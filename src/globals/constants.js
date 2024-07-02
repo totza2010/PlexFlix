@@ -88,12 +88,12 @@ export const apiEndpoints = {
     trendingTV: `${baseUrlV3}/trending/tv/day?language=en-US&page=1`,
 
     tvDetails: (id) =>
-      `${baseUrlV3}/tv/${id}?language=en-US&append_to_response=images,videos,aggregate_credits,reviews,recommendations,external_ids&include_image_language=en,null`,
+      `${baseUrlV3}/tv/${id}?language=en-US&append_to_response=videos,aggregate_credits,reviews,recommendations,external_ids`,
 
     tvDetailsNoAppend: (id) => `${baseUrlV3}/tv/${id}?language=en-US`,
 
     tvSeasonDetails: ({ id, seasonNumber }) =>
-      `${baseUrlV3}/tv/${id}/season/${seasonNumber}?language=en-US&append_to_response=aggregate_credits,images&include_image_language=en,null`,
+      `${baseUrlV3}/tv/${id}/season/${seasonNumber}?language=en-US&append_to_response=aggregate_credits`,
 
     episodeDetails: ({ id, seasonNumber, episodeNumber }) =>
       `${baseUrlV3}/tv/${id}/season/${seasonNumber}/episode/${episodeNumber}?language=en-US&append_to_response=images,credits&include_image_language=en,null`,
@@ -106,7 +106,13 @@ export const apiEndpoints = {
 
     tvGenreList: `${baseUrlV3}/genre/tv/list?language=en-US`,
 
-    images: (id) => `${baseUrlV3}/tv/${id}/images`
+    tvImages: (id) => `${baseUrlV3}/tv/${id}/images`,
+
+    tvSeasonImages: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/images`,
+
+    tvSeasonVideos: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/videos`,
+
+    tvSeasonEpisodeImages: ({id}) => `${baseUrlV3}/tv/${id}/season/{season_number}/images`
   },
   keywords: {
     tags: ({ id, type }) => 

@@ -116,7 +116,7 @@ export const getServerSideProps = async (ctx) => {
       fetch(apiEndpoints.tv.tvDetails(tvId), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
       fetch(apiEndpoints.keywords.tags({ id: tvId, type: "tv" }), fetchOptions()),
-      fetch(apiEndpoints.tv.images(tvId), fetchOptions())
+      fetch(apiEndpoints.tv.tvImages(tvId), fetchOptions())
     ]);
 
     if (!tvResponse.ok) {

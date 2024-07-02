@@ -56,3 +56,17 @@ export const PostersImg = styled.div`
     }
   }
 `;
+
+export const ModalS = styled.div`
+
+  .modal {
+min-height: 100vh;
+max-with: 100vh;
+
+    @media ${(props) => props.theme.breakpoints.hover} {
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+`;

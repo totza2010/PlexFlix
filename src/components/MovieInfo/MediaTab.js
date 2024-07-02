@@ -2,6 +2,7 @@ import Backdrops from "components/Backdrops/Backdrops";
 import Posters from "components/Posters/Posters";
 import Select from "components/Select/Select";
 import Tabs from "components/Tabs/Tabs";
+import Videos from "components/Videos/Videos";
 import { AnimatePresence, motion } from "framer-motion";
 import useSelects from "hooks/useSelects";
 import useTabs from "hooks/useTabs";
@@ -9,24 +10,19 @@ import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { TabSelectionTitle, tabStylingSM, SelectionContainer } from "./MovieTabStyles";
 
-const tabList2 = [
-  {
-    key: "posters",
-    name: "Posters"
-  },
-  {
-    key: "backdrops",
-    name: "Backdrops"
-  },
-  {
-    key: "logos",
-    name: "Logos"
-  }
-];
+const getTabList = (images, postersSelected, backdropsSelected, logosSelected) => {
+  const tabList = [];
+  if (images?.posters?.length) tabList.push({ key: "posters", name: `Posters (${postersSelected?.length})` });
+  if (images?.backdrops?.length) tabList.push({ key: "backdrops", name: `Backdrops (${backdropsSelected?.length})` });
+  if (images?.logos?.length) tabList.push({ key: "logos", name: `Logos (${logosSelected?.length})` });
+  return tabList;
+};
 
-const MediaTab = ({ images }) => {
+const MediaTab = ({ images, videos = false }) => {
+  
   const { activeTab, setTab } = useTabs({ tabLocation: "mediaTabState", defaultState: "posters" });
   const { activeSelect, setSelect } = useSelects({ selectLocation: "mediaSelectState", defaultState: "en" });
+  const { activeSelect: activeSelect2, setSelect: setSelect2 } = useSelects({ selectLocation: "media2SelectState", defaultState: "all" });
 
   const filterByLocale = (items) => items.filter(item =>
     activeSelect && activeSelect !== "all"
@@ -34,16 +30,37 @@ const MediaTab = ({ images }) => {
       : item.iso_639_1.iso_639_1
   );
 
-  const postersSelected = filterByLocale(images.posters);
-  const backdropsSelected = filterByLocale(images.backdrops);
-  const logosSelected = filterByLocale(images.logos);
+  const filterByType = (items) => items.filter(item =>
+    activeSelect2 && activeSelect2 !== "all"
+      ? item.type.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g) // Match words
+        .map(x => x.toLowerCase()) // Convert to lowercase
+        .join('_') === activeSelect2
+      : item.type
+  );
+
+  const postersSelected = images?.posters ? filterByLocale(images?.posters) : [];
+  const backdropsSelected = images?.backdrops ? filterByLocale(images?.backdrops) : [];
+  const logosSelected = images?.logos ? filterByLocale(images?.logos) : [];
+  const videosSelected = videos ? filterByLocale(filterByType(images)) : [];
 
   const localList = new Set(
-    (activeTab === "posters" ? images.posters :
-      activeTab === "backdrops" ? images.backdrops :
-        activeTab === "logos" ? images.logos : [])
+    (videos ? images : (activeTab === "posters" ? images?.posters || [] :
+      activeTab === "backdrops" ? images?.backdrops || [] :
+        activeTab === "logos" ? images?.logos || [] : []))
       .map(item => item.iso_639_1)
   );
+
+  const Options2 = [
+    { key: "all", value: "All" },
+    ...Array.from(images).map(item => ({
+      key: item?.type.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g) // Match words
+        .map(x => x.toLowerCase()) // Convert to lowercase
+        .join('_'),
+      value: `${item?.type}`
+    }))
+  ].filter((option, index, self) =>
+    index === self.findIndex(t => t.key === option.key)
+  ).sort((a, b) => a.value.localeCompare(b.value));
 
   const Options = [
     { key: "all", value: "All" },
@@ -59,17 +76,31 @@ const MediaTab = ({ images }) => {
     setSelect(key);
   };
 
+  const handleSelect2 = (key) => {
+    setSelect2(key);
+  };
+
+  const tabList2 = getTabList(images, postersSelected, backdropsSelected, logosSelected);
+
   return (
     <Fragment>
       <SelectionContainer className="mb-6 ml-auto">
         <div className='item grid justify-items-start'>
-          <Tabs tabList={tabList2} currentTab={activeTab} styling={{ tabStyling: tabStylingSM }}>
+          {videos ? (<div className='min-w-[250px] max-sm:min-w-full max-md:grow'>
+            <Select
+              options={Options2}
+              activeKey={activeSelect2 || "all"}
+              triggerText={Options2.find(item => item.key === activeSelect2)?.value || "All"}
+              baseSizeOptions
+              handleChange={handleSelect2}
+            />
+          </div>) : (<Tabs tabList={tabList2} currentTab={activeTab} styling={{ tabStyling: tabStylingSM }}>
             {tabList2.map(({ key, name }) => (
               <TabSelectionTitle key={key} onClick={() => setTab(key)} $active={activeTab === key}>
                 {name}
               </TabSelectionTitle>
             ))}
-          </Tabs>
+          </Tabs>)}
         </div>
         <div className='item grid justify-items-end'>
           <div className='min-w-[250px] max-sm:min-w-full max-md:grow'>
@@ -85,7 +116,8 @@ const MediaTab = ({ images }) => {
       </SelectionContainer>
 
       <AnimatePresence mode='wait' initial={false}>
-
+        {videos ? <Videos posters={videosSelected} /> : 
+        <Fragment>
         {activeTab === "posters" && (
           <motion.div
             key='posters'
@@ -120,7 +152,7 @@ const MediaTab = ({ images }) => {
             transition={{ duration: 0.5 }}>
             <Posters posters={logosSelected} />
           </motion.div>
-        )}
+        )}</Fragment>}
       </AnimatePresence>
     </Fragment>
   );

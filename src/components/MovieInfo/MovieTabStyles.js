@@ -16,20 +16,20 @@ export const tabStyling = css`
 export const SelectionContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  justify-content: center;
+  justify-content: normal;
 
   @media only ${(props) => props.theme.breakpoints.xs} {
     grid-template-columns: repeat(1, 1fr);
     gap: 1rem;
     padding: 0;
     .item {
-      justify-content: center;
+      justify-content: normal;
     }
   }
 `;
 
 export const tabStylingSM = css`
-  width: clamp(360px, 92vw, 420px);
+  width: clamp(360px, 50vw, 820px);
   min-height: 1rem;
   margin: 0;
 
