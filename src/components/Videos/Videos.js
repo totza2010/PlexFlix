@@ -46,12 +46,12 @@ const Videos = ({ posters }) => {
       {posters?.length > 0 ? (
         <PostersWrapper>
           {posters.map((item, i) => (
-            <div key={i} className="poster-item">
+            <div key={i} className="w-full">
               <PostersImg className='relative text-center'
-                style={{ "--aspectRatio": 1280 / 720 }}>
+                style={{ "--aspectRatio": 16/9 }}>
                 {item.name}
                 <Image
-                  src={`https://i.ytimg.com/vi/${item.key}/maxresdefault.jpg`}
+                  src={`https://i.ytimg.com/vi/${item.key}/0.jpg`}
                   alt='poster'
                   fill
                   style={{ objectFit: "cover" }}
