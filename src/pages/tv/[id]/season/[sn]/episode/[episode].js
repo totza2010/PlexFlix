@@ -1,10 +1,10 @@
 import Backdrops from "components/Backdrops/Backdrops";
-import Breadcrumbs from "components/Breadcrumbs/Breadcrumbs";
 import { CastGrid, CastImg, CastWrapper } from "components/Cast/CastStyles";
 import DominantColor from "components/DominantColor/DominantColor";
 import MetaWrapper from "components/MetaWrapper";
 import { useModal } from "components/Modal/Modal";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
+import NextPrev from "components/NextPrev/NextPrev";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
@@ -50,7 +50,9 @@ const Episode = ({
   episodeName,
   runtime,
   posters,
-  tvData: { id, name, airDate }
+  tvData: { id, name, airDate },
+  tvData2,
+  seasonData
 }) => {
   const { userInfo } = useUserContext();
   const { ratedTvShowsEpisode } = useMediaContext();
@@ -66,20 +68,6 @@ const Episode = ({
       showToast({ message: "Please login first to use this feature" });
     }
   };
-  const links = [
-    {
-      href: `/tv/${id}`,
-      label: "TV Show Details"
-    },
-    {
-      href: `/tv/${id}/season/${seasonNumber}`,
-      label: `Season ${seasonNumber}`
-    },
-    {
-      href: "#",
-      label: `${episodeName} (S${seasonNumber}E${episodeNumber})`
-    }
-  ];
 
   return (
     <Fragment>
@@ -104,7 +92,7 @@ const Episode = ({
             <DominantColor image={backdrop} tint isUsingBackdrop flip />
 
             <EpisodeInfoWrapper className='relative z-10'>
-              <Breadcrumbs links={links} />
+              <NextPrev tvData={tvData2} seasonData={seasonData} now={episodeNumber} />
 
               <h3 className='text-[calc(1.325rem_+_.9vw)] lg:text-[2rem] font-bold mb-4 pb-2'>
                 {name} ({getReleaseYear(releaseDate)})
@@ -253,7 +241,7 @@ export const getServerSideProps = async (ctx) => {
     const { id, sn, episode } = ctx.query;
     const tvId = id.split("-")[0];
 
-    const [response, tvRes] = await Promise.all([
+    const [response, tvRes, seasonRes] = await Promise.all([
       fetch(
         apiEndpoints.tv.episodeDetails({
           id: tvId,
@@ -261,7 +249,8 @@ export const getServerSideProps = async (ctx) => {
           episodeNumber: episode
         }), fetchOptions()
       ),
-      fetch(apiEndpoints.tv.tvDetailsNoAppend(tvId), fetchOptions())
+      fetch(apiEndpoints.tv.tvDetailsNoAppend(tvId), fetchOptions()),
+      fetch(apiEndpoints.tv.tvSeasonDetailsNoAppend({id: tvId, sn: sn}), fetchOptions())
     ]);
 
     if (!response.ok) {
@@ -269,9 +258,10 @@ export const getServerSideProps = async (ctx) => {
       throw new Error(`Failed to fetch list details: ${response.status} - ${errorDetails}`);
     }
 
-    const [res, tvData] = await Promise.all([
+    const [res, tvData, seasonData] = await Promise.all([
       response.json(),
-      tvRes.json()
+      tvRes.json(),
+      seasonRes.json()
     ]);
 
     if (!tvData) throw new Error("List not found");
@@ -306,7 +296,9 @@ export const getServerSideProps = async (ctx) => {
           id: ctx.query.id,
           name: tvData?.name,
           airDate: tvData?.first_air_date
-        }
+        },
+        tvData2: tvData,
+        seasonData: seasonData
       }
     };
   } catch (error) {

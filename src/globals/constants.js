@@ -92,6 +92,8 @@ export const apiEndpoints = {
 
     tvDetailsNoAppend: (id) => `${baseUrlV3}/tv/${id}?language=en-US`,
 
+    tvSeasonDetailsNoAppend: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}?language=en-US`,
+
     tvSeasonDetails: ({ id, seasonNumber }) =>
       `${baseUrlV3}/tv/${id}/season/${seasonNumber}?language=en-US&append_to_response=aggregate_credits`,
 

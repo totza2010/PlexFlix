@@ -1,18 +1,20 @@
-import Breadcrumbs from "components/Breadcrumbs/Breadcrumbs";
 import {
   Gradient,
   HeroInfoTitle,
   HeroInfoWrapper
 } from "components/MovieInfo/MovieDetailsStyles";
+import NextPrev from "components/NextPrev/NextPrev";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
+import Link from "next/link";
 import { Fragment } from "react";
 import {
   getRating,
   getReleaseYear,
   getReleaseDate,
-  getRuntime
+  getRuntime,
+  getCleanTitle
 } from "src/utils/helper";
 import {
   SeasonCommonOverview,
@@ -24,11 +26,12 @@ import {
   HeroImgWrapper
 } from "styles/GlobalComponents";
 
-const SeasonDetails = ({ seasonPoster, seasonName, releaseDate, rating, totalRuntime, overview, links }) => {
+const SeasonDetails = ({ seasonNumber, seasonPoster, seasonName, releaseDate, rating, totalRuntime, overview, tvData }) => {
+  const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);
   return (
     <Fragment>
       <HeroDetailsContainer className='relative mb-auto'>
-        <Breadcrumbs links={links} />
+        <NextPrev tvData={tvData} now={seasonNumber} />
         <DetailsHeroWrap className="!min-h-7">
           <HeroImgWrapper>
             <HeroImg className='relative text-center'>
@@ -45,25 +48,31 @@ const SeasonDetails = ({ seasonPoster, seasonName, releaseDate, rating, totalRun
                 blurDataURL={blurPlaceholder}
               />
             </HeroImg>
-
-            <SocialMediaLinks
-              links={{}}
-              homepage={null}
-              mediaDetails={{
-                title: seasonName,
-                description: overview
-              }}
-              className='!justify-start'
-            />
           </HeroImgWrapper>
 
           <Gradient />
 
           <HeroInfoWrapper className='max-w-5xl'>
             <HeroInfoTitle className='mb-2'>
-              {seasonName} ({getReleaseYear(releaseDate)})
+              <Link passHref href={`/tv/${expectedUrl}`}>
+                {tvData?.name} ({getReleaseYear(tvData?.first_air_date)})
+              </Link>
             </HeroInfoTitle>
             <div>
+
+              <TrWrapper className='flex-wrap -mt-2 !gap-0'>
+                <h4 className='font-semibold text-[1.25rem]'>{seasonName} ({getReleaseYear(releaseDate)})</h4>
+
+                <SocialMediaLinks
+                  links={{}}
+                  homepage={null}
+                  mediaDetails={{
+                    title: seasonName,
+                    description: overview
+                  }}
+                  className='!justify-start'
+                />
+              </TrWrapper>
 
               <TrWrapper className='flex-wrap mt-2'>
                 <h3 className='text-[1.25rem] m-0 font-semibold'>

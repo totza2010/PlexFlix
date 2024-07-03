@@ -27,19 +27,10 @@ const Seasons = ({
   seasonNumber,
   seasonName,
   seasonPoster,
-  tvData: { id, name, airDate }
+  tvData
 }) => {
-  const ShowId = parseInt(id.split("-")[0]);
-  const links = [
-    {
-      href: `/tv/${id}`,
-      label: `${name} (${getReleaseYear(airDate)})`
-    },
-    {
-      href: "#",
-      label: `${seasonName} (${getReleaseYear(releaseDate)})`
-    }
-  ];
+
+  const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);
 
   const totalRuntime = episodes?.reduce((acc, item) => acc + item.runtime, 0);
   return (
@@ -48,11 +39,11 @@ const Seasons = ({
         title={
           error
             ? "Not Found - PlexFlix"
-            : `${name}: ${seasonName} (${getReleaseYear(releaseDate)}) - PlexFlix`
+            : `${tvData?.name}: ${seasonName} (${getReleaseYear(releaseDate)}) - PlexFlix`
         }
         description={overview}
         image={`https://image.tmdb.org/t/p/w780${seasonPoster}`}
-        url={`${process.env.BUILD_URL}/tv/${id}/season/${seasonNumber}`}
+        url={`${process.env.BUILD_URL}/tv/${expectedUrl}/season/${seasonNumber}`}
       />
 
       {error ? (
@@ -62,16 +53,17 @@ const Seasons = ({
           <DominantColor image={seasonPoster} tint flip />
 
           <SeasonDetails
+          seasonNumber={seasonNumber}
             seasonPoster={seasonPoster}
             seasonName={seasonName}
             releaseDate={releaseDate}
             rating={rating}
             totalRuntime={totalRuntime}
             overview={overview}
-            links={links}
+            tvData={tvData}
           />
 
-          <SeasonTab credits={credits} images={images} videos={videos} episodes={episodes} ShowId={ShowId} ShowName={name} seasonNumber={seasonNumber} />
+          <SeasonTab credits={credits} images={images} videos={videos} episodes={episodes} ShowId={tvData.id} ShowName={tvData?.name} seasonNumber={seasonNumber} />
 
         </Fragment>
       )}
@@ -85,8 +77,7 @@ export const getServerSideProps = async (ctx) => {
     const tvId = id.split("-")[0];
 
     const [response, tvRes, languagesRes, imagesRes, videosRes] = await Promise.all([
-      fetch(apiEndpoints.tv.tvSeasonDetails({ id: tvId, seasonNumber: sn }),
-        fetchOptions()),
+      fetch(apiEndpoints.tv.tvSeasonDetails({ id: tvId, seasonNumber: sn }), fetchOptions()),
       fetch(apiEndpoints.tv.tvDetailsNoAppend(tvId), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
       fetch(apiEndpoints.tv.tvSeasonImages({ id: tvId, sn }), fetchOptions()),
@@ -166,11 +157,7 @@ export const getServerSideProps = async (ctx) => {
         seasonNumber: res?.season_number,
         rating: res?.vote_average,
         episodes: res?.episodes,
-        tvData: {
-          id: ctx.query.id,
-          name: tvData?.name,
-          airDate: tvData?.first_air_date
-        }
+        tvData: tvData
       }
     };
   } catch (error) {
