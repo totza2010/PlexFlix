@@ -202,7 +202,7 @@ export const getServerSideProps = async (ctx) => {
       })
     });
 
-    const technicalDetailsData = await technicalDetails.json();
+    const technicalDetailsData = imdbId ? await technicalDetails.json() : null;
 
     return {
       props: {
