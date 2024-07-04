@@ -110,6 +110,8 @@ export const apiEndpoints = {
 
     tvImages: (id) => `${baseUrlV3}/tv/${id}/images`,
 
+    tvVideos: (id) => `${baseUrlV3}/tv/${id}/videos`,
+
     tvSeasonImages: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/images`,
 
     tvSeasonVideos: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/videos`,

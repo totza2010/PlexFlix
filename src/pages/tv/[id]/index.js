@@ -39,6 +39,7 @@ const TvShow = ({
   convertedData,
   trailerLink,
   technicalDetails,
+  videos
 }) => {
   return (
     <Fragment>
@@ -87,6 +88,7 @@ const TvShow = ({
             cast={cast}
             reviews={reviews}
             images={convertedData}
+            videos={videos}
           />
 
           {/* recommendations */}
@@ -112,11 +114,12 @@ export const getServerSideProps = async (ctx) => {
     const { id } = ctx.query;
     const tvId = id.split("-")[0];
 
-    const [tvResponse, languagesResponse, keywordsRes, imagesRes] = await Promise.all([
+    const [tvResponse, languagesResponse, keywordsRes, imagesRes, videosRes] = await Promise.all([
       fetch(apiEndpoints.tv.tvDetails(tvId), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
       fetch(apiEndpoints.keywords.tags({ id: tvId, type: "tv" }), fetchOptions()),
-      fetch(apiEndpoints.tv.tvImages(tvId), fetchOptions())
+      fetch(apiEndpoints.tv.tvImages(tvId), fetchOptions()),
+      fetch(apiEndpoints.tv.tvVideos(tvId), fetchOptions())
     ]);
 
     if (!tvResponse.ok) {
@@ -124,11 +127,12 @@ export const getServerSideProps = async (ctx) => {
       throw new Error(`Failed to fetch movieResponse details: ${tvResponse.status} - ${errorDetails}`);
     }
 
-    const [tvData, languages, keywords, images] = await Promise.all([
+    const [tvData, languages, keywords, images, videoDatas] = await Promise.all([
       tvResponse.json(),
       languagesResponse.json(),
       keywordsRes.json(),
-      imagesRes.json()
+      imagesRes.json(),
+      videosRes.json()
     ]);
 
     if (!tvData) throw new Error("List not found");
@@ -183,6 +187,15 @@ export const getServerSideProps = async (ctx) => {
       logos: images.logos.map(logo => ({
         ...logo,
         iso_639_1: mapLanguage(logo.iso_639_1)
+      }))
+    };
+
+    // Convert the data
+    const videos = {
+      ...videoDatas,
+      results: videoDatas?.results.map(result => ({
+        ...result,
+        iso_639_1: mapLanguage(result.iso_639_1)
       }))
     };
 
@@ -241,6 +254,7 @@ export const getServerSideProps = async (ctx) => {
         technicalDetails: technicalDetailsData || null,
         keywords,
         convertedData,
+        videos: videos?.results || [],
         error: false
       }
     };
