@@ -114,7 +114,9 @@ export const apiEndpoints = {
 
     tvSeasonVideos: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/videos`,
 
-    tvSeasonEpisodeImages: ({id}) => `${baseUrlV3}/tv/${id}/season/{season_number}/images`
+    tvSeasonEpisodeImages: ({id, sn, ep}) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/images`,
+
+    tvSeasonEpisodeVideos: ({id, sn, ep}) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/videos`
   },
   keywords: {
     tags: ({ id, type }) => 

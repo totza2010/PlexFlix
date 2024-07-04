@@ -228,6 +228,33 @@ export const HeroImg = styled.div`
   }
 `;
 
+export const HeroImg2 = styled.div`
+  width: 20rem;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  box-shadow: 0 0 2rem rgb(12 12 12 /0.4);
+  overflow: hidden;
+  animation: heroImg 1.5s cubic-bezier(0.77, 0, 0.18, 1) forwards;
+
+  &.no-shadow {
+    box-shadow: none;
+  }
+
+  @keyframes heroImg {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media only ${(props) => props.theme.breakpoints.ip} {
+    width: 15rem;
+  }
+`;
+
 export const DetailsCollectionHeroWrap = styled.div`
   display: grid;
   grid-template-columns: 17rem 1fr;
@@ -264,6 +291,28 @@ export const DetailsHeroWrap = styled.div`
 
   @media only ${(props) => props.theme.breakpoints.lg} {
     grid-template-columns: 280px 1fr;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.ip} {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+`;
+
+export const DetailsHeroWrap2 = styled.div`
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  min-height: 35rem;
+  gap: 0rem 3rem;
+
+  &.no-grid {
+    display: block;
+    min-height: auto;
+    margin-top: 2rem;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.lg} {
+    grid-template-columns: 15rem 1fr;
   }
 
   @media only ${(props) => props.theme.breakpoints.ip} {
@@ -326,8 +375,29 @@ export const HeroImgWrapper = styled.div`
     gap: 1.5rem;
   }
 `;
+
+export const HeroImgWrapper2 = styled.div`
+  width: 100%;
+  height: max-content;
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  gap: 1.75rem 0rem;
+  align-self: flex-start;
+
+  @media only ${(props) => props.theme.breakpoints.ip} {
+    padding: 0rem;
+    grid-template-columns: 240px;
+    place-items: flex-end flex-start;
+    gap: 1.5rem;
+  }
+
+  @media only ${(props) => props.theme.breakpoints.xs} {
+    gap: 1.5rem;
+  }
+`;
 export const SocialMediaLinksWrapper = styled.div`
-  width: 17rem;
+  width: fit-content;
   height: 45px;
   color: #ebebeb;
   display: flex;
@@ -340,7 +410,7 @@ export const SocialMediaLinksWrapper = styled.div`
   @media only ${(props) => props.theme.breakpoints.ip} {
     justify-content: flex-start;
     width: fit-content;
-    gap: 3rem;
+    gap: 1rem;
   }
 
   @media only ${(props) => props.theme.breakpoints.xs} {

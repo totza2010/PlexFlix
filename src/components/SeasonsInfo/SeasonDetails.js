@@ -60,8 +60,8 @@ const SeasonDetails = ({ seasonNumber, seasonPoster, seasonName, releaseDate, ra
             </HeroInfoTitle>
             <div>
 
-              <TrWrapper className='flex-wrap -mt-2 !gap-0'>
-                <h4 className='font-semibold text-[1.25rem]'>{seasonName} ({getReleaseYear(releaseDate)})</h4>
+              <TrWrapper className='flex-wrap !gap-0'>
+                <h4 className='font-semibold text-[1.25rem]'>{seasonName}</h4>
 
                 <SocialMediaLinks
                   links={{}}
