@@ -30,7 +30,6 @@ const Movie = ({
   status,
   companies,
   language,
-  country,
   budget,
   revenue,
   cast,
@@ -123,7 +122,6 @@ const Movie = ({
               revenue,
               language
             }}
-            country={country}
             companies={companies}
           />
 
@@ -201,7 +199,6 @@ export const getServerSideProps = async (ctx) => {
       ]);
     }
 
-    const country = movieDetails?.production_companies?.[0]?.origin_country || "US";
     const releaseYear = getReleaseYear(movieDetails?.release_date);
     const releaseDate = getReleaseDate(movieDetails?.release_date);
     const status = movieDetails?.status || "TBA";
@@ -287,7 +284,6 @@ export const getServerSideProps = async (ctx) => {
         status,
         companies,
         language: language?.english_name || language?.name || "TBA",
-        country,
         budget: movieDetails?.budget,
         revenue: movieDetails?.revenue,
         cast: {

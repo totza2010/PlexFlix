@@ -1,12 +1,8 @@
 import CompaniesListModal from "components/companies/CompaniesList";
-import countryToCurrency from "country-to-currency";
-import getSymbolFromCurrency from "currency-symbol-map";
 import { FactsFlexWrapper } from "styles/GlobalComponents";
 import { FactsFieldSet, FactsLegend, FactsWrapper, Span } from "./MovieDetailsStyles";
 
-const MovieFacts = ({ facts, country, companies }) => {
-  const currencyCode = countryToCurrency[country];
-  const currency = getSymbolFromCurrency(currencyCode);
+const MovieFacts = ({ facts, companies }) => {
 
   return (
     <FactsFieldSet>
@@ -25,7 +21,14 @@ const MovieFacts = ({ facts, country, companies }) => {
         <FactsFlexWrapper>
           <Span>Budget</Span>
           {facts.budget ? (
-            <Span>{currency + " " + facts.budget.toLocaleString()}</Span>
+            <Span>
+              {facts.budget.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              })}
+            </Span>
           ) : (
             <Span>-</Span>
           )}
@@ -34,7 +37,14 @@ const MovieFacts = ({ facts, country, companies }) => {
         <FactsFlexWrapper>
           <Span>Revenue</Span>
           {facts.revenue ? (
-            <Span>{currency + " " + facts.revenue.toLocaleString()}</Span>
+            <Span>
+              {facts.revenue.toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+              })}
+            </Span>
           ) : (
             <Span>-</Span>
           )}
