@@ -24,6 +24,26 @@ export const CardsContainerGrid = styled.div`
   }
 `;
 
+export const CardsContainerGrid2 = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  gap: clamp(20px, 3vw, 32px);
+
+  &.xl-row-gap {
+    gap: clamp(16px, 5vw, 44px) clamp(20px, 3vw, 32px);
+  }
+
+  @media only ${(props) => props.theme.breakpoints.xl} {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media only ${(props) => props.theme.breakpoints.sm} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
 export const Cards = styled.div`
   width: 100%;
   align-self: flex-start;

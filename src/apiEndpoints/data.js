@@ -20,3 +20,21 @@ export const getCompanies = async ({ companiesId, type }) => {
     };
   }
 };
+
+export const getTv = async (ShowId) => {
+  const tvRes = await fetch(
+    apiEndpoints.tv.tvDetailsNoAppend(ShowId), fetchOptions()
+  );
+
+  if (tvRes?.ok) {
+    const data = await tvRes.json();
+    return {
+      success: true,
+      ...data
+    };
+  } else {
+    return {
+      success: false
+    };
+  }
+};

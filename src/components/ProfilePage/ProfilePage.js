@@ -18,6 +18,12 @@ const tabList = [
   { key: "tv", name: "TV Shows" }
 ];
 
+const tabListRating = [
+  { key: "movies", name: "Movies" },
+  { key: "tv_seasons", name: "TV Seasons" },
+  { key: "tv_episodes", name: "TV Episodes" }
+];
+
 const linearTabsList = [
   { key: "watchlist", name: "Watchlist" },
   { key: "ratings", name: "Ratings" },
@@ -39,6 +45,20 @@ export const ProfileMediaTab = ({ children }) => {
   );
 };
 
+export const ProfileRatingTab = ({ children }) => {
+  const { activeTab, setTab } = useTabs({
+    tabLocation: "profileMediaRatingTabState",
+    defaultState: "movies"
+  });
+
+  return (
+    <Fragment>
+      <Tabs tabList={tabListRating} currentTab={activeTab} setTab={setTab} className='mb-4' />
+      {children(activeTab)}
+    </Fragment>
+  );
+};
+
 const Profile = () => {
   const { userInfo } = useUserContext();
   const {
@@ -47,7 +67,8 @@ const Profile = () => {
     moviesWatchlist,
     tvShowsWatchlist,
     ratedMovies,
-    ratedTvShows
+    ratedTvShows,
+    ratedTvShowsEpisode
   } = useMediaContext();
 
   const userAvatar = {
@@ -58,7 +79,7 @@ const Profile = () => {
   const stats = {
     Watchlist: moviesWatchlist?.length + tvShowsWatchlist?.length ?? 0,
     Favorites: favoriteMovies?.length + favoriteTvShows?.length ?? 0,
-    Rated: ratedMovies?.length + ratedTvShows.length ?? 0
+    Rated: ratedMovies?.length + ratedTvShows?.length + ratedTvShowsEpisode?.length ?? 0
   };
 
   const { activeTab, setTab } = useTabs({
