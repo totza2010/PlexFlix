@@ -27,10 +27,15 @@ const tabList = [
     key: "images",
     name: "Images",
     svg: (active) => <BackdropsSvg color={active ? "white" : "black"} />
+  },
+  {
+    key: "videos",
+    name: "Videos",
+    svg: (active) => <BackdropsSvg color={active ? "white" : "black"} />
   }
 ];
 
-const MovieTab = ({ cast, reviews, images }) => {
+const MovieTab = ({ cast, reviews, images, videos }) => {
   const { activeTab, setTab } = useTabs({ tabLocation: "movieTabState", defaultState: "cast" });
 
   return (
@@ -83,6 +88,20 @@ const MovieTab = ({ cast, reviews, images }) => {
             transition={{ duration: 0.5 }}>
             <ModulesWrapper>
               <MediaTab images={images} />
+            </ModulesWrapper>
+          </motion.div>
+        )}
+
+        {activeTab === "videos" && (
+          <motion.div
+            key='videos'
+            variants={framerTabVariants}
+            initial='hidden'
+            animate='visible'
+            exit='hidden'
+            transition={{ duration: 0.5 }}>
+            <ModulesWrapper>
+              <MediaTab images={videos} videos={true} />
             </ModulesWrapper>
           </motion.div>
         )}

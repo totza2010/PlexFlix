@@ -80,7 +80,9 @@ export const apiEndpoints = {
 
     nowPlaying: ({ region }) => `${baseUrlV3}/movie/now_playing?page=1&region=${region}`,
 
-    images: (id) => `${baseUrlV3}/movie/${id}/images`
+    images: (id) => `${baseUrlV3}/movie/${id}/images`,
+
+    videos: (id) => `${baseUrlV3}/movie/${id}/videos`
   },
   tv: {
     popularTV: `${baseUrlV3}/tv/popular?language=en-US&page=1`,

@@ -1,9 +1,6 @@
 import MediaTab from "components/MovieInfo/MediaTab";
 import { TabSelectionTitle, tabStyling, TabIcon } from "components/MovieInfo/MovieTabStyles";
-import EpisodeCredits from "./EpisodeCredits";
-import SeasonEpisodes from "components/SeasonsInfo/SeasonEpisodes";
 import BackdropsSvg from "components/Svg/backdrops";
-import CastSvg from "components/Svg/cast";
 import ReviewsSvg from "components/Svg/reviews";
 import Tabs from "components/Tabs/Tabs";
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,6 +8,7 @@ import useTabs from "hooks/useTabs";
 import { Fragment } from "react";
 import { framerTabVariants } from "src/utils/helper";
 import { ModulesWrapper } from "styles/GlobalComponents";
+import EpisodeCredits from "./EpisodeCredits";
 
 const EpisodeTab = ({ credits, images, videos }) => {
   const { cast, crew } = credits;

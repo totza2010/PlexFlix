@@ -1,7 +1,7 @@
 import DominantColor from "components/DominantColor/DominantColor";
-import MetaWrapper from "components/MetaWrapper";
-import EpisodeTab from "components/EpisodeInfo/EpisodeTab";
 import EpisodeDetails from "components/EpisodeInfo/EpisodeDetails";
+import EpisodeTab from "components/EpisodeInfo/EpisodeTab";
+import MetaWrapper from "components/MetaWrapper";
 import { apiEndpoints } from "globals/constants";
 import { Fragment } from "react";
 import {

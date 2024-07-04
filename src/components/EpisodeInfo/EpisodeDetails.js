@@ -1,21 +1,21 @@
+import { useModal } from "components/Modal/Modal";
 import {
+  Span,
   Gradient,
   HeroInfoTitle,
   HeroInfoWrapper
 } from "components/MovieInfo/MovieDetailsStyles";
 import NextPrev from "components/NextPrev/NextPrev";
+import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
+import RatingModal from "components/RatingModal/RatingModal";
 import SocialMediaLinks from "components/SocialMediaLinks/SocialMediaLinks";
+import Toast, { useToast } from "components/Toast/Toast";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { useMediaContext } from "Store/MediaContext";
-import { useUserContext } from "Store/UserContext";
-import Toast, { useToast } from "components/Toast/Toast";
-import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
-import RatingModal from "components/RatingModal/RatingModal";
-import { useModal } from "components/Modal/Modal";
-import { Span } from "components/MovieInfo/MovieDetailsStyles";
+import { AiFillStar } from "react-icons/ai";
+import { BsStarHalf } from "react-icons/bs";
 import {
   getRating,
   getReleaseYear,
@@ -23,6 +23,8 @@ import {
   getRuntime,
   getCleanTitle
 } from "src/utils/helper";
+import { useMediaContext } from "Store/MediaContext";
+import { useUserContext } from "Store/UserContext";
 import {
   SeasonCommonOverview,
   TrWrapper,
@@ -32,8 +34,6 @@ import {
   HeroImg2,
   HeroImgWrapper2
 } from "styles/GlobalComponents";
-import { AiFillStar } from "react-icons/ai";
-import { BsStarHalf } from "react-icons/bs";
 
 const EpisodeDetails = ({ episodeNumber, backdrop, episodeName, releaseDate, rating, runtime, overview, tvData, seasonData }) => {
   const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);

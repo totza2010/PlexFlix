@@ -40,6 +40,7 @@ const Movie = ({
   keywords,
   convertedData,
   technicalDetails,
+  videos,
   error
 }) => {
   const [showEaster, setShowEaster] = useState(false);
@@ -127,7 +128,7 @@ const Movie = ({
           />
 
           {/* movie tabs */}
-          <MovieTab cast={cast} reviews={reviews} images={convertedData} />
+          <MovieTab cast={cast} reviews={reviews} images={convertedData} videos={videos} />
 
           {/* recommendations */}
           {recommendations?.length > 0 ? (
@@ -153,11 +154,12 @@ export const getServerSideProps = async (ctx) => {
     const { id } = ctx.query;
     const movieId = id.split("-")[0];
 
-    const [movieResponse, languagesResponse, keywordsRes, imagesRes] = await Promise.all([
+    const [movieResponse, languagesResponse, keywordsRes, imagesRes, videosRes] = await Promise.all([
       fetch(apiEndpoints.movie.movieDetails(movieId), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
       fetch(apiEndpoints.keywords.tags({ id: movieId, type: "movie" }), fetchOptions()),
-      fetch(apiEndpoints.movie.images(movieId), fetchOptions())
+      fetch(apiEndpoints.movie.images(movieId), fetchOptions()),
+      fetch(apiEndpoints.movie.videos(movieId), fetchOptions())
     ]);
 
     if (!movieResponse.ok) {
@@ -165,11 +167,12 @@ export const getServerSideProps = async (ctx) => {
       throw new Error(`Failed to fetch movieResponse details: ${movieResponse.status} - ${errorDetails}`);
     }
 
-    const [movieDetails, languages, keywords, images] = await Promise.all([
+    const [movieDetails, languages, keywords, images, videosData] = await Promise.all([
       movieResponse.json(),
       languagesResponse.json(),
       keywordsRes.json(),
-      imagesRes.json()
+      imagesRes.json(),
+      videosRes.json()
     ]);
 
     if (!movieDetails) throw new Error("List not found");
@@ -233,6 +236,15 @@ export const getServerSideProps = async (ctx) => {
       }))
     };
 
+    // Convert the data
+    const videos = {
+      ...videosData,
+      results: videosData?.results.map(result => ({
+        ...result,
+        iso_639_1: mapLanguage(result.iso_639_1)
+      }))
+    };
+
     const crewData = [
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Director").slice(0, 2),
       ...movieDetails?.credits?.crew?.filter((credit) => credit?.job === "Writer").slice(0, 3),
@@ -288,6 +300,7 @@ export const getServerSideProps = async (ctx) => {
         keywords,
         convertedData,
         technicalDetails: technicalDetailsData || null,
+        videos: videos?.results || [],
         error: false
       }
     };

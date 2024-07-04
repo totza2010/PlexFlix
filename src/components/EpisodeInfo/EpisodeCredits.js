@@ -11,7 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
 import {
-  framerTabVariants, getCleanTitle
+  getCleanTitle
 } from "src/utils/helper";
 
 import {
