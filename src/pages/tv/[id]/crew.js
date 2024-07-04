@@ -13,6 +13,7 @@ import {
   framerTabVariants,
   getCleanTitle,
   getReleaseYear,
+  mergeEpisodeCount
 } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
 
@@ -203,7 +204,11 @@ export const getServerSideProps = async (ctx) => {
     return {
       props: {
         tvData: data,
-        crew: data?.aggregate_credits?.crew || [],
+        crew:  mergeEpisodeCount(
+          data?.aggregate_credits?.crew
+            .map(({ jobs, ...rest }) => jobs.map((job) => ({ ...rest, ...job })))
+            .flat()
+        ),
         error: false,
       },
     };

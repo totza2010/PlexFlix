@@ -51,7 +51,7 @@ const EpisodeDetails = ({ episodeNumber, backdrop, episodeName, releaseDate, rat
       showToast({ message: "Please login first to use this feature" });
     }
   };
-  console.log(tvData)
+  
   return (
     <Fragment>
       <HeroDetailsContainer className='relative mb-auto'>

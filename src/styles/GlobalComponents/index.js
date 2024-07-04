@@ -530,7 +530,7 @@ export const SeasonCommonOverview = styled.p`
 
 export const EpisodeImg = styled.div`
   min-width: 15rem;
-  height: 140px;
+  aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
   align-self: flex-start;
