@@ -32,7 +32,7 @@ const RatingCTA = ({ mediaData }) => {
       />
 
       {rating && (
-        <RatingOverlay as={motion.button} whileTap={{ scale: 0.95 }} onClick={openModal} className="w-9">
+        <RatingOverlay as={motion.button} whileTap={{ scale: 0.95 }} onClick={openModal} className="w-8 !h-8">
           <AiFillStar size='20px' />
           <p className='m-0 font-semibold'>{rating}</p>
         </RatingOverlay>
