@@ -124,7 +124,27 @@ export const getServerSideProps = async (ctx) => {
 
     if (!tvResponse.ok) {
       const errorDetails = await tvResponse.text();
-      throw new Error(`Failed to fetch movieResponse details: ${tvResponse.status} - ${errorDetails}`);
+      throw new Error(`Failed to fetch tvResponse details: ${tvResponse.status} - ${errorDetails}`);
+    }
+
+    if (!languagesResponse.ok) {
+      const errorDetails = await languagesResponse.text();
+      throw new Error(`Failed to fetch languagesResponse details: ${languagesResponse.status} - ${errorDetails}`);
+    }
+
+    if (!keywordsRes.ok) {
+      const errorDetails = await keywordsRes.text();
+      throw new Error(`Failed to fetch keywordsRes details: ${keywordsRes.status} - ${errorDetails}`);
+    }
+
+    if (!imagesRes.ok) {
+      const errorDetails = await imagesRes.text();
+      throw new Error(`Failed to fetch imagesRes details: ${imagesRes.status} - ${errorDetails}`);
+    }
+
+    if (!videosRes.ok) {
+      const errorDetails = await videosRes.text();
+      throw new Error(`Failed to fetch videosRes details: ${videosRes.status} - ${errorDetails}`);
     }
 
     const [tvData, languages, keywords, images, videoDatas] = await Promise.all([
