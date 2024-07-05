@@ -173,30 +173,28 @@ export const getServerSideProps = async (ctx) => {
       return language ? language : { "iso_639_1": "null", "english_name": "No Language", "name": "No Language" };
     }
 
-    // Convert the data
     const convertedData = {
       ...images,
-      posters: images.posters.map(poster => ({
+      posters: images.posters ? images.posters.map(poster => ({
         ...poster,
         iso_639_1: mapLanguage(poster.iso_639_1)
-      })),
-      backdrops: images.backdrops.map(backdrop => ({
+      })) : [], // Default to an empty array if posters is undefined
+      backdrops: images.backdrops ? images.backdrops.map(backdrop => ({
         ...backdrop,
         iso_639_1: mapLanguage(backdrop.iso_639_1)
-      })),
-      logos: images.logos.map(logo => ({
+      })) : [], // Default to an empty array if backdrops is undefined
+      logos: images.logos ? images.logos.map(logo => ({
         ...logo,
         iso_639_1: mapLanguage(logo.iso_639_1)
-      }))
+      })) : [] // Default to an empty array if logos is undefined
     };
-
-    // Convert the data
+    
     const videos = {
       ...videoDatas,
-      results: videoDatas?.results.map(result => ({
+      results: videoDatas?.results ? videoDatas.results.map(result => ({
         ...result,
         iso_639_1: mapLanguage(result.iso_639_1)
-      }))
+      })) : [] // Default to an empty array if results is undefined
     };
 
     const trailer = tvData?.videos?.results?.find(
