@@ -78,7 +78,7 @@ const Videos = ({ posters }) => {
           ))}
         </PostersWrapper>
       ) : (
-        <PlaceholderText>No Posters Yet</PlaceholderText>
+        <PlaceholderText>No Videos Yet</PlaceholderText>
       )}
     </Fragment>
   );

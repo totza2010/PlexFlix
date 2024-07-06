@@ -1,7 +1,7 @@
 import { addToWatchlist, setFavorite } from "api/user";
 import DominantColor from "components/DominantColor/DominantColor";
 import AddToListModal from "components/List/AddToListModal";
-import { useModal } from "components/Modal/Modal";
+import Modal from "components/Modal/Modal";
 import KeywordList from "components/MovieInfo/KeywordList";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { blurPlaceholder } from "globals/constants";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { BiListPlus, BiListCheck } from "react-icons/bi";
 import { BsChevronRight, BsStarHalf } from "react-icons/bs";
@@ -23,6 +23,7 @@ import {
   getCleanTitle,
   getRating,
   getRuntime,
+  getReleaseYear
 } from "src/utils/helper";
 import { useMediaContext } from "Store/MediaContext";
 import { useUserContext } from "Store/UserContext";
@@ -95,7 +96,12 @@ const MovieDetails = ({
   const { isToastVisible, showToast, toastMessage } = useToast();
   const savedRating =
     ratedMovies?.find((item) => item?.id === id)?.rating ?? false;
-  const { isModalVisible, openModal, closeModal } = useModal();
+
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
+  const [isRatingModalVisible, setIsRatingModalVisible] = useState(false);
+
+  const [actionType, setActionType] = useState(null);
+  const [itemToRemove, setItemToRemove] = useState(null);
 
   // splice genres
   genres.length > 3 && genres.splice(3);
@@ -107,8 +113,19 @@ const MovieDetails = ({
     ?.map((item) => item.id)
     ?.includes(id);
 
+  const openConfirmationModal = () => setIsConfirmationModalVisible(true);
+  const closeConfirmationModal = () => setIsConfirmationModalVisible(false);
+  const openRatingModal = () => setIsRatingModalVisible(true);
+  const closeRatingModal = () => setIsRatingModalVisible(false);
+
   const favoriteHandler = async () => {
     if (userInfo?.accountId) {
+      if (isAddedToFavorites) {
+        setActionType('unfavorite');
+        setItemToRemove({ name: title, release_date: releaseDate });
+        openConfirmationModal();
+        return;
+      }
       const response = await setFavorite({
         mediaType: "movie",
         mediaId: id,
@@ -153,6 +170,12 @@ const MovieDetails = ({
 
   const watchlistHandler = async () => {
     if (userInfo?.accountId) {
+      if (isAddedToWatchlist) {
+        setActionType('unwatchlist');
+        setItemToRemove({ name: title, release_date: releaseDate });
+        openConfirmationModal();
+        return;
+      }
       const response = await addToWatchlist({
         mediaType: "movie",
         mediaId: id,
@@ -194,9 +217,40 @@ const MovieDetails = ({
     }
   };
 
+  const confirmRemoveHandler = async () => {
+    if (actionType === 'unwatchlist') {
+      const response = await addToWatchlist({
+        mediaType: "movie",
+        mediaId: id,
+        watchlistState: false,
+      });
+
+      if (response?.success) {
+        validateMoviesWatchlist({ state: "removed", id });
+        showToast({ message: "Removed from watchlist" });
+      } else {
+        showToast({ message: "Something went wrong, try again later" });
+      }
+    } else if (actionType === 'unfavorite') {
+      const response = await setFavorite({
+        mediaType: "movie",
+        mediaId: id,
+        favoriteState: false,
+      });
+
+      if (response?.success) {
+        validateFavoriteMovies({ state: "removed", id });
+        showToast({ message: "Removed from favorites" });
+      } else {
+        showToast({ message: "Something went wrong, try again later" });
+      }
+    }
+    closeConfirmationModal();
+  };
+
   const ratingModalHandler = () => {
     if (userInfo?.accountId) {
-      openModal();
+      openRatingModal();
     } else {
       showToast({ message: "Please login first to use this feature" });
     }
@@ -204,6 +258,35 @@ const MovieDetails = ({
 
   return (
     <Fragment>
+
+      {/* Modal for confirming removal */}
+      <Modal closeModal={closeConfirmationModal} isOpen={isConfirmationModalVisible} align='items-center' width='max-w-lg'>
+        <div>
+          <h4 className='text-2xl mb-4 font-semibold'>Confirm Action</h4>
+          <p className='text-lg'>
+            Are you sure you want to {actionType === 'unwatchlist' ? 'remove from watchlist' : 'remove from favorites'} <span className='font-bold'>{`${itemToRemove?.name} (${getReleaseYear(itemToRemove?.release_date)})`}</span>?
+          </p>
+
+          <div className='mt-6 flex gap-3'>
+            <Button
+              as={motion.button}
+              whileTap={{ scale: 0.95 }}
+              className='w-full secondary'
+              onClick={closeConfirmationModal}
+              type='button'>
+              Close
+            </Button>
+            <Button
+              as={motion.button}
+              whileTap={{ scale: 0.95 }}
+              className='w-full danger'
+              onClick={confirmRemoveHandler}
+              type='button'>
+              Delete
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <HeroDetailsContainer className="relative mb-auto">
         <HeroBgContainer className="absolute">
           <HeroBg className="absolute text-center">
@@ -494,8 +577,8 @@ const MovieDetails = ({
         posterPath={moviePoster}
         releaseDate={releaseDate}
         title={title}
-        isOpen={isModalVisible}
-        closeModal={closeModal}
+        isOpen={isRatingModalVisible}
+        closeModal={closeRatingModal}
         mediaName={`${title} (${releaseYear})`}
       />
     </Fragment>

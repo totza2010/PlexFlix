@@ -58,7 +58,6 @@ const Ratings = () => {
     };
     fetchTvNames();
   }, [ratedTvShowsEpisode]);
-// console.log(tvData)
   return (
     <Fragment>
       {ratedMoviesLoading || ratedTvShowsLoading || ratedTvShowsEpisodeLoading ? (

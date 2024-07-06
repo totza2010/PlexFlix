@@ -154,7 +154,7 @@ export const getServerSideProps = async (ctx) => {
       imagesRes.json(),
       videosRes.json()
     ]);
-console.log(images)
+    
     if (!tvData) throw new Error("List not found");
 
     const expectedUrl = getCleanTitle(tvData?.id, tvData?.name);

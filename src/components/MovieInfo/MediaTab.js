@@ -19,7 +19,7 @@ const getTabList = (images, postersSelected, backdropsSelected, logosSelected) =
 };
 
 const MediaTab = ({ images, videos = false }) => {
-  
+
   const { activeTab, setTab } = useTabs({ tabLocation: "mediaTabState", defaultState: "posters" });
   const { activeSelect, setSelect } = useSelects({ selectLocation: "mediaSelectState", defaultState: "en" });
   const { activeSelect: activeSelect2, setSelect: setSelect2 } = useSelects({ selectLocation: "media2SelectState", defaultState: "all" });
@@ -84,6 +84,7 @@ const MediaTab = ({ images, videos = false }) => {
 
   return (
     <Fragment>
+      {videosSelected?.length > 0 || postersSelected?.length > 0 || backdropsSelected?.length > 0 || logosSelected?.length > 0 ?
       <SelectionContainer className="mb-6 ml-auto">
         <div className='item grid justify-items-start'>
           {videos ? (<div className='min-w-[250px] max-sm:min-w-full max-md:grow'>
@@ -114,45 +115,49 @@ const MediaTab = ({ images, videos = false }) => {
           </div>
         </div>
       </SelectionContainer>
+       : null}
 
       <AnimatePresence mode='wait' initial={false}>
-        {videos ? <Videos posters={videosSelected} /> : 
-        <Fragment>
-        {activeTab === "posters" && (
-          <motion.div
-            key='posters'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <Posters posters={postersSelected} />
-          </motion.div>
-        )}
+        {videos ?
+          <Videos posters={videosSelected} /> :
+          <Fragment>
+            {activeTab === "posters" && (
+              <motion.div
+                key='posters'
+                variants={framerTabVariants}
+                initial='hidden'
+                animate='visible'
+                exit='hidden'
+                transition={{ duration: 0.5 }}>
+                <Posters posters={postersSelected} />
+              </motion.div>
+            )}
 
-        {activeTab === "backdrops" && (
-          <motion.div
-            key='backdrops'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <Backdrops backdrops={backdropsSelected} />
-          </motion.div>
-        )}
+            {activeTab === "backdrops" && (
+              <motion.div
+                key='backdrops'
+                variants={framerTabVariants}
+                initial='hidden'
+                animate='visible'
+                exit='hidden'
+                transition={{ duration: 0.5 }}>
+                <Backdrops backdrops={backdropsSelected} />
+              </motion.div>
+            )}
 
-        {activeTab === "logos" && (
-          <motion.div
-            key='logos'
-            variants={framerTabVariants}
-            initial='hidden'
-            animate='visible'
-            exit='hidden'
-            transition={{ duration: 0.5 }}>
-            <Posters posters={logosSelected} />
-          </motion.div>
-        )}</Fragment>}
+            {activeTab === "logos" && (
+              <motion.div
+                key='logos'
+                variants={framerTabVariants}
+                initial='hidden'
+                animate='visible'
+                exit='hidden'
+                transition={{ duration: 0.5 }}>
+                <Posters posters={logosSelected} />
+              </motion.div>
+            )}
+          </Fragment>
+        }
       </AnimatePresence>
     </Fragment>
   );
