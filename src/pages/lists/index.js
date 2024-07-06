@@ -1,5 +1,6 @@
 import DominantColor from "components/DominantColor/DominantColor";
 import CreateList from "components/List/CreateList";
+import Loading from "components/Loading";
 import { InfoTitle } from "components/MediaTemplate/TemplateStyles";
 import MetaWrapper from "components/MetaWrapper";
 import PlaceholderText from "components/PlaceholderText";
@@ -17,11 +18,14 @@ import Router, { useRouter } from "next/router";
 import { getSession } from "next-auth/react";
 import { Fragment } from "react";
 import { fetchOptions, framerTabVariants, getCleanTitle } from "src/utils/helper";
+import { useListsContext } from "Store/ListsContext";
 import { Button, Error404, LayoutContainer } from "styles/GlobalComponents";
 
-const Lists = ({ error, lists }) => {
+const Lists = ({ error }) => {
+  // const Lists = ({ error, lists }) => {
   const router = useRouter();
   const create = router.query.create === "true";
+  const { lists, loading } = useListsContext(); //use all list from update
 
   const createListHandler = () => {
     router.push(
@@ -89,45 +93,50 @@ const Lists = ({ error, lists }) => {
                     </Button>
                   </div>
 
-                  {lists?.length > 0 ? (
-                    <RecommendationsGrid>
-                      {renderList?.map(({ id, backdrop_path, name }) => (
-                        <RecommendedWrapper key={id}>
-                          <motion.div
-                            whileHover={{
-                              scale: 1.05,
-                              transition: { duration: 0.1 }
-                            }}
-                            whileTap={{ scale: 0.95 }}>
-                            <Link
-                              href={`lists/${getCleanTitle(id, name)}`}
-                              passHref
-                              scroll={false}>
-                              <RecommendedImg className='relative text-center'>
-                                <Image
-                                  src={
-                                    backdrop_path
-                                      ? `https://image.tmdb.org/t/p/w780${backdrop_path}`
-                                      : "/Images/DefaultBackdrop.png"
-                                  }
-                                  alt='backdrop'
-                                  fill
-                                  style={{ objectFit: "cover" }}
-                                  placeholder='blur'
-                                  blurDataURL={blurPlaceholder}
-                                />
-                              </RecommendedImg>
-                            </Link>
-                          </motion.div>
-                          <InfoTitle className='mt-3 mb-0 text-center'>{name}</InfoTitle>
-                        </RecommendedWrapper>
-                      ))}
-                    </RecommendationsGrid>
+
+                  {loading ? (
+                    <Loading />
                   ) : (
-                    <PlaceholderText height='large'>
-                      You don&apos;t have any lists yet. <br /> Click on the button above to create
-                      one.
-                    </PlaceholderText>
+                    lists?.length > 0 ? (
+                      <RecommendationsGrid>
+                        {renderList?.map(({ id, backdrop_path, name }) => (
+                          <RecommendedWrapper key={id}>
+                            <motion.div
+                              whileHover={{
+                                scale: 1.05,
+                                transition: { duration: 0.1 }
+                              }}
+                              whileTap={{ scale: 0.95 }}>
+                              <Link
+                                href={`lists/${getCleanTitle(id, name)}`}
+                                passHref
+                                scroll={false}>
+                                <RecommendedImg className='relative text-center'>
+                                  <Image
+                                    src={
+                                      backdrop_path
+                                        ? `https://image.tmdb.org/t/p/w780${backdrop_path}`
+                                        : "/Images/DefaultBackdrop.png"
+                                    }
+                                    alt='backdrop'
+                                    fill
+                                    style={{ objectFit: "cover" }}
+                                    placeholder='blur'
+                                    blurDataURL={blurPlaceholder}
+                                  />
+                                </RecommendedImg>
+                              </Link>
+                            </motion.div>
+                            <InfoTitle className='mt-3 mb-0 text-center'>{name}</InfoTitle>
+                          </RecommendedWrapper>
+                        ))}
+                      </RecommendationsGrid>
+                    ) : (
+                      <PlaceholderText height='large'>
+                        You don&apos;t have any lists yet. <br /> Click on the button above to create
+                        one.
+                      </PlaceholderText>
+                    )
                   )}
                 </motion.div>
               )}

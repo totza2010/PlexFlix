@@ -22,6 +22,7 @@ const Recommendations = ({ data, type }) => {
   if (type !== "lists")
     data.splice(40);
 
+  console.log(data)
   return (
     type !== "lists" ? (<PostersWrapper
       className='profile-media-grid'
@@ -35,7 +36,7 @@ const Recommendations = ({ data, type }) => {
             }}
             whileTap={{ scale: 0.95 }}>
             <Link
-              href={`/${type}/${getCleanTitle(item.id, item?.title || item?.name)}`}
+              href={`/${type}/${getCleanTitle(item.id, (item?.title || item?.name))}`}
               passHref
               scroll={false}>
               <div className='relative'>
@@ -75,7 +76,7 @@ const Recommendations = ({ data, type }) => {
               }}
               whileTap={{ scale: 0.95 }}>
               <Link
-                href={`/${type}/${item.id}-${getCleanTitle(item?.title || item?.name)}`}
+                href={`/${type}/${getCleanTitle(item.id, (item?.title || item?.name))}`}
                 passHref
                 scroll={false}>
                 <RecommendedImg className='relative text-center'>

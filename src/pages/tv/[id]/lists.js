@@ -27,7 +27,6 @@ const Lists = ({ error, lists, tv }) => {
         (lists?.results ?? [])?.concat(list)
     );
     //   const renderList = lists.concat(infiniteQueryLists);
-
     return (
         <Fragment>
             <MetaWrapper

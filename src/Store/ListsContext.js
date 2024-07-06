@@ -17,9 +17,9 @@ export const useListsContext = () => {
 };
 
 const ListsContextProvider = ({ children }) => {
-  const { lists, updateList } = useGetAllLists();
+  const { lists, loading, updateList } = useGetAllLists();
 
-  return <ListsContext.Provider value={{ lists, updateList }}>{children}</ListsContext.Provider>;
+  return <ListsContext.Provider value={{ lists, loading, updateList }}>{children}</ListsContext.Provider>;
 };
 
 export default ListsContextProvider;
