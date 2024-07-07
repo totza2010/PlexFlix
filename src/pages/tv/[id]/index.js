@@ -114,8 +114,10 @@ export const getServerSideProps = async (ctx) => {
     const { id } = ctx.query;
     const tvId = id.split("-")[0];
 
-    const [tvResponse, languagesResponse, keywordsRes, imagesRes, videosRes] = await Promise.all([
+    const [tvResponse, recommendationsResponse1, recommendationsResponse2, languagesResponse, keywordsRes, imagesRes, videosRes] = await Promise.all([
       fetch(apiEndpoints.tv.tvDetails(tvId), fetchOptions()),
+      fetch(apiEndpoints.tv.tvRecommendations({id: tvId, pageQuery: 1}), fetchOptions()),
+      fetch(apiEndpoints.tv.tvRecommendations({id: tvId, pageQuery: 2}), fetchOptions()),
       fetch(apiEndpoints.language, fetchOptions()),
       fetch(apiEndpoints.keywords.tags({ id: tvId, type: "tv" }), fetchOptions()),
       fetch(apiEndpoints.tv.tvImages(tvId), fetchOptions()),
@@ -127,28 +129,10 @@ export const getServerSideProps = async (ctx) => {
       throw new Error(`Failed to fetch tvResponse details: ${tvResponse.status} - ${errorDetails}`);
     }
 
-    if (!languagesResponse.ok) {
-      const errorDetails = await languagesResponse.text();
-      throw new Error(`Failed to fetch languagesResponse details: ${languagesResponse.status} - ${errorDetails}`);
-    }
-
-    if (!keywordsRes.ok) {
-      const errorDetails = await keywordsRes.text();
-      throw new Error(`Failed to fetch keywordsRes details: ${keywordsRes.status} - ${errorDetails}`);
-    }
-
-    if (!imagesRes.ok) {
-      const errorDetails = await imagesRes.text();
-      throw new Error(`Failed to fetch imagesRes details: ${imagesRes.status} - ${errorDetails}`);
-    }
-
-    if (!videosRes.ok) {
-      const errorDetails = await videosRes.text();
-      throw new Error(`Failed to fetch videosRes details: ${videosRes.status} - ${errorDetails}`);
-    }
-
-    const [tvData, languages, keywords, images, videoDatas] = await Promise.all([
+    const [tvData, recommendations1, recommendations2, languages, keywords, images, videoDatas] = await Promise.all([
       tvResponse.json(),
+      recommendationsResponse1.json(),
+      recommendationsResponse2.json(),
       languagesResponse.json(),
       keywordsRes.json(),
       imagesRes.json(),
@@ -168,6 +152,7 @@ export const getServerSideProps = async (ctx) => {
       };
     }
 
+    const recommendations = recommendations1["results"].concat(recommendations2.results);
     const releaseYear = getReleaseYear(tvData?.first_air_date);
     const endYear =
       tvData?.status === "Ended" || tvData.status === "Canceled"
@@ -268,7 +253,7 @@ export const getServerSideProps = async (ctx) => {
         },
         seasons: tvData?.seasons,
         reviews: tvData?.reviews?.results ?? [],
-        recommendations: tvData?.recommendations?.results,
+        recommendations: recommendations || [],
         technicalDetails: technicalDetailsData || null,
         keywords,
         convertedData,

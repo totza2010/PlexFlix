@@ -92,9 +92,12 @@ export const apiEndpoints = {
     tvDetails: (id) =>
       `${baseUrlV3}/tv/${id}?language=en-US&append_to_response=videos,aggregate_credits,reviews,recommendations,external_ids`,
 
+    tvRecommendations: ({ id, pageQuery = 1 }) =>
+      `${baseUrlV3}/tv/${id}/recommendations?language=en-US&page=${pageQuery}`,
+
     tvDetailsNoAppend: (id) => `${baseUrlV3}/tv/${id}?language=en-US`,
 
-    tvSeasonDetailsNoAppend: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}?language=en-US`,
+    tvSeasonDetailsNoAppend: ({ id, sn }) => `${baseUrlV3}/tv/${id}/season/${sn}?language=en-US`,
 
     tvSeasonDetails: ({ id, seasonNumber }) =>
       `${baseUrlV3}/tv/${id}/season/${seasonNumber}?language=en-US&append_to_response=aggregate_credits`,
@@ -114,25 +117,25 @@ export const apiEndpoints = {
 
     tvVideos: (id) => `${baseUrlV3}/tv/${id}/videos`,
 
-    tvSeasonImages: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/images`,
+    tvSeasonImages: ({ id, sn }) => `${baseUrlV3}/tv/${id}/season/${sn}/images`,
 
-    tvSeasonVideos: ({id, sn}) => `${baseUrlV3}/tv/${id}/season/${sn}/videos`,
+    tvSeasonVideos: ({ id, sn }) => `${baseUrlV3}/tv/${id}/season/${sn}/videos`,
 
-    tvSeasonEpisodeImages: ({id, sn, ep}) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/images`,
+    tvSeasonEpisodeImages: ({ id, sn, ep }) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/images`,
 
-    tvSeasonEpisodeVideos: ({id, sn, ep}) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/videos`
+    tvSeasonEpisodeVideos: ({ id, sn, ep }) => `${baseUrlV3}/tv/${id}/season/${sn}/episode/${ep}/videos`
   },
   keywords: {
-    tags: ({ id, type }) => 
+    tags: ({ id, type }) =>
       `${baseUrlV3}/${type}/${id}/keywords`,
 
-    keywordMovie: ({ keywordId, pageQuery = 1 }) => 
+    keywordMovie: ({ keywordId, pageQuery = 1 }) =>
       `${baseUrlV3}/discover/movie?include_adult=true&include_video=true&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_keywords=${keywordId}`,
 
-    keywordTv: ({ keywordId, pageQuery = 1 }) => 
+    keywordTv: ({ keywordId, pageQuery = 1 }) =>
       `${baseUrlV3}/discover/tv?include_adult=true&language=en-US&page=${pageQuery}&sort_by=popularity.desc&with_keywords=${keywordId}`,
 
-    keyword: (keywordId) => 
+    keyword: (keywordId) =>
       `${baseUrlV3}/keyword/${keywordId}`
   },
   person: {

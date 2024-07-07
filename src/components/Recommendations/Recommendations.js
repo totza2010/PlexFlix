@@ -22,7 +22,6 @@ const Recommendations = ({ data, type }) => {
   if (type !== "lists")
     data.splice(40);
 
-  console.log(data)
   return (
     type !== "lists" ? (<PostersWrapper
       className='profile-media-grid'
