@@ -17,7 +17,7 @@ const IndexTab = ({ moviesData, TVData, trendingMovies, trendingTv }) => {
 
   return (
     <Fragment>
-      <Tabs tabList={tabList} currentTab={activeTab} setTab={setTab} />
+      <Tabs className="-z-10" tabList={tabList} currentTab={activeTab} setTab={setTab} />
 
       <AnimatePresence initial={false} mode='wait'>
         {activeTab === "movies" && (

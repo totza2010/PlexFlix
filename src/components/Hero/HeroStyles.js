@@ -38,7 +38,7 @@ export const Banner = styled.div`
 `;
 
 export const Form = styled.form`
-  width: clamp(360px, 75vw, 800px);
+  width: clamp(360px, 80vw, 1500px);
   display: flex;
   justify-content: center;
   align-items: center;

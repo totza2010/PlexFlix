@@ -115,7 +115,7 @@ const AddListItems = ({ id, CTAHandler }) => {
     inputRef.current.blur();
     setQuery("");
   };
-
+  
   return (
     <Fragment>
 
@@ -191,6 +191,7 @@ const AddListItems = ({ id, CTAHandler }) => {
                     type='text'
                     ref={inputRef}
                     id='addItem'
+                    autoComplete='off'
                     placeholder='Search for a movie or TV show'
                     className='border text-base rounded-lg block w-full p-2.5 bg-neutral-700 border-neutral-500
                     placeholder-neutral-400 text-white focus:border'
