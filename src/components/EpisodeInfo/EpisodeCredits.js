@@ -1,4 +1,4 @@
-import { CastGrid, CastImg, CastWrapper } from "components/Cast/CastStyles";
+import { CastGrid, CastImg, CastWrapper } from "components/Credit/CreditStyles";
 import { Span } from "components/MovieInfo/MovieDetailsStyles";
 import { TabSelectionTitle, tabStylingSM } from "components/MovieInfo/MovieTabStyles";
 import CastSvg from "components/Svg/cast";

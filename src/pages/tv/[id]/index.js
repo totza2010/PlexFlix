@@ -21,7 +21,7 @@ const TvShow = ({
   posterPath,
   releaseYear,
   endYear,
-  cast,
+  credits,
   seasons,
   reviews,
   networks,
@@ -85,7 +85,7 @@ const TvShow = ({
 
           {/* tv tabs */}
           <TVTab
-            cast={cast}
+            credits={credits}
             reviews={reviews}
             images={convertedData}
             videos={videos}
@@ -165,12 +165,6 @@ export const getServerSideProps = async (ctx) => {
     const networks = tvData?.networks || "TBA";
     const companies = tvData?.production_companies || "TBA";
     const adult = tvData?.adult || false;
-    const crewData = [
-      ...tvData?.created_by?.slice(0, 2),
-      ...tvData?.aggregate_credits?.crew
-        ?.filter((credit) => credit.job === "Characters")
-        .slice(0, 2)
-    ];
 
     // Function to map iso_639_1 values
     function mapLanguage(iso) {
@@ -219,6 +213,23 @@ export const getServerSideProps = async (ctx) => {
     });
 
     const technicalDetailsData = imdbId ? await technicalDetails.json() : null;
+    const crewData = [
+      ...tvData?.created_by?.slice(0, 2),
+      ...tvData?.aggregate_credits?.crew
+        ?.filter((credit) => credit.job === "Characters")
+        .slice(0, 2)
+    ];
+    const cast = mergeEpisodeCount(
+      tvData?.aggregate_credits?.cast
+        ?.map(({ roles, ...rest }) => roles.map((role) => ({ ...rest, ...role })))
+        .flat()
+    ).sort((a, b) => b.popularity - a.popularity || b.episode_count - a.episode_count).slice(0, 12)
+    const crew = mergeEpisodeCount(
+      tvData?.aggregate_credits?.crew
+        ?.map(({ jobs, ...rest }) => jobs.map((job) => ({ ...rest, ...job })))
+        .flat()
+    ).sort((a, b) => b.popularity - a.popularity || b.episode_count - a.episode_count).slice(0, 5)
+    const credits = cast.concat(crew)
 
     return {
       props: {
@@ -243,13 +254,8 @@ export const getServerSideProps = async (ctx) => {
         companies,
         type: tvData?.type,
         endYear,
-        cast: {
-          totalCount: tvData?.aggregate_credits?.cast?.length,
-          data: mergeEpisodeCount(
-            tvData?.aggregate_credits?.cast
-              ?.map(({ roles, ...rest }) => roles.map((role) => ({ ...rest, ...role })))
-              .flat()
-          ).slice(0, 15)
+        credits: {
+          data: credits
         },
         seasons: tvData?.seasons,
         reviews: tvData?.reviews?.results ?? [],

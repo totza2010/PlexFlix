@@ -8,18 +8,18 @@ import { useRouter } from "next/router";
 import { Fragment, useRef } from "react";
 import { BsChevronRight } from "react-icons/bs";
 import { getCleanTitle } from "src/utils/helper";
-import { CastGrid, CastImg, CastWrapper, SeeMore } from "./CastStyles";
+import { CastGrid, CastImg, CastWrapper, SeeMore } from "./CreditStyles";
 
-const Cast = ({ cast }) => {
+const Credits = ({ credits }) => {
   const router = useRouter();
   const routeRef = useRef(router.asPath);
 
   return (
     <Fragment>
-      {cast.data.length > 0 ? (
+      {credits.data.length > 0 ? (
         <CastGrid>
-          {cast.data.map((item) => (
-            <CastWrapper key={item.id}>
+          {credits.data.map((item) => (
+            <CastWrapper key={item.credit_id}>
               <Link href={`/person/${getCleanTitle(item.id, item.name)}`} passHref>
                 <motion.div
                   whileHover={{
@@ -34,7 +34,7 @@ const Cast = ({ cast }) => {
                           ? `https://image.tmdb.org/t/p/w276_and_h350_face${item.profile_path}`
                           : "/Images/DefaultAvatar.png"
                       }
-                      alt='cast-image'
+                      alt='credits-image'
                       fill
                       style={{ objectFit: "cover", objectPosition: "top" }}
                       placeholder='blur'
@@ -46,9 +46,9 @@ const Cast = ({ cast }) => {
 
               <div className='mt-3'>
                 <Span className='font-bold movieCastHead line-clamp-2'>
-                  {item?.roles?.[0]?.character ?? item?.character}
+                  {item.job ? item.name : (item?.roles?.[0]?.character ?? item?.character)}
                 </Span>
-                <Span className='movieCastName block'>{item.name}</Span>
+                <Span className='movieCastName block'>{item.job ? (item.job ?? "Creator") : item.name}</Span>
                 {item?.episode_count ? (
                   <Span className='movieCastName block episode-count'>
                     {item?.episode_count} episodes
@@ -57,7 +57,7 @@ const Cast = ({ cast }) => {
               </div>
             </CastWrapper>
           ))}
-          <Link href={`${routeRef.current}/cast`}>
+          <Link href={`${routeRef.current}/credits`}>
             <motion.div
               whileHover={{
                 scale: 1.05,
@@ -65,11 +65,11 @@ const Cast = ({ cast }) => {
               }}
               whileTap={{ scale: 0.95 }}
               className='mb-auto mt-12'
-              aria-label='full cast'>
+              aria-label='full credits'>
               <SeeMore>
                 <BsChevronRight size='22' />
               </SeeMore>
-              <Span className='mt-3 font-bold movieCastHead block'>Full Cast</Span>
+              <Span className='mt-3 font-bold movieCastHead block'>Full Credits</Span>
             </motion.div>
           </Link>
         </CastGrid>
@@ -80,4 +80,4 @@ const Cast = ({ cast }) => {
   );
 };
 
-export default Cast;
+export default Credits;

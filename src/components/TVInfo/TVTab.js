@@ -1,4 +1,4 @@
-import Cast from "components/Cast/Cast";
+import Credits from "components/Credit/Credit";
 import MediaTab from "components/MovieInfo/MediaTab";
 import { TabSelectionTitle, tabStyling, TabIcon } from "components/MovieInfo/MovieTabStyles";
 import Reviews from "components/Reviews/Reviews";
@@ -14,8 +14,8 @@ import { ModulesWrapper } from "styles/GlobalComponents";
 
 const tabList = [
   {
-    key: "cast",
-    name: "Cast",
+    key: "credits",
+    name: "Credits",
     svg: (active) => <CastSvg color={active ? "white" : "black"} />
   },
   {
@@ -35,8 +35,8 @@ const tabList = [
   }
 ];
 
-const TVTab = ({ cast, reviews, images, videos }) => {
-  const { activeTab, setTab } = useTabs({ tabLocation: "tvTabState", defaultState: "cast" });
+const TVTab = ({ credits, reviews, images, videos }) => {
+  const { activeTab, setTab } = useTabs({ tabLocation: "tvTabState", defaultState: "credits" });
   
   return (
     <Fragment>
@@ -54,23 +54,23 @@ const TVTab = ({ cast, reviews, images, videos }) => {
       </Tabs>
 
       <AnimatePresence mode='wait' initial={false}>
-        {activeTab === "cast" && (
+        {activeTab === "credits" && (
           <motion.div
-            key='cast'
+            key='credits'
             variants={framerTabVariants}
             initial='hidden'
             animate='visible'
             exit='hidden'
             transition={{ duration: 0.5 }}>
             <ModulesWrapper>
-              <Cast cast={cast} />
+              <Credits credits={credits} />
             </ModulesWrapper>
           </motion.div>
         )}
 
         {activeTab === "reviews" && (
           <motion.div
-            key='cast'
+            key='reviews'
             variants={framerTabVariants}
             initial='hidden'
             animate='visible'

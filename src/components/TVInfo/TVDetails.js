@@ -15,8 +15,7 @@ import {
   Rounded,
   RtoR,
   Span,
-  Tagline,
-  SeeMore
+  Tagline
 } from "components/MovieInfo/MovieDetailsStyles";
 import { RatingOverlay } from "components/ProfilePage/ProfilePageStyles";
 import RatingModal from "components/RatingModal/RatingModal";
@@ -30,7 +29,7 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import { AiFillStar } from "react-icons/ai";
 import { BiListPlus, BiListCheck } from "react-icons/bi";
-import { BsChevronRight, BsStarHalf } from "react-icons/bs";
+import { BsStarHalf } from "react-icons/bs";
 import { FaYoutube, FaHeart, FaRegHeart } from "react-icons/fa";
 import { MdOutlineFormatListBulleted } from "react-icons/md";
 import { framerTabVariants, getCleanTitle, getRating, getReleaseYear } from "src/utils/helper";
@@ -465,24 +464,6 @@ const TVDetails = ({
                     </Link>
                   </Credits>
                 ))}
-                <Link href={`/tv/${getCleanTitle(id, title)}/crew`}>
-                  <motion.div
-                    whileHover={{
-                      scale: 1.05,
-                      transition: { duration: 0.1 },
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    className="mb-auto"
-                    aria-label="full cast"
-                  >
-                    <SeeMore>
-                      <BsChevronRight size="22" />
-                    </SeeMore>
-                    <Span className="mt-1 font-bold movieCastHead block">
-                      Full Crew
-                    </Span>
-                  </motion.div>
-                </Link>
               </CreditsWrapper>
             )}
           </HeroInfoWrapper>

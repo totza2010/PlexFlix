@@ -33,9 +33,19 @@ export const mergeEpisodeCount = (cast) => {
   casting.forEach((item) => {
     const existing = mergedCast.findIndex((castItem) => castItem.id === item.id);
     if (existing > -1) {
-      const existingEpisodeCount = mergedCast[existing].episode_count ?? 0;
-      const currentEpisodeCount = item.episode_count ?? 0;
-      mergedCast[existing].episode_count = existingEpisodeCount + currentEpisodeCount;
+      if (mergedCast[existing].episode_count) {
+        const existingEpisodeCount = mergedCast[existing].episode_count ?? 0;
+        const currentEpisodeCount = item.episode_count ?? 0;
+        mergedCast[existing].episode_count = existingEpisodeCount + currentEpisodeCount;
+      }
+      
+      if (mergedCast[existing].job) {
+        mergedCast[existing].job = `${mergedCast[existing].job} / ${item.job}`;
+      }
+      
+      if (mergedCast[existing].character) {
+        mergedCast[existing].character = `${mergedCast[existing].character} / ${item.character}`;
+      }
     } else {
       mergedCast.push(item);
     }

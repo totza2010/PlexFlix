@@ -6,7 +6,7 @@ import MovieTab from "components/MovieInfo/MovieTab";
 import Recommendations from "components/Recommendations/Recommendations";
 import { apiEndpoints } from "globals/constants";
 import { Fragment, useEffect, useState } from "react";
-import { fetchOptions, getCleanTitle, getReleaseDate, getReleaseYear } from "src/utils/helper";
+import { fetchOptions, getCleanTitle, getReleaseDate, getReleaseYear, mergeEpisodeCount } from "src/utils/helper";
 import { Error404, ModulesWrapper } from "styles/GlobalComponents";
 
 const Movie = ({
@@ -32,7 +32,7 @@ const Movie = ({
   language,
   budget,
   revenue,
-  cast,
+  credits,
   reviews,
   isEasterMovie,
   recommendations,
@@ -126,7 +126,7 @@ const Movie = ({
           />
 
           {/* movie tabs */}
-          <MovieTab cast={cast} reviews={reviews} images={convertedData} videos={videos} />
+          <MovieTab credits={credits} reviews={reviews} images={convertedData} videos={videos} />
 
           {/* recommendations */}
           {recommendations?.length > 0 ? (
@@ -262,6 +262,10 @@ export const getServerSideProps = async (ctx) => {
 
     const technicalDetailsData = await technicalDetails.json();
 
+    const cast = mergeEpisodeCount(movieDetails?.credits?.cast).sort((a, b) => b.popularity - a.popularity).slice(0, 12)
+    const crew = mergeEpisodeCount(movieDetails?.credits?.crew).sort((a, b) => b.popularity - a.popularity).slice(0, 5)
+    const credits = cast.concat(crew)
+
     return {
       props: {
         id: movieDetails?.id,
@@ -286,9 +290,8 @@ export const getServerSideProps = async (ctx) => {
         language: language?.english_name || language?.name || "TBA",
         budget: movieDetails?.budget,
         revenue: movieDetails?.revenue,
-        cast: {
-          totalCount: movieDetails?.credits?.cast?.length,
-          data: movieDetails?.credits?.cast?.slice(0, 15)
+        credits: {
+          data: credits
         },
         isEasterMovie: movieDetails?.id === 345911,
         reviews: movieDetails?.reviews?.results ?? [],

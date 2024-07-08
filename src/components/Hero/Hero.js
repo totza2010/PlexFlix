@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from "framer-motion";
 import Loading from "components/Loading";
+import { AnimatePresence, motion } from "framer-motion";
 import useGetSearchSuggestions from "hooks/useGetSearchSuggestions";
 import { useRouter } from "next/router";
 import { Fragment, useState, useRef } from "react";
@@ -7,7 +7,6 @@ import { framerTabVariants } from "src/utils/helper";
 import { Container } from "styles/GlobalComponents";
 import { SearchCTA, Form, HeroDiv, UserInput } from "./HeroStyles";
 import SearchSuggestion from "./searchSuggestion";
-import { Button } from "styles/GlobalComponents";
 
 const Hero = ({ banner = null }) => {
   const router = useRouter();
